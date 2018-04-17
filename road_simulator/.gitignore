@@ -1,0 +1,17 @@
+*.ipynb_checkpoints
+*.ipynb
+
+*.coverage
+
+*.hdf5
+
+dataset/
+notebooks/
+
+__pycache__
+*.pyc
+
+examples/*/
+
+
+ground_pics/
