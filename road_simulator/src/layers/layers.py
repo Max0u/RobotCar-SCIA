@@ -482,22 +482,6 @@ class Background(Layer):
             background = Image.open(os.path.join(self.path, image_names[index])).convert('RGB')
             backgrounds.append(background)
 
-        # Generation of the rotations
-        new_backgrounds = []
-        for i in tqdm(range(len(backgrounds)), desc='rotating images'):
-            background = backgrounds[i]
-            for j in range(self.n_rot):
-                b = background.copy()
-                # Choice of a rotation angle
-                angle_rotation = self.angles_range[randint(0, len(self.angles_range)-1)]
-                b = b.rotate(angle_rotation)
-                new_backgrounds.append(b)
-
-        backgrounds = new_backgrounds
-        if len(backgrounds) >= self.n_backgrounds:
-            shuffle(backgrounds)
-            backgrounds = backgrounds[:self.n_backgrounds]
-
         # Generation of the resized images
         new_backgrounds = []
         for i in tqdm(range(len(backgrounds)), desc='resizing images'):
@@ -508,6 +492,22 @@ class Background(Layer):
                 new_width = self.width_range[index]
                 new_height = int(4 * new_width / 5)
                 b = b.resize((new_width, new_height), PIL.Image.ANTIALIAS)
+                new_backgrounds.append(b)
+
+        backgrounds = new_backgrounds
+        if len(backgrounds) >= self.n_backgrounds:
+            shuffle(backgrounds)
+            backgrounds = backgrounds[:self.n_backgrounds]
+
+        # Generation of the rotations
+        new_backgrounds = []
+        for i in tqdm(range(len(backgrounds)), desc='rotating images'):
+            background = backgrounds[i]
+            for j in range(self.n_rot):
+                b = background.copy()
+                # Choice of a rotation angle
+                angle_rotation = self.angles_range[randint(0, len(self.angles_range)-1)]
+                b = b.rotate(angle_rotation)
                 new_backgrounds.append(b)
 
         backgrounds = new_backgrounds
