@@ -45,16 +45,16 @@ class Shadows(Noise):
         Adds shadows to the image.
     '''
 
-    def __init__(self, color=(0, 0, 0), name='Shadows'):
+    def __init__(self, colors=None, name='Shadows'):
 
         if name is None:
             raise ValueError('')
-        if color is None:
+        if colors is None:
             raise ValueError('')
 
         super(Shadows, self).__init__()
 
-        self.color = color
+        self.colors = colors
         self.name = name
 
     def call(self, img):
@@ -66,7 +66,7 @@ class Shadows(Noise):
         x2 = randint(0, img.width)
         y1 = randint(0, img.height)
         y2 = 10000000
-        c = self.color
+        c = choice(self.colors.colors)
 
         while abs(y2 - y1) > 75:
             if randint(0, 1):
