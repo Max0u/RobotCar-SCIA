@@ -1,13 +1,10 @@
 # importing augmentation library
-from augmentation import *
 
 # Initial Setup for Keras
 from keras.models import Sequential
-from keras.layers.core import Dense, Activation, Flatten, Dropout, Lambda
+from keras.layers.core import Dense, Flatten, Lambda
 from keras.layers.convolutional import Convolution2D
-from keras.layers.pooling import MaxPooling2D
 from keras.layers.normalization import BatchNormalization
-from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 
 def resize(img):
