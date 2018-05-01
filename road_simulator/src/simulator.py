@@ -48,8 +48,9 @@ class Simulator():
         for i in tqdm(range(n_examples)):
             index = randint(0, len(self.input_images)-1)
             ii = self.input_images[index].copy()
-            new_img, new_name = self.generate_one_image(ii)
+            new_img, new_name, new_img2, new_name2= self.generate_one_image(ii)
             new_img.save(os.path.join(path, 'frame_' + str(i) + new_name))
+            new_img2.save(os.path.join(path, 'frame_' + str(i) + new_name2))
 
     def generate_one_image(self, img):
 
@@ -68,10 +69,14 @@ class Simulator():
                 else:
                     im = layer.call(im)
 
+        im2 = im.copy()
+        im2, s= Symmetric(proba=1).call(im2)
+
         if sym:
             angle = -angle
         name = '_gas_' + str(gas) + '_dir_' +  str(angle) + '.jpg'
-        return im, name
+        name2 = '_gas_' + str(gas) + '_dir_' +  str(-angle) + '.jpg'
+        return im, name, im2, name2
 
 
     def summary(self):
