@@ -20,7 +20,7 @@ shadow = DarkShadow()
 #  -> nb crop
 #  -> nb resize
 simulator.add(Background(n_backgrounds=50, n_rot=5, n_crop=5, n_res=5,
-    path='../ressources/ground_pics', input_size=(250, 200)))
+    path='../resources/ground_pics', input_size=(250, 200)))
 
 # draw lines
 #  -> thickness
@@ -49,4 +49,4 @@ simulator.add(Filter(blur=0.2, gauss_blur=0.2, smooth=0.2, smooth_more=0.2, rank
 simulator.add(Enhance(brightness=0.4, contrast=0.3, sharpness=0.3))
 
 
-simulator.generate(n_examples=1000, path='../ressources/test_dataset')
+simulator.generate(n_examples=1000, path='../resources/test_dataset')
