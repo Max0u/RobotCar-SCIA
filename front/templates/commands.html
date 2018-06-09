@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-lg-4 mb-3">
+      <h5>Pins</h5>
+      <p>You use the <code>direction_pin</code> and <code>gas_pin</code> to set the pin number on the Pi Hat.</p>
+    </div>
+
+    <div class="col-lg-8 mb-3">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Direction Pin</span>
+        </div>
+        <input type="text" class="form-control" value="{{commands.dir_pin}}">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Gas Pin</span>
+        </div>
+        <input type="text" class="form-control" value="{{commands.gas_pin}}">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-3">
+      <h5>Steering</h5>
+      <p><code>left</code>, <code>straight</code> and <code>right</code> parameters are used to send the direction order. You need to tune those values so that the Raspi sends the right PWM commands to the RC Car.</p>
+      <p>The <code>invert_dir</code> parameters defines the same commands but for reverse.</p>
+    </div>
+
+    <div class="col-lg-8 mb-3">
+        <div id="sliderDir"></div></br>
+        <div class="input-group mb-3">
+            <button type="submit" class="btn btn-outline-primary" data-command-reversed="invert_dir">Invert Direction</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-3">
+      <h5>Gas</h5>
+      <p><code>stop</code>, <code>neutral</code> and <code>drive</code> are used to accelerate the car. You need to tune these parameters.</p>
+      <p><code>drive_max</code> is the maximum amount of gas. Be careful, on some cars, huge values can lead to a very fast (and uncontrollable) car!</p>
+    </div>
+
+    <div class="col-lg-8 mb-3">
+      <div id="sliderGas"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
