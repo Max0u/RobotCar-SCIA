@@ -1,3 +1,4 @@
 resources
 car_repo
 __pycache__/
+.ipynb_checkpoint*
