@@ -5,7 +5,7 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
-from utils import INPUT_SHAPE, batch_generator
+from myutils import INPUT_SHAPE, batch_generator
 import argparse
 import os
 

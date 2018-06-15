@@ -48,4 +48,4 @@ simulator.add(Filter(blur=0.2, gauss_blur=0.2, smooth=0.2, smooth_more=0.2, rank
 simulator.add(Enhance(brightness=0.4, contrast=0.3, sharpness=0.3))
 
 
-simulator.generate(n_examples=100, path='my_dataset')
+simulator.generate(n_examples=200000, path='my_dataset')
