@@ -10,8 +10,8 @@ def load_image(data_dir, image_file):
     """
     Load RGB images from a file
     """
-    return mpimg.imread(os.path.join(data_dir, image_file.strip()))
-
+    image = mpimg.imread(os.path.join(data_dir, image_file.strip()))
+    return resize(image)
 
 
 def resize(image):
@@ -47,7 +47,7 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    image = resize(image)
+    #image = resize(image)
     #image = bright_contr_auto(image)
     image = rgb2yuv(image)
     #image = rgb2ycrcb(image)
@@ -149,15 +149,15 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size, is_train
         i = 0
         for index in np.random.permutation(len(image_paths)):
             center = image_paths[index]
-            steering_angle = steering_angles[index]
+            steering_angle = steering_angles[index][1]
             # argumentation
             if is_training and np.random.rand() < 0.6:
-                image, steering_angle = augument(data_dir, steering_angle)
+                image, steering_angle = augument(data_dir, center, steering_angle)
             else:
                 image = load_image(data_dir, center)
             # add the image and steering angle to the batch
             images[i] = preprocess(image)
-            steers[i] = steering_angle[1]
+            steers[i] = steering_angle
             i += 1
 
             if i == batch_size:
