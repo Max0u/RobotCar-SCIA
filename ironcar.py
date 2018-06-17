@@ -7,6 +7,8 @@ from PIL.Image import fromarray as PIL_convert
 from utils import ConfigException, CameraException
 from preprocess import brightness, greyscale, contrast
 
+import preprocess
+
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
 get_default_graph = None  # For lazy imports
@@ -158,38 +160,22 @@ class Ironcar():
         Neural Network (NN).
 
         img: unused. But has to stay because other modes need it.
-        prediction: array of softmax
+        prediction: dir val
         """
 
         if self.started:
-            index_class = prediction.index(max(prediction))
 
             speed_mode_coef = 1.
             if self.speed_mode == 'confidence':
-                confidence = prediction[index_class]  # should be over 0.20
-                # Confidence levels :
-                # [0.2 - 0.4[ -> Low -> 30%
-                # [0.4 - 0.7[ -> Medium -> 70%
-                # [0.7 - 1.0] -> High -> 100%
-                if confidence < 0.4:
-                    speed_mode_coef = 0.3
-                elif confidence >= 0.7:
-                    speed_mode_coef = 1.
-                else:
-                    speed_mode_coef = 0.7
+                speed_mode_coef = 1.1 - prediction**2
             elif self.speed_mode == 'auto':
-                # Angle levels :
-                # Far left/right   -> Low -> 30%
-                # Close left/right -> Medium -> 70%
-                # Straight         -> High -> 100%
-                coeffs = [0.3, 0.7, 1., 0.7, 0.3]
-                speed_mode_coef = coeffs[index_class]
+                speed_mode_coef = 1.0 - prediction**2
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
             print('speed_mode_coef: {}'.format(speed_mode_coef))
 
-            local_dir = -1 + 2 * float(index_class)/float(len(prediction)-1)
+            local_dir = prediction
             local_gas = self.max_speed_rate * speed_mode_coef
 
             gas_value = int(
@@ -208,8 +194,7 @@ class Ironcar():
         Neural Network (NN).
         """
 
-        index_class = prediction.index(max(prediction))
-        local_dir = -1 + 2 * float(index_class) / float(len(prediction) - 1)
+        local_dir = prediction
 
         if self.started:
             dir_value = int(local_dir * (self.commands['right'] - self.commands['left']) / 2. + self.commands['straight'])
@@ -353,20 +338,18 @@ class Ironcar():
         """
         try:
             img = np.array([img[80:, :, :]])
-            img = brightness(img, 3)
-            img = grayscale(img)
-            img = contrast(img, 0.65)
+
+            img = preprocess(img)
 
             with self.graph.as_default():
                 pred = self.model.predict(img)
                 if self.verbose:
                     print('pred : ', pred)
-            pred = list(pred[0])
         except Exception as e:
             # Don't print if the model is not relevant given the mode
             if self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
-            pred = [0, 0, 1, 0, 0]
+            pred = 0
 
         return pred
 
