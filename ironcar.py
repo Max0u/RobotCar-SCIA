@@ -97,11 +97,16 @@ class Ironcar():
             self.mode_function(img_arr, prediction)
 
             if self.streaming_state:
-                index_class = 2 if prediction < 0.2 and prediction > -0.2
-                index_class = 1 if prediction > -0.6 and prediction < -0.2
-                index_class = 0 if prediction > -1 and prediction < -0.6
-                index_class = 3 if prediction < 0.6 and prediction > 0.2
-                index_class = 4 if prediction < 1 and prediction > 0.6
+                if prediction < 0.2 and prediction > -0.2:
+                    index_class = 2
+                if prediction > -0.6 and prediction < -0.2:
+                    index_class = 1
+                if prediction > -1 and prediction < -0.6:
+                    index_class = 0
+                if prediction < 0.6 and prediction > 0.2:
+                    index_class = 3
+                if prediction < 1 and prediction > 0.6:
+                    index_class = 4 
                 
                 buffered = BytesIO()
                 im.save(buffered, format="JPEG")
