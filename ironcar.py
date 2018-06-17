@@ -97,13 +97,17 @@ class Ironcar():
             self.mode_function(img_arr, prediction)
 
             if self.streaming_state:
-                index_class = 0
-
+                index_class = 2 if prediction < 0.2 and prediction > -0.2
+                index_class = 1 if prediction > -0.6 and prediction < -0.2
+                index_class = 0 if prediction > -1 and prediction < -0.6
+                index_class = 3 if prediction < 0.6 and prediction > 0.2
+                index_class = 4 if prediction < 1 and prediction > 0.6
+                
                 buffered = BytesIO()
                 im.save(buffered, format="JPEG")
                 img_str = b64encode(buffered.getvalue())
                 socketio.emit('picture_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii'), 'index': index_class, 'pred': [float(x) for x in prediction]}, namespace='/car')
+                    'ascii'), 'index': index_class, 'pred': float(prediction) }, namespace='/car')
 
             cam_output.truncate(0)
 
