@@ -5,7 +5,7 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
-from myutils import INPUT_SHAPE, batch_generator
+from nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
 import os
 
@@ -52,7 +52,7 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
     """
     Train the model
     """
-    checkpoint = ModelCheckpoint('model-{epoch:03d}.h5',
+    checkpoint = ModelCheckpoint('nvi_modeles/model-{epoch:03d}.h5',
                                  monitor='val_loss',
                                  verbose=0,
                                  save_best_only=args.save_best_only,
@@ -86,9 +86,9 @@ def main():
     parser.add_argument('-d', help='data directory',        dest='data_dir',          type=str,   default='data')
     parser.add_argument('-t', help='test size fraction',    dest='test_size',         type=float, default=0.2)
     parser.add_argument('-k', help='drop out probability',  dest='keep_prob',         type=float, default=0.5)
-    parser.add_argument('-n', help='number of epochs',      dest='nb_epoch',          type=int,   default=10)
+    parser.add_argument('-n', help='number of epochs',      dest='nb_epoch',          type=int,   default=1000)
     parser.add_argument('-s', help='samples per epoch',     dest='samples_per_epoch', type=int,   default=500)
-    parser.add_argument('-b', help='batch size',            dest='batch_size',        type=int,   default=40)
+    parser.add_argument('-b', help='batch size',            dest='batch_size',        type=int,   default=500)
     parser.add_argument('-o', help='save best models only', dest='save_best_only',    type=s2b,   default='true')
     parser.add_argument('-l', help='learning rate',         dest='learning_rate',     type=float, default=1.0e-4)
     args = parser.parse_args()

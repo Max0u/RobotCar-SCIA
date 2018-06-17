@@ -27,13 +27,30 @@ def rgb2yuv(image):
     """
     return cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
 
+def rgb2ycrcb(image):
+    """
+    Convert the image from RGB to YUV (This is what the NVIDIA model does)
+    """
+    img_ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
+    #img_ycrcb[:,:,0] = cv2.equalizeHist(img_ycrcb[:,:,0])
+    return img_ycrcb
+
+def bright_contr_auto(image):
+    maxi = np.max(image)
+    mini = np.min(image)
+    
+    alpha = 254/(maxi-mini)
+    beta = -mini * alpha
+    return image * 254/maxi
 
 def preprocess(image):
     """
     Combine all preprocess functions into one
     """
     image = resize(image)
+    #image = bright_contr_auto(image)
     image = rgb2yuv(image)
+    #image = rgb2ycrcb(image)
     return image
 
 
@@ -97,7 +114,7 @@ def random_shadow(image):
 
     # adjust Saturation in HLS(Hue, Light, Saturation)
     hls = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
-    hls[:, :, 1][cond] = hls[:, :, 1][cond] * s_ratio
+    hls[:, :, 1][cond] = np.minimum(hls[:, :, 1][cond] * s_ratio, 255)
     return cv2.cvtColor(hls, cv2.COLOR_HLS2RGB)
 
 
@@ -107,17 +124,17 @@ def random_brightness(image):
     """
     # HSV (Hue, Saturation, Value) is also called HSB ('B' for Brightness).
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    ratio = 1.0 + 0.4 * (np.random.rand() - 0.5)
-    hsv[:,:,2] =  hsv[:,:,2] * ratio
+    ratio = 1.0 + (np.random.rand() - 0.5)
+    hsv[:,:,2] = np.minimum(hsv[:,:,2] * ratio, 255)
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 
-def augument(data_dir, center, left, right, steering_angle, range_x=100, range_y=10):
+def augument(data_dir, center, steering_angle, range_x=100, range_y=10):
     """
     Generate an augumented image and adjust steering angle.
     (The steering angle is associated with the center image)
     """
-    image, steering_angle = choose_image(data_dir, center, left, right, steering_angle)
+    image, steering_angle = load_image(data_dir, center), steering_angle
     image, steering_angle = random_flip(image, steering_angle)
     image, steering_angle = random_translate(image, steering_angle, range_x, range_y)
     image = random_shadow(image)
@@ -134,7 +151,10 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size, is_train
             center = image_paths[index]
             steering_angle = steering_angles[index]
             # argumentation
-            image = load_image(data_dir, center)
+            if is_training and np.random.rand() < 0.6:
+                image, steering_angle = augument(data_dir, steering_angle)
+            else:
+                image = load_image(data_dir, center)
             # add the image and steering angle to the batch
             images[i] = preprocess(image)
             steers[i] = steering_angle[1]

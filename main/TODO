@@ -18,4 +18,23 @@ Pre-process image
 
 Dimension voiture et composants
 
+13/06
 
+Voiture construite avec :
+ - Support Carton
+ - mini boite pour baterie externe
+ - Vis sur support et suport pieces 3D + Scotch
+ - pilliers support boite
+ - Soudage servo hat sur Raspi + Cablage
+ - Modification direction car inverse
+ - Calibrage commande + roue
+
+Probleme :
+ - marche arriere non brider
+
+
+Ressource :
+ - videos
+ - photos
+
+Tests de modeles dans l'under
