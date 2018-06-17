@@ -20,6 +20,27 @@ def resize(image):
     """
     return cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT), cv2.INTER_AREA)
 
+def brightness(image, factor):
+    """
+    Adjust brightness of an image
+    """
+    hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+    hsv[:,:,2] = hsv[:,:,2] * factor
+    return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
+def greyscale(image):
+    """
+    Convert an image to greyscale
+    """
+    greyscale = cv2.cvtColor(res5, cv2.COLOR_RGB2GRAY)
+    return cv2.cvtColor(res6, cv2.COLOR_GRAY2RGB)
+
+def contrast(image, factor):
+    """
+    Contrast an image with a factor between 0 and 1
+    """
+    return np.array(255 * (image / 255)**factor, dtype=np.uint8)
+
 
 def rgb2yuv(image):
     """
