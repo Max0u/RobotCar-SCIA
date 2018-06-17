@@ -17,7 +17,7 @@ def main():
 
     models = []
     if os.path.isdir(MODELS_PATH):
-        models = [os.path.join(MODELS_PATH, f) for f in os.listdir(MODELS_PATH) if f.endswith('.hdf5')]
+        models = [os.path.join(MODELS_PATH, f) for f in os.listdir(MODELS_PATH) if f.endswith('.h5')]
 
     print('SERVER : models : ', models)
     return render_template('index.html', models=models)
