@@ -93,11 +93,11 @@ class Ironcar():
             if self.mode in ['dirauto', 'auto'] and self.started:
                 prediction = self.predict_from_img(img_arr)
             else:
-                prediction = [0, 0, 1, 0, 0]
+                prediction = 0
             self.mode_function(img_arr, prediction)
 
             if self.streaming_state:
-                index_class = prediction.index(max(prediction))
+                index_class = 0
 
                 buffered = BytesIO()
                 im.save(buffered, format="JPEG")
