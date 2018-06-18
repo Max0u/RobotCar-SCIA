@@ -343,7 +343,7 @@ class Ironcar():
     def predict_from_img(self, img):
         """Given the 250x150 image from the Pi Camera.
 
-        Returns the direction predicted by the model (array[5])
+        Returns the direction predicted by the model (float)
         """
         try:
             img = np.array([img[80:, :, :]])
