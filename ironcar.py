@@ -5,7 +5,7 @@ import numpy as np
 from app import socketio
 from PIL.Image import fromarray as PIL_convert
 from utils import ConfigException, CameraException
-from preprocessing import brightness, greyscale, contrast
+from preprocess import brightness, greyscale, contrast
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
