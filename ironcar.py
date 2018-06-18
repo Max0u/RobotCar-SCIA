@@ -7,6 +7,7 @@ from PIL.Image import fromarray as PIL_convert
 from utils import ConfigException, CameraException
 
 import preprocess
+import md
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -402,8 +403,9 @@ class Ironcar():
 
             if self.verbose:
                 print('Selected model: ', model_name)
-
-            self.model = load_model(model_name)
+            
+            self.model = md.build_model();
+            self.model.load_weights(model_name)
             print(model_name)
             self.graph = get_default_graph()
             self.current_model = model_name
