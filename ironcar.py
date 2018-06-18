@@ -407,6 +407,7 @@ class Ironcar():
                 print('Selected model: ', model_name)
 
             self.model = load_model(model_name)
+            print(model_name)
             self.graph = get_default_graph()
             self.current_model = model_name
 
