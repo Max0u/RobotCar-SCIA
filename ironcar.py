@@ -5,6 +5,7 @@ import numpy as np
 from app import socketio
 from PIL.Image import fromarray as PIL_convert
 from utils import ConfigException, CameraException
+from preprocessing import brightness, greyscale, contrast
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -352,6 +353,9 @@ class Ironcar():
         """
         try:
             img = np.array([img[80:, :, :]])
+            img = brightness(img, 3)
+            img = grayscale(img)
+            img = contrast(img, 0.65)
 
             with self.graph.as_default():
                 pred = self.model.predict(img)
