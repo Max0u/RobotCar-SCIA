@@ -176,11 +176,14 @@ class Ironcar():
 
         if self.started:
 
-            speed_mode_coef = 1.
+            if abs(prediction) < 0.01 and prediction != 0:
+                speed_mode_coef = 1.
+            else:
+                speed_mode_coef = 0.5
             if self.speed_mode == 'confidence':
                 speed_mode_coef = 1.1 - prediction**2
             elif self.speed_mode == 'auto':
-                speed_mode_coef = 1.0 - prediction**2
+                speed_mode_coef = speed_mode_coef - prediction**2
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
@@ -349,7 +352,6 @@ class Ironcar():
         """
         try:
 
-            img = np.asarray(img)
             img = img[60:-20, :, :]
             img = preprocess.preprocess(img)
             img = np.array([img])
