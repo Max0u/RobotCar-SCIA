@@ -15,7 +15,7 @@ from tqdm import tqdm
 from basic_objects import Point, RoadLine, Circle
 
 sys.path.insert(0, '../')
-from layers.layers import Layer
+from layers import Layer
 
 
 class Noise(Layer):
