@@ -225,7 +225,8 @@ class Ironcar():
         image_name += '.jpg'
         image_name = os.path.join(self.save_folder, image_name)
 
-        img_arr = np.array(img[60:-20, :, :], copy=True)
+        img_arr = np.array(img[80:, :, :], copy=True)
+        #img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
         img_arr.save(image_name)
 
@@ -350,7 +351,8 @@ class Ironcar():
         Returns the direction predicted by the model (float)
         """
         try:
-            img = img[60:-20, :, :]
+            #img = img[60:-20, :, :]
+            img = img[80:, :, :]
             img = preprocess.preprocess(img)
             img = np.array([img])
             
