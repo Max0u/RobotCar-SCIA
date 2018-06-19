@@ -176,7 +176,7 @@ class Ironcar():
 
         if self.started:
 
-            if abs(prediction) < 0.01 and prediction != 0:
+            if abs(prediction) < 0.05 and prediction != 0:
                 speed_mode_coef = 1.
             else:
                 speed_mode_coef = 0.5
@@ -226,8 +226,8 @@ class Ironcar():
         image_name += '.jpg'
         image_name = os.path.join(self.save_folder, image_name)
 
-        img_arr = np.array(img[80:, :, :], copy=True)
-        #img_arr = np.array(img[60:-20, :, :], copy=True)
+        #img_arr = np.array(img[80:, :, :], copy=True)
+        img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
         img_arr.save(image_name)
 
@@ -353,9 +353,8 @@ class Ironcar():
         """
         try:
 
-            #img = img[60:-20, :, :]
-            img = img[80:, :, :]
-
+            img = img[60:-20, :, :]
+            #img = img[80:, :, :]
             img = preprocess.preprocess(img)
             img = np.array([img])
             
