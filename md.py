@@ -1,6 +1,4 @@
-import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
@@ -13,7 +11,7 @@ IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
-def build_model(args):
+def build_model():
     """
     Modified NVIDIA model
     """

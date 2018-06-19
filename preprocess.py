@@ -1,6 +1,7 @@
 import cv2, os
 import numpy as np
 import matplotlib.image as mpimg
+import scipy
 
 IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
@@ -42,8 +43,15 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    image = resize(image)
+    #print(image.shape)
+    image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
+    #print(image.shape)
+    #image = resize(image)
     #image = bright_contr_auto(image)
+    image = brightness(image, 2)
+    #image = greyscale(image)
+    #image = contrast(image, 0.65)
     image = rgb2yuv(image)
+    #print(image.shape)
     #image = rgb2ycrcb(image)
     return image

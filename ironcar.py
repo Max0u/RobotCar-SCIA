@@ -91,11 +91,12 @@ class Ironcar():
 
             # Predict the direction only when needed
             if self.mode in ['dirauto', 'auto'] and self.started:
-                prediction = self.predict_from_img(img_arr)
+                prediction = float(self.predict_from_img(img_arr))
             else:
                 prediction = 0
             self.mode_function(img_arr, prediction)
 
+            
             if self.streaming_state:
                 if prediction < 0.2 and prediction > -0.2:
                     index_class = 2
@@ -184,7 +185,7 @@ class Ironcar():
             # TODO add filter on gas to avoid having spikes in speed
             print('speed_mode_coef: {}'.format(speed_mode_coef))
 
-            local_dir = prediction
+            local_dir = prediction * 2
             local_gas = self.max_speed_rate * speed_mode_coef
 
             gas_value = int(
@@ -221,7 +222,7 @@ class Ironcar():
         image_name += '.jpg'
         image_name = os.path.join(self.save_folder, image_name)
 
-        img_arr = np.array(img[80:, :, :], copy=True)
+        img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
         img_arr.save(image_name)
 
@@ -346,10 +347,13 @@ class Ironcar():
         Returns the direction predicted by the model (float)
         """
         try:
-            img = np.array([img[80:, :, :]])
-            img = preprocess(img)
+            img = np.asarray(img)
+            img = img[60:-20, :, :]
+            img = preprocess.preprocess(img)
+            img = np.array([img])
+            
             with self.graph.as_default():
-                pred = self.model.predict(img)
+                pred = float(self.model.predict(img, batch_size=1))
                 if self.verbose:
                     print('pred : ', pred)
         except Exception as e:
@@ -357,7 +361,7 @@ class Ironcar():
             if self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
-
+        print(pred)
         return pred
 
     def switch_streaming(self):
@@ -406,7 +410,7 @@ class Ironcar():
             
             self.model = md.build_model();
             self.model.load_weights(model_name)
-            print(model_name)
+            
             self.graph = get_default_graph()
             self.current_model = model_name
 
