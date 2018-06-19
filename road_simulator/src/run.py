@@ -1,11 +1,9 @@
-import sys
-
-sys.path.insert(0, './src')
+#! /usr/bin/python3
 
 from simulator import Simulator
 from colors import White, DarkShadow
-from layers.layers import Background, DrawLines, Perspective, Crop, Symmetric
-from layers.noise import Shadows, Filter, NoiseLines, Enhance
+from layers import Background, DrawLines, Perspective, Crop, Symmetric
+from noise import Shadows, Filter, NoiseLines, Enhance
 
 
 simulator = Simulator()
@@ -19,14 +17,13 @@ shadow = DarkShadow()
 #  -> nb rotations
 #  -> nb crop
 #  -> nb resize
-simulator.add(Background(n_backgrounds=50, n_rot=5, n_crop=5, n_res=5,
-    path='../resources/ground_pics', input_size=(250, 200)))
+simulator.add(Background(n_backgrounds=5, n_rot=5, n_crop=5, n_res=5, path='../ground_pics', input_size=(250, 200)))
 
 # draw lines
 #  -> thickness
 #  -> color
 #  -> radius
-simulator.add(DrawLines(input_size=(250, 200), color_range=white))
+simulator.add(DrawLines(input_size=(250, 200), color_range=white, middle_line=(10, 13, "dashed", white)))
 
 # add perspective
 simulator.add(Perspective())
@@ -49,4 +46,4 @@ simulator.add(Filter(blur=0.2, gauss_blur=0.2, smooth=0.2, smooth_more=0.2, rank
 simulator.add(Enhance(brightness=0.4, contrast=0.3, sharpness=0.3))
 
 
-simulator.generate(n_examples=10000, path='../resources/test_dataset')
+simulator.generate(n_examples=20, path='dataset_simulator')
