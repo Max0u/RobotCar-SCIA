@@ -17,13 +17,15 @@ shadow = DarkShadow()
 #  -> nb rotations
 #  -> nb crop
 #  -> nb resize
-simulator.add(Background(n_backgrounds=5, n_rot=5, n_crop=5, n_res=5, path='../ground_pics', input_size=(250, 200)))
+simulator.add(Background(n_backgrounds=1, n_rot=5, n_crop=5, n_res=5, path='../ground_pics', input_size=(250, 200)))
 
 # draw lines
 #  -> thickness
 #  -> color
 #  -> radius
-simulator.add(DrawLines(input_size=(250, 200), color_range=white, middle_line=(10, 13, "dashed", white)))
+simulator.add(DrawLines(input_size=(250, 200),
+                        color_range=white, 
+                        middle_line=(10, 13, "dashed", white)))
 
 # add perspective
 simulator.add(Perspective())
