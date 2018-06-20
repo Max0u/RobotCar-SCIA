@@ -254,8 +254,8 @@ class DrawLines(Layer):
             # Draw the middle line if visible, depending on the type
             if self.middle_line_type == 'dashed':
                 draw_one_line(draw, middle_line, right_turn=right_turn,
-                            plain=self.middle_line_plain,
-                            empty=self.middle_line_empty)
+                            plain=randint(2, 12),
+                            empty=randint(2, 12))
             elif self.middle_line_type == 'plain':
                 draw_one_line(draw, middle_line, right_turn=right_turn)
 
