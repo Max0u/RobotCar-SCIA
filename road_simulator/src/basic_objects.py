@@ -67,17 +67,26 @@ class Point:
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return "%f, %f" % (self.x, self.y)
+
     def __add__(self, pt):
         return Point(self.x + pt.x, self.y + pt.y)
 
     def __sub__(self, pt):
         return Point(self.x - pt.x, self.y - pt.y)
 
+    def __truediv__(self, scalar):
+        return Point(self.x / scalar, self.y / scalar)
+
     def __mul__(self, scalar):
         return Point(self.x * scalar, self.y * scalar)
 
     def __rmul__(self, scalar):
         return Point(self.x * scalar, self.y * scalar)
+
+    def __le__(self, pt):
+        return self.x <= pt.x and self.y <= pt.y
 
     def norm(self):
         return sqrt(float(self.x)*float(self.x) + float(self.y)*float(self.y))

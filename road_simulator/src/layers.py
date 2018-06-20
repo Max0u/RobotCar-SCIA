@@ -97,6 +97,7 @@ class DrawLines(Layer):
             xy1_range = [[0, y] for y in range(int(height_begin/2), 0, -1)]
             xy1_range += [[x, 0] for x in range(0, width_begin+1)]
             xy1_range += [[width_begin-1, y] for y in range(0, int(height_begin/2))]
+
         if radius_range is None:
             radius_range = list(range(200, 500)) + list(range(5000, 5300))
         if thickness_range is None:
@@ -421,11 +422,19 @@ class DrawLines(Layer):
         pose = Point(self.width/2, self.height)
 
         # Middle line
-        midline = generate_middle_line(self.xy0_range,
-                                        self.xy1_range,
-                                        self.radius_range,
-                                        self.thickness_range,
-                                        self.middle_line_color_range)
+        if randint(0, 100) < 10:
+            w = int(self.width / 2)
+            midline = generate_middle_line([[x, 0] for x in range(w - 20, w + 20)],
+                                           [[x, int(self.height / 2)] for x in range(w - 20, w + 20)],
+                                           list(range(5000, 5300)),
+                                           self.thickness_range,
+                                           self.middle_line_color_range)
+        else:
+            midline = generate_middle_line(self.xy0_range,
+                                           self.xy1_range,
+                                           self.radius_range,
+                                           self.thickness_range,
+                                           self.middle_line_color_range)
 
         # TODO: change this so that the distance between the 2 lines can be chosen
         # by the user
