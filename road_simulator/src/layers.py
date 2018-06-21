@@ -422,7 +422,7 @@ class DrawLines(Layer):
         pose = Point(self.width/2, self.height)
 
         # Middle line
-        if randint(0, 100) < 10:
+        if randint(0, 100) < 70:
             w = int(self.width / 2)
             midline = generate_middle_line([[x, 0] for x in range(w - 20, w + 20)],
                                            [[x, int(self.height / 2)] for x in range(w - 20, w + 20)],
