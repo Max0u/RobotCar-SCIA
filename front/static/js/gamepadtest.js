@@ -94,7 +94,7 @@ function updateStatus() {
       if (i == 6)
           brake = val;
       if (i == 7)
-          socket.emit("gas", (val - brake).toFixed(5));
+          socket.emit("gas", (val - brake).toFixed(5) * 1.5);
 
       var pct = Math.round(val * 100) + "%";
       b.style.backgroundSize = pct + " " + pct;
@@ -111,7 +111,7 @@ function updateStatus() {
       a.innerHTML = i + ": " + controller.axes[i].toFixed(4);
       a.setAttribute("value", controller.axes[i]);
       if (!i)
-        socket.emit("dir", controller.axes[i].toFixed(5));
+        socket.emit("dir", controller.axes[i].toFixed(5) * 1.2);
     }
   }
   rAF(updateStatus);
