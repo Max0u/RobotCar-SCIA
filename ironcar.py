@@ -177,6 +177,7 @@ class Ironcar():
 
             if abs(prediction) < 0.05 and prediction != 0:
                 speed_mode_coef = 1.5
+                prediction = 0
             else:
                 speed_mode_coef = 1.
             if self.speed_mode == 'confidence':
