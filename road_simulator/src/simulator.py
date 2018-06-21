@@ -4,6 +4,7 @@ from random import randint
 from tqdm import tqdm
 
 from layers import Background, DrawLines, Symmetric, Layer
+from thread import GenerateThread
 
 
 class Simulator():
@@ -46,11 +47,7 @@ class Simulator():
             os.makedirs(path)
 
         for i in tqdm(range(n_examples)):
-            index = randint(0, len(self.input_images)-1)
-            ii = self.input_images[index].copy()
-            new_img, new_name, new_img2, new_name2= self.generate_one_image(ii)
-            new_img.save(os.path.join(path, 'frame_' + str(i) + new_name))
-            new_img2.save(os.path.join(path, 'frame_' + str(i) + new_name2))
+            GenerateThread(self, path, i).start()
 
     def generate_one_image(self, img):
 

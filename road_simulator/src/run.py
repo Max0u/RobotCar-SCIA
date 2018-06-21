@@ -40,7 +40,6 @@ simulator.add(Symmetric())
 
 # add shadow
 simulator.add(Shadows(colors=shadow))
-simulator.add(Shadows(colors=white))
 
 # blur + gauss_blur + smooth + smooth_more + rank_filter <= 1
 simulator.add(Filter(blur=0.2, gauss_blur=0.2, smooth=0.2, smooth_more=0.2, rank_filter=0.2))
@@ -49,4 +48,4 @@ simulator.add(Filter(blur=0.2, gauss_blur=0.2, smooth=0.2, smooth_more=0.2, rank
 simulator.add(Enhance(brightness=0.4, contrast=0.3, sharpness=0.3))
 
 
-simulator.generate(n_examples=20, path='dataset_simulator')
+simulator.generate(n_examples=10000, path='dataset_simulator')

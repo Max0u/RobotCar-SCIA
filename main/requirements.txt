@@ -3,4 +3,6 @@ scikit-learn
 scipy
 keras
 tensorflow
-opencv
+tensorflow-gpu
+sklearn
+matplotlib
