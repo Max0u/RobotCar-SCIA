@@ -371,6 +371,13 @@ socket.on('picture_stream', function(data) {
     }
 });
 
+socket.on('prepro_stream', function(data) {
+    // data = { image: true, buffer: img_base64, index: index_class}
+    if (data.image) {
+        $('#stream_prepro').attr('xlink:href', 'data:image/jpeg;base64,' + data.buffer);
+    }
+});
+
 // -------- USER INFO -----------
 
 // Message to the user

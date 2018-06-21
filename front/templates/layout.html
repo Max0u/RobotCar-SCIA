@@ -37,6 +37,31 @@
     <script src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/nouislider.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gamepadtest.js') }}"></script>
+    <style>
+      .buttons, .axes {
+        padding: 1em;
+      }
+      /*meter*/.axis {
+                 min-width: 200px;
+                 margin: 1em;
+               }
+      .button {
+        padding: 1em;
+        border-radius: 20px;
+        border: 1px solid black;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAAxJREFUCNdjYPjPAAACAgEAqiqeJwAAAABJRU5ErkJggg==);
+        background-size: 0% 0%;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+      }
+      .pressed {
+        border: 1px solid red;
+      }
+      .useless {
+        display: none;
+      }
+    </style>
 
   </body>
 </html>
