@@ -356,8 +356,19 @@ class Ironcar():
             img = img[60:-20, :, :]
             #img = img[80:, :, :]
             img = preprocess.preprocess(img)
-            img = np.array([img])
+
+            image_name = os.path.join(self.stream_path, 'prepro.jpg')
+            im = PIL_convert(img)
+            im.save(image_name)
+            buffered = BytesIO()
+            im.save(buffered, format="JPEG")
+            img_str = b64encode(buffered.getvalue())
+            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
             
+
+            img = np.array([img])
+
             with self.graph.as_default():
                 pred = float(self.model.predict(img, batch_size=1))
                 if self.verbose:
