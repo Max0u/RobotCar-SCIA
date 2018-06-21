@@ -52,7 +52,7 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
     """
     Train the model
     """
-    checkpoint = ModelCheckpoint('nvi_modeles/model-{epoch:03d}.h5',
+    checkpoint = ModelCheckpoint('nvi_models/model-{epoch:03d}.h5',
                                  monitor='val_loss',
                                  verbose=0,
                                  save_best_only=args.save_best_only,
