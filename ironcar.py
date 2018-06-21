@@ -221,6 +221,8 @@ class Ironcar():
         """Saves the image of the picamera with the right labels of dir
         and gas.
         """
+        if (((abs(self.curr_gas) + abs(self.curr_dir)) < 0.3):
+            return
 
         image_name = '_'.join(['frame', str(self.n_img), 'gas',
                                str(self.curr_gas), 'dir', str(self.curr_dir)])
@@ -230,6 +232,7 @@ class Ironcar():
         #img_arr = np.array(img[80:, :, :], copy=True)
         img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
+
         img_arr.save(image_name)
 
         self.n_img += 1
