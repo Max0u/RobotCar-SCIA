@@ -358,16 +358,6 @@ class Ironcar():
             #img = img[80:, :, :]
             img = preprocess.preprocess(img)
 
-            image_name = os.path.join(self.stream_path, 'prepro.jpg')
-            im = PIL_convert(img)
-            im.save(image_name)
-            buffered = BytesIO()
-            im.save(buffered, format="JPEG")
-            img_str = b64encode(buffered.getvalue())
-            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-            
-
             img = np.array([img])
 
             with self.graph.as_default():
@@ -379,7 +369,15 @@ class Ironcar():
             if self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
-        print(pred)
+
+        image_name = os.path.join(self.stream_path, 'prepro.jpg')
+        im = PIL_convert(img[0])
+        im.save(image_name)
+        buffered = BytesIO()
+        im.save(buffered, format="JPEG")
+        img_str = b64encode(buffered.getvalue())
+        socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
         return pred
 
     def switch_streaming(self):
