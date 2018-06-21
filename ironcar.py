@@ -177,11 +177,11 @@ class Ironcar():
         if self.started:
 
             if abs(prediction) < 0.05 and prediction != 0:
-                speed_mode_coef = 1.
+                speed_mode_coef = 1.5
             else:
-                speed_mode_coef = 0.5
+                speed_mode_coef = 1.
             if self.speed_mode == 'confidence':
-                speed_mode_coef = 1.1 - prediction**2
+                speed_mode_coef = 1.5 - prediction**2
             elif self.speed_mode == 'auto':
                 speed_mode_coef = speed_mode_coef - prediction**2
 
@@ -189,7 +189,7 @@ class Ironcar():
             # TODO add filter on gas to avoid having spikes in speed
             print('speed_mode_coef: {}'.format(speed_mode_coef))
 
-            local_dir = prediction * 2
+            local_dir = prediction
             local_gas = self.max_speed_rate * speed_mode_coef
 
             gas_value = int(
