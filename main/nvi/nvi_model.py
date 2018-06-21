@@ -52,7 +52,10 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
     """
     Train the model
     """
-    checkpoint = ModelCheckpoint('nvi_models/model-{epoch:03d}.h5',
+    direct = 'nvi_models' 
+    if not os.path.exists(direct):
+        os.makedirs(direct)
+    checkpoint = ModelCheckpoint(direct + '/model-{epoch:03d}.h5',
                                  monitor='val_loss',
                                  verbose=0,
                                  save_best_only=args.save_best_only,
