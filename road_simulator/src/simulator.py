@@ -46,8 +46,8 @@ class Simulator():
         else:
             os.makedirs(path)
 
-        for i in tqdm(range(n_examples)):
-            GenerateThread(self, path, i).start()
+        for i in range(8):
+            GenerateThread(self, path, [i * n_examples, (i+1) * n_examples]).start()
 
     def generate_one_image(self, img):
 
