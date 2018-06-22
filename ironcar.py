@@ -224,7 +224,7 @@ class Ironcar():
         """Saves the image of the picamera with the right labels of dir
         and gas.
         """
-        if (((abs(self.curr_gas) + abs(self.curr_dir)) < 0.3):
+        if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.3):
             return
 
         image_name = '_'.join(['frame', str(self.n_img), 'gas',
@@ -376,6 +376,9 @@ class Ironcar():
                 print('Prediction error : ', e)
             pred = 0
 
+        """
+        from io import BytesIO
+        from base64 import b64encode
         image_name = os.path.join(self.stream_path, 'prepro.jpg')
         im = PIL_convert(img[0])
         im.save(image_name)
@@ -384,6 +387,7 @@ class Ironcar():
         img_str = b64encode(buffered.getvalue())
         socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
+        """
         return pred
 
     def switch_streaming(self):
