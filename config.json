@@ -1,26 +1,26 @@
 {
-    "commands": {
-        "neutral": 385,
-        "go_t": 0.25,
-        "dir_pin": 1,
-        "right_t": -0.5,
-        "drive": 400,
-        "stop_t": -0.25,
-        "gas_pin": 2,
-        "rev_neutral": 370,
-        "straight": 370,
-        "rev_drive": 360,
-        "right": 470,
-        "stop": 300,
-        "rev_stop": 400,
-        "left": 270,
-        "invert_dir": 1,
-        "left_t": 0.5,
-        "drive_max": 420,
-        "rev_drive_max": 350
-    },
     "fps": 60,
     "datasets_path": "datasets",
     "models_path": "./models/",
-    "stream_path": "./stream/"
+    "stream_path": "./stream/",
+    "commands": {
+        "left": 270,
+        "neutral": 385,
+        "rev_neutral": 370,
+        "invert_dir": 1,
+        "rev_stop": 400,
+        "dir_pin": 1,
+        "drive": 400,
+        "rev_drive": 360,
+        "stop": 300,
+        "gas_pin": 2,
+        "left_t": 0.5,
+        "rev_drive_max": 350,
+        "straight": 370,
+        "right": 470,
+        "go_t": 0.25,
+        "drive_max": 420,
+        "stop_t": -0.25,
+        "right_t": -0.5
+    }
 }

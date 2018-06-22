@@ -48,7 +48,7 @@ def preprocess(image):
     #print(image.shape)
     #image = resize(image)
     #image = bright_contr_auto(image)
-    #image = brightness(image, 2)
+    #image = brightness(image, 3)
     #image = greyscale(image)
     #image = contrast(image, 0.65)
     image = rgb2yuv(image)
