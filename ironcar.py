@@ -175,11 +175,15 @@ class Ironcar():
 
         if self.started:
 
-            if abs(prediction) < 0.05 and prediction != 0:
+            if abs(prediction) < 0.1 and prediction != 0:
                 speed_mode_coef = 1.5
-                prediction = 0
+                #prediction = 0
             else:
                 speed_mode_coef = 1.
+
+            if abs(prediction) < 0.3:
+                prediction = 0
+
             if self.speed_mode == 'confidence':
                 speed_mode_coef = 1.5 - prediction**2
             elif self.speed_mode == 'auto':
@@ -229,7 +233,8 @@ class Ironcar():
         #img_arr = np.array(img[80:, :, :], copy=True)
         img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
-        img_arr.save(image_name)
+        if (self.curr_gas + self.curr_dir > 0.2):
+            img_arr.save(image_name)
 
         self.n_img += 1
 
@@ -356,6 +361,7 @@ class Ironcar():
             #img = img[80:, :, :]
             img = preprocess.preprocess(img)
 
+            """
             image_name = os.path.join(self.stream_path, 'prepro.jpg')
             im = PIL_convert(img)
             im.save(image_name)
@@ -364,7 +370,7 @@ class Ironcar():
             img_str = b64encode(buffered.getvalue())
             socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
-            
+            """
 
             img = np.array([img])
 
