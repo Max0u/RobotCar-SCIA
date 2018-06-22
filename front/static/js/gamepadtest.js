@@ -13,6 +13,8 @@ var rAF = window.mozRequestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.requestAnimationFrame;
 
+var t0 = performance.now();
+
 function connecthandler(e) {
   addgamepad(e.gamepad);
 }
@@ -81,6 +83,8 @@ function updateStatus() {
     var d = document.getElementById("controller" + j);
     var buttons = d.getElementsByClassName("button");
 
+    var t1 = performance.now();
+    var time = 100;
     var brake = 0.0;
 
     for (var i=0; i<controller.buttons.length; i++) {
@@ -93,15 +97,19 @@ function updateStatus() {
       }
       if (i == 6)
           brake = val;
-      if (i == 7)
-          socket.emit("gas", (val - brake).toFixed(5) * 1.5);
-
+      if (i == 7) {
+          if (t1 - t0 > time)
+            socket.emit("gas", (val - brake).toFixed(5) * 1.5);
+      }
       var pct = Math.round(val * 100) + "%";
       b.style.backgroundSize = pct + " " + pct;
       if (pressed) {
         b.className = "button pressed";
       } else {
-        b.className = "button";
+        if (i == 6 || i == 7)
+          b.className = "button";
+        else
+          b.className = "button useless"
       }
     }
 
@@ -110,10 +118,14 @@ function updateStatus() {
       var a = axes[i];
       a.innerHTML = i + ": " + controller.axes[i].toFixed(4);
       a.setAttribute("value", controller.axes[i]);
-      if (!i)
-        socket.emit("dir", controller.axes[i].toFixed(5) * 1.2);
+      if (!i) {
+          if (t1 - t0 > time)
+            socket.emit("dir", controller.axes[i].toFixed(5) * 1.5);
+      }
     }
   }
+  if (t1 - t0 > time)
+    t0 = t1;
   rAF(updateStatus);
 }
 

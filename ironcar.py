@@ -224,6 +224,8 @@ class Ironcar():
         """Saves the image of the picamera with the right labels of dir
         and gas.
         """
+        if (((abs(self.curr_gas) + abs(self.curr_dir)) < 0.3):
+            return
 
         image_name = '_'.join(['frame', str(self.n_img), 'gas',
                                str(self.curr_gas), 'dir', str(self.curr_dir)])
@@ -233,8 +235,9 @@ class Ironcar():
         #img_arr = np.array(img[80:, :, :], copy=True)
         img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
-        if (self.curr_gas + self.curr_dir > 0.2):
-            img_arr.save(image_name)
+
+        img_arr.save(image_name)
+
 
         self.n_img += 1
 
@@ -361,17 +364,6 @@ class Ironcar():
             #img = img[80:, :, :]
             img = preprocess.preprocess(img)
 
-            """
-            image_name = os.path.join(self.stream_path, 'prepro.jpg')
-            im = PIL_convert(img)
-            im.save(image_name)
-            buffered = BytesIO()
-            im.save(buffered, format="JPEG")
-            img_str = b64encode(buffered.getvalue())
-            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-            """
-
             img = np.array([img])
 
             with self.graph.as_default():
@@ -383,7 +375,15 @@ class Ironcar():
             if self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
-        print(pred)
+
+        image_name = os.path.join(self.stream_path, 'prepro.jpg')
+        im = PIL_convert(img[0])
+        im.save(image_name)
+        buffered = BytesIO()
+        im.save(buffered, format="JPEG")
+        img_str = b64encode(buffered.getvalue())
+        socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
         return pred
 
     def switch_streaming(self):
