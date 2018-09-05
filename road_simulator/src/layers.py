@@ -422,19 +422,11 @@ class DrawLines(Layer):
         pose = Point(self.width/2, self.height)
 
         # Middle line
-        if randint(0, 100) < 70:
-            w = int(self.width / 2)
-            midline = generate_middle_line([[x, 0] for x in range(w - 20, w + 20)],
-                                           [[x, int(self.height / 2)] for x in range(w - 20, w + 20)],
-                                           list(range(5000, 5300)),
-                                           self.thickness_range,
-                                           self.middle_line_color_range)
-        else:
-            midline = generate_middle_line(self.xy0_range,
-                                           self.xy1_range,
-                                           self.radius_range,
-                                           self.thickness_range,
-                                           self.middle_line_color_range)
+        midline = generate_middle_line(self.xy0_range,
+                                       self.xy1_range,
+                                       self.radius_range,
+                                       self.thickness_range,
+                                       self.middle_line_color_range)
 
         # TODO: change this so that the distance between the 2 lines can be chosen
         # by the user
