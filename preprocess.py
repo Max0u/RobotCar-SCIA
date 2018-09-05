@@ -39,12 +39,22 @@ def resize(image):
     """
     return cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT), cv2.INTER_AREA)
 
+def autobright(image, th):
+        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+        maxi = np.amax(hsv[:,:,2])
+        factor = th / maxi
+        hsv[:,:,2] = hsv[:,:,2] * factor
+        return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
 def preprocess(image):
     """
     Combine all preprocess functions into one
     """
     #print(image.shape)
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
+    
+    
+    image = autobright(image, 128)
     #print(image.shape)
     #image = resize(image)
     #image = bright_contr_auto(image)
