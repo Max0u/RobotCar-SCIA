@@ -130,7 +130,7 @@ class DrawLines(Layer):
             self.middle_line_type = None
             self.middle_line_color_range = color_range
 
-        self.max_width = 300
+        self.max_width = 3000
         self.name = name
 
     def call(self, im):
@@ -193,21 +193,21 @@ class DrawLines(Layer):
             # A RoadLine is constituted of 2 points, (x0, y0) and (x1, y1)
 
             # First, let's choose the (x0, y0) one.
-            index = int(gauss(len(xy0_range)//2, 50))
+            index = int(gauss(len(xy0_range)//2, 500))
             while index >= len(xy0_range) or index < 0:
-                index = int(gauss(len(xy0_range)//2, 50))
+                index = int(gauss(len(xy0_range)//2, 500))
             x0, y0 = xy0_range[index]
 
             while 2 * x0 - self.width > self.max_width:
-                index = int(gauss(len(xy0_range)//2, 50))
+                index = int(gauss(len(xy0_range)//2, 500))
                 while index >= len(xy0_range) or index < 0:
-                    index = int(gauss(len(xy0_range)//2, 50))
+                    index = int(gauss(len(xy0_range)//2, 500))
                 x0, y0 = xy0_range[index]
 
             # Secondly, let's choose the (x1, y1) one.
-            index = int(gauss(len(xy1_range)//2, 100))
+            index = int(gauss(len(xy1_range)//2, 1000))
             while index >= len(xy1_range) or index < 0:
-                index = int(gauss(len(xy1_range)//2, 100))
+                index = int(gauss(len(xy1_range)//2, 1000))
             x1, y1 = xy1_range[index]
 
             # The bigger the radius, the straighter the line.

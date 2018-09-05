@@ -1,13 +1,14 @@
 #! /usr/bin/python3
 
 from simulator import Simulator
-from colors import White, DarkShadow
+from colors import White, DarkShadow, Yellow
 from layers import Background, DrawLines, Perspective, Crop, Symmetric
 from noise import Shadows, Filter, NoiseLines, Enhance
 
 
 simulator = Simulator()
 white = White()
+yellow = Yellow()
 shadow = DarkShadow()
 
 """ LAYERS """
@@ -25,7 +26,8 @@ simulator.add(Background(n_backgrounds=1, n_rot=5, n_crop=5, n_res=5, path='../g
 #  -> radius
 simulator.add(DrawLines(input_size=(250, 200),
                         color_range=white, 
-                        middle_line=(10, 13, "dashed", white)))
+                        middle_line=(0, 0, "dashed", yellow),
+                        thickness_range=[4, 5, 6, 7, 8]))
 
 # add perspective
 simulator.add(Perspective())
