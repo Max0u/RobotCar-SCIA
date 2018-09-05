@@ -1,9 +1,10 @@
 import os
+import json
 import xbox
 
 from PIL.Image import fromarray as PIL_convert
-from picamera import PiCamera
-from picamera.array import PiRGBArray
+
+from utils import ConfigException, CameraException
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -14,7 +15,7 @@ class XboxCameraRecorder:
     fps = 60
     capture_path = 'records'
 
-    def __init__():
+    def __init__(self):
         self.joy = xbox.Joystick()
         self.image_index = 0
         # PWM setup
@@ -60,7 +61,17 @@ class XboxCameraRecorder:
                 print('DIR : ', value)
 
     def camera_loop(self):
-        cam = PiCamera(framerate=self.fps)
+        try:
+            from picamera import PiCamera
+            from picamera.array import PiRGBArray
+        except Exception as e:
+            print('picamera import error : ', e)
+
+        try:
+            cam = PiCamera(framerate=self.fps)
+        except Exception as e:
+            print('Exception ', e)
+            raise CameraException()
 
         cam.resolution = CAM_RESOLUTION
         cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
@@ -144,3 +155,6 @@ class XboxCameraRecorder:
             os.makedirs(self.stream_path)
 
         return config
+
+if __name__ == '__main__':
+    controler = XboxCameraRecorder()

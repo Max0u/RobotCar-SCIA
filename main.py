@@ -1,6 +1,8 @@
 import socket
 import json
 
+import netifaces as ni
+
 from flask import Flask, render_template, send_file, jsonify
 from app import app, socketio
 from ironcar import *
@@ -202,6 +204,8 @@ if __name__ == '__main__':
     except:
         IP = "no IP found"
     PORT = 5000
+
+    IP = ni.ifaddresses('wlan1')[ni.AF_INET][0]['addr']
 
     print('#' * 50)
     print('# IRONCAR SERVER')
