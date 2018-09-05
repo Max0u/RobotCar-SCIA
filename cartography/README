@@ -1,0 +1,31 @@
+Tools:
+    Acceleromètre
+
+Returns acceleration along each axis (x, y, z).
+
+Goals:
+    Compute position and speed using acceleration and integrals.
+
+Position is placed in a 3D space with its origin the first location
+of the car. Draw successive position using points or arrows.
+
+Roads is placed successively around the position of the car.
+Each pair of line roads is drawn after finding next points and
+trying to join them.
+
+Ex:
+
+(0, 0, 0) to (1, 0, 0)
+Road width is considered equal to 2 x w.
+First line goes from (0, w, 0) to (1, w, 0).
+Second line goes from (0, -w, 0) to (1, -w, 0).
+
+In the first version of the program, coordinate z should be ignored
+to only consider a 2D map.
+
+On the IronCar map, Width is approximatively 1,5m.
+Thus we take w = 0,75.
+
+The car will not always be in the center of the road. So basic
+image processing is still necesary to get the distance from the
+center of the road of the car.
