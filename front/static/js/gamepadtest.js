@@ -84,7 +84,7 @@ function updateStatus() {
     var buttons = d.getElementsByClassName("button");
 
     var t1 = performance.now();
-    var time = 100;
+    var time = 500;
     var brake = 0.0;
 
     for (var i=0; i<controller.buttons.length; i++) {

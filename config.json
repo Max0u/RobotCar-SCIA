@@ -1,5 +1,5 @@
 {
-    "fps": 60,
+    "fps": 80,
     "datasets_path": "datasets",
     "models_path": "./models/",
     "stream_path": "./stream/",

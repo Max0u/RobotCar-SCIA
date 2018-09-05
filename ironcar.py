@@ -29,7 +29,7 @@ class Ironcar():
         self.graph = None
         self.curr_dir = 0
         self.curr_gas = 0
-        self.max_speed_rate = 0.5
+        self.max_speed_rate = 0.4
         self.model_loaded = False
         self.streaming_state = False
 
@@ -180,12 +180,15 @@ class Ironcar():
                 #prediction = 0
             else:
                 speed_mode_coef = 1.
+            
+           # if abs(prediction) > 0.8:
+           #     speed_mode_coef = 0.5
 
-            if abs(prediction) < 0.3:
-                prediction = 0
+            #if abs(prediction) < 0.2:
+            #    prediction = 0
 
             if self.speed_mode == 'confidence':
-                speed_mode_coef = 1.5 - prediction**2
+                speed_mode_coef = 1.5 - min(prediction**2, 1.)
             elif self.speed_mode == 'auto':
                 speed_mode_coef = speed_mode_coef - prediction**2
 
@@ -224,7 +227,7 @@ class Ironcar():
         """Saves the image of the picamera with the right labels of dir
         and gas.
         """
-        if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.3):
+        if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.2):
             return
 
         image_name = '_'.join(['frame', str(self.n_img), 'gas',
@@ -436,6 +439,8 @@ class Ironcar():
             
             self.model = md.build_model();
             self.model.load_weights(model_name)
+
+            #self.model = load_model(model_name)
             
             self.graph = get_default_graph()
             self.current_model = model_name
