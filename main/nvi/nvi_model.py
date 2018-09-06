@@ -57,9 +57,11 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
         os.makedirs(direct)
     checkpoint = ModelCheckpoint(direct + '/model-{epoch:03d}.h5',
                                  monitor='val_loss',
-                                 verbose=0,
+                                 verbose=1,
+                                 save_weights_only=False,
                                  save_best_only=args.save_best_only,
-                                 mode='auto')
+                                 mode='auto',
+                                 period=2)
 
     model.compile(loss='mean_squared_error', optimizer=Adam(lr=args.learning_rate))
 
@@ -90,11 +92,11 @@ def main():
     parser.add_argument('-t', help='test size fraction',    dest='test_size',         type=float, default=0.2)
     parser.add_argument('-k', help='drop out probability',  dest='keep_prob',         type=float, default=0.5)
     parser.add_argument('-n', help='number of epochs',      dest='nb_epoch',
-            type=int,   default=20)
+            type=int,   default=50)
     parser.add_argument('-s', help='samples per epoch',
             dest='samples_per_epoch', type=int,   default=100000)
     parser.add_argument('-b', help='batch size',            dest='batch_size',
-            type=int,   default=40)
+            type=int,   default=50)
     parser.add_argument('-o', help='save best models only', dest='save_best_only',    type=s2b,   default='true')
     parser.add_argument('-l', help='learning rate',         dest='learning_rate',     type=float, default=1.0e-4)
     args = parser.parse_args()
