@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential, Model
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Lambda, Conv2D,\
-    MaxPooling2D, Dropout, Dense, Flatten, Input
+
+from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 
 from d_nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
