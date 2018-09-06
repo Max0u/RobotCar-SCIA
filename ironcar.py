@@ -200,10 +200,18 @@ class Ironcar():
             print('speed_mode_coef: {}'.format(speed_mode_coef))
 
             local_dir = prediction
+
             local_gas = self.max_speed_rate * speed_mode_coef
 
-            gas_value = int(
-                local_gas * (self.commands['drive_max'] - self.commands['drive']) + self.commands['drive'])
+            if local_gas > 0:
+                gas_value = int(local_gas * (self.commands['drive_max'] - self.commands['drive'])
+                        + self.commands['drive'])
+            else:
+                gas_value = self.commands['stop']
+                """
+                gas_value = int(local_gas * (self.commands['rev_drive_max'] -
+                    self.commands['rev_drive']) + self.commands['rev_drive']))
+                """
             dir_value = int(
                 local_dir * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
         else:
@@ -382,7 +390,7 @@ class Ironcar():
                 print('Prediction error : ', e)
             pred = 0
 
-        """
+        
         from io import BytesIO
         from base64 import b64encode
         image_name = os.path.join(self.stream_path, 'prepro.jpg')
@@ -393,7 +401,7 @@ class Ironcar():
         img_str = b64encode(buffered.getvalue())
         socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
-        """
+        
         return pred
 
     def switch_streaming(self):
