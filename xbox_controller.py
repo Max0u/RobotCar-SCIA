@@ -15,6 +15,7 @@ class XboxCameraRecorder:
     fps = 80
     capture_path = 'records'
     verbose = False
+    max_speed_rate = 0.4
 
     def __init__(self):
         self.joy = xbox.Joystick()
@@ -88,22 +89,30 @@ class XboxCameraRecorder:
             img_arr = f.array
             im = PIL_convert(img_arr)
 
-            if self.joy.A():
-                new_value = int(
-                    0.4 * (self.commands['drive_max']-self.commands['drive']) + self.commands['drive'])
-                self.gas(new_value)
+            gas = self.joy.rightTrigger() * self.max_speed_rate
+            if gas < 0:
+                new_value = self.commands['stop']
+            elif gas < 0.05:
+                new_value = self.commands['neutral']
             else:
-                self.gas(0)
+                new_value = int(
+                    gas * (self.commands['drive_max']-self.commands['drive']) + self.commands['drive'])
+            self.gas(new_value)
 
             direction = 1.3 * self.joy.leftX()
-            new_value = int(
-                direction * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
+            if direction == 0:
+                new_value = self.commands['straight']
+            else:
+                new_value = int(
+                    direction * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
             self.dir(new_value)
             
             image_name  = ''.join([
                     'frame_',
                     str(self.image_index), 
-                    '_gas_0.5_dir_', 
+                    '_gas_',
+                    gas,
+                    '_dir_', 
                     str(direction), 
                     '.jpg'
                 ])
