@@ -45,7 +45,23 @@ def help():
 def picture():
     """Takes a picture, saves it, and sends it to the client"""
 
-    path_picture = ironcar.picture()
+    path_picture, _ = ironcar.picture()
+    print('path_picture : ', path_picture)
+
+    if path_picture:
+        r = send_file(path_picture, as_attachment=True)
+        r.headers["Pragma"] = "no-cache"
+        r.headers["Expires"] = "0"
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
+    return None
+
+
+@app.route('/picture2')
+def picture2():
+    """Takes a picture, saves it, and sends it to the client"""
+
+    _, path_picture = ironcar.picture()
     print('path_picture : ', path_picture)
 
     if path_picture:
