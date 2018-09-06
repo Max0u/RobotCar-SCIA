@@ -1,14 +1,20 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
-from nvi_utils import INPUT_SHAPE, batch_generator
+from keras.layers import Lambda, Conv2D,\
+    MaxPooling2D, Dropout, Dense, Flatten, Input
+
+from d_nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
 import os
 
+from keras import backend as K
+
+def root_mean_squared_error(y_true, y_pred):
+        return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 np.random.seed(0)
 
@@ -69,9 +75,9 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
                                  save_best_only=args.save_best_only,
                                  mode='auto')
 
-    model.compile(loss={'angle_out': 'mean_squared_error',
-                        'speed_out': 'mean_squared_error'},
-                        loss_weights={'angle_out': 0.9, 'throttle_out': .001},
+    model.compile(loss={'angle_out': root_mean_squared_error,
+                        'speed_out': root_mean_squared_error},
+                        loss_weights={'angle_out': 0.9, 'speed_out': .001},
                         optimizer=Adam(lr=args.learning_rate))
 
     model.fit_generator(batch_generator(args.data_dir, X_train, y_train, args.batch_size, True),
