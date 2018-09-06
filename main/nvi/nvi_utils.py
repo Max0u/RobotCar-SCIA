@@ -70,7 +70,7 @@ def preprocess(image):
     """
     #image = resize(image)
     #image = bright_contr_auto(image)
-    image = rgb2yuv(image)
+    #image = rgb2yuv(image)
     #image = rgb2ycrcb(image)
     return image
 
@@ -150,7 +150,7 @@ def random_brightness(image):
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 
-def augument(data_dir, center, steering_angle, range_x=100, range_y=10):
+def augument(data_dir, center, steering_angle, range_x=50, range_y=10):
     """
     Generate an augumented image and adjust steering angle.
     (The steering angle is associated with the center image)
