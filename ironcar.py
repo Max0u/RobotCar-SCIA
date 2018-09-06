@@ -387,7 +387,7 @@ class Ironcar():
                 print('Prediction error : ', e)
             pred = 0
 
-        """
+        
         from io import BytesIO
         from base64 import b64encode
         image_name = os.path.join(self.stream_path, 'prepro.jpg')
@@ -398,7 +398,7 @@ class Ironcar():
         img_str = b64encode(buffered.getvalue())
         socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
-        """
+        
         return pred
 
     def switch_streaming(self):
