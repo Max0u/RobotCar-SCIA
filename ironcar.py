@@ -198,10 +198,18 @@ class Ironcar():
             print('speed_mode_coef: {}'.format(speed_mode_coef))
 
             local_dir = prediction
+
             local_gas = self.max_speed_rate * speed_mode_coef
 
-            gas_value = int(
-                local_gas * (self.commands['drive_max'] - self.commands['drive']) + self.commands['drive'])
+            if local_gas > 0:
+                gas_value = int(local_gas * (self.commands['drive_max'] - self.commands['drive'])
+                        + self.commands['drive'])
+            else:
+                gas_value = self.commands['stop']
+                """
+                gas_value = int(local_gas * (self.commands['rev_drive_max'] -
+                    self.commands['rev_drive']) + self.commands['rev_drive']))
+                """
             dir_value = int(
                 local_dir * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
         else:
