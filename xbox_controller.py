@@ -1,10 +1,10 @@
 import os
 import json
-import xbox
 
 from PIL.Image import fromarray as PIL_convert
-
 from utils import ConfigException, CameraException
+
+import xbox
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -12,11 +12,14 @@ get_default_graph = None  # For lazy imports
 
 
 class XboxCameraRecorder:
-    fps = 60
+    fps = 80
     capture_path = 'records'
+    verbose = False
 
     def __init__(self):
         self.joy = xbox.Joystick()
+        while not self.joy.connected():
+            pass
         self.image_index = 0
         # PWM setup
         try:
@@ -61,6 +64,10 @@ class XboxCameraRecorder:
                 print('DIR : ', value)
 
     def camera_loop(self):
+
+        from io import BytesIO
+        from base64 import b64encode
+
         try:
             from picamera import PiCamera
             from picamera.array import PiRGBArray
@@ -81,23 +88,29 @@ class XboxCameraRecorder:
             img_arr = f.array
             im = PIL_convert(img_arr)
 
-            if joy.A():
-                gas(0.5)
+            if self.joy.A():
+                new_value = int(
+                    0.4 * (self.commands['drive_max']-self.commands['drive']) + self.commands['drive'])
+                self.gas(new_value)
             else:
-                gas(0)
+                self.gas(0)
 
-            direction = joy.leftX()
-            dir(direction)
+            direction = 1.3 * self.joy.leftX()
+            new_value = int(
+                direction * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
+            self.dir(new_value)
             
             image_name  = ''.join([
                     'frame_',
-                    self.image_index, 
+                    str(self.image_index), 
                     '_gas_0.5_dir_', 
-                    direction, 
+                    str(direction), 
                     '.jpg'
                 ])
             image_name = os.path.join(self.capture_path, image_name)
             im.save(image_name)
+            self.image_index += 1
+            cam_output.truncate(0)
 
     def load_config(self):
         """Loads the config file of the ironcar
@@ -155,6 +168,3 @@ class XboxCameraRecorder:
             os.makedirs(self.stream_path)
 
         return config
-
-if __name__ == '__main__':
-    controler = XboxCameraRecorder()
