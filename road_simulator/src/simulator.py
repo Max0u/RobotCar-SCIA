@@ -45,7 +45,7 @@ class Simulator():
         else:
             os.makedirs(path)
 
-        for i in range(8):
+        for i in tqdm(range(n_examples)):
             index = randint(0, len(self.input_images)-1)
             ii = self.input_images[index].copy()
             new_img, new_name, new_img2, new_name2= self.generate_one_image(ii)
