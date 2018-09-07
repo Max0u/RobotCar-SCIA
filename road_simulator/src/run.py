@@ -26,7 +26,7 @@ simulator.add(Background(n_backgrounds=1, n_rot=5, n_crop=5, n_res=5, path='../g
 #  -> radius
 simulator.add(DrawLines(input_size=(250, 200),
                         color_range=white, 
-                        middle_line=(10, 20, "dashed", yellow),
+                        middle_line=(20, 50, "dashed", yellow),
                         thickness_range=[5, 6, 7, 8, 9]))
 
 # add perspective
