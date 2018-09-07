@@ -62,9 +62,6 @@ class Shadows(Noise):
         if img is None:
             raise ValueError('img is None')
 
-        if randint(0, 100) < 50:
-            return img
-
         x1 = randint(0, img.width)
         x2 = randint(0, img.width)
         y1 = randint(0, img.height)
