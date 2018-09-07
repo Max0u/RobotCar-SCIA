@@ -58,6 +58,7 @@ class DrawLines(Layer):
                     thickness_range=None,
                     color_range=None,
                     middle_line=None,
+                    target_ratio=0.5,
                     name='DrawLines',
                     input_size=(250, 200)):
         """
@@ -116,6 +117,8 @@ class DrawLines(Layer):
         self.width = self.input_size[0]
         self.height = self.input_size[1]
 
+        self.target_ratio = target_ratio
+
         # Is there a VISIBLE middle line ? (the middle line always exists)
         # TODO: quite complex to have a 3-tuple for middle_line...
         if middle_line is not None:
@@ -153,12 +156,16 @@ class DrawLines(Layer):
             """
 
             radius = curr_line.radius
+
             pt0 = Point(curr_line.x0, curr_line.y0)
             pt1 = Point(curr_line.x1, curr_line.y1)
+            
             center = pts2center(pt0, pt1, radius)
-            vect = 0.5 * (pt0 + pt1) - center
+            vect = self.target_ratio * (pt0 + pt1) - center
+            
             target_pt = center + vect * (radius/vect.norm())
             target_vect = target_pt - pose
+            
             angle = atan2(target_vect.x, -target_vect.y) * 6 / pi
 
             gas = 0.5
