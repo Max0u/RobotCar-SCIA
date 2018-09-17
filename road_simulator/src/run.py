@@ -28,7 +28,7 @@ simulator.add(DrawLines(input_size=(250, 200),
                         color_range=white, 
                         middle_line=(20, 50, "dashed", yellow),
                         thickness_range=[5, 6, 7, 8, 9],
-                        target_ratio=0.3))
+                        target_ratio=0.5))
 
 # add perspective
 simulator.add(Perspective())
@@ -45,7 +45,7 @@ simulator.add(Symmetric())
 simulator.add(Shadows(colors=shadow))
 
 # blur + gauss_blur + smooth + smooth_more + rank_filter <= 1
-simulator.add(Filter(blur=0.2, gauss_blur=0.2, smooth=0.2, smooth_more=0.2, rank_filter=0.2))
+simulator.add(Filter(blur=0.2, smooth=0.2, smooth_more=0.2, rank_filter=0.2))
 
 # brightness + contrast + sharpness <= 1
 simulator.add(Enhance(brightness=0.4, contrast=0.3, sharpness=0.3))
