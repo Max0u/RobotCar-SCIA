@@ -84,8 +84,10 @@ class Ironcar():
         cam.resolution = CAM_RESOLUTION
         cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
+        i = 0
 
         for f in stream:
+            i += 1
             img_arr = f.array
             im = PIL_convert(img_arr)
             im.save(image_name)
@@ -98,7 +100,7 @@ class Ironcar():
             self.mode_function(img_arr, prediction)
 
             
-            if self.streaming_state:
+            if self.streaming_state and i % 2 == 0 :
                 if prediction < 0.2 and prediction > -0.2:
                     index_class = 2
                 if prediction > -0.6 and prediction < -0.2:
@@ -128,12 +130,14 @@ class Ironcar():
         if len(pictures):
             p = pictures[-1]
             p2 = pictures[0]
+            #p3 = pictures[1]
             picture_path = os.path.join(self.stream_path, p)
             picture_path2 = os.path.join(self.stream_path, p2)
-
+            #picture_path3 = os.path.join(self.stream_path, p3)
             while os.stat(picture_path).st_size == 0:
                 pass
-            return picture_path, picture_path2
+            return picture_path, picture_path2#, picture_path3
+
         else:
             socketio.emit('msg2user', {'type': 'warning',
                                        'msg': 'There is no picture to send'}, namespace='/car')
@@ -379,19 +383,7 @@ class Ironcar():
 
             img = img[60:-20, :, :]
             #img = img[80:, :, :]
-            img = preprocess.preprocess(img)
-
-
-            """
-            image_name = os.path.join(self.stream_path, 'prepro.jpg')
-            im = PIL_convert(img)
-            im.save(image_name)
-            buffered = BytesIO()
-            im.save(buffered, format="JPEG")
-            img_str = b64encode(buffered.getvalue())
-            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-            """
+            img, pre = preprocess.preprocess(img)
 
             img = np.array([img])
 
@@ -408,15 +400,27 @@ class Ironcar():
         
         from io import BytesIO
         from base64 import b64encode
-        image_name = os.path.join(self.stream_path, 'prepro.jpg')
-        im = PIL_convert(img[0])
-        im.save(image_name)
+        image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
+        #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
+
+        im = PIL_convert(pre)
+        im.save(image_prepro)
         buffered = BytesIO()
         im.save(buffered, format="JPEG")
         img_str = b64encode(buffered.getvalue())
-        socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
+        socketio.emit('stream_prepro', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
-        
+
+
+        """
+        im = PIL_convert(img[0])
+        im.save(image_YUV)
+        buffered = BytesIO()
+        im.save(buffered, format="JPEG")
+        img_str = b64encode(buffered.getvalue())
+        socketio.emit('stream_YUV', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
+        """
         return pred
 
     def switch_streaming(self):

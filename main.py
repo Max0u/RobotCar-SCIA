@@ -72,6 +72,21 @@ def picture2():
         return r
     return None
 
+"""
+@app.route('/picture3')
+def picture3():
+
+    _, _, path_picture = ironcar.picture()
+    print('path_picture : ', path_picture)
+
+    if path_picture:
+        r = send_file(path_picture, as_attachment=True)
+        r.headers["Pragma"] = "no-cache"
+        r.headers["Expires"] = "0"
+        r.headers['Cache-Control'] = 'public, max-age=0'
+        return r
+    return None
+"""
 
 @app.route('/car_state')
 def mode_update():

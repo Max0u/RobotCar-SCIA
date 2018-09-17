@@ -61,7 +61,8 @@ def preprocess(image):
     #image = brightness(image, 3)
     #image = greyscale(image)
     #image = contrast(image, 0.65)
+    img = image.copy()
     image = rgb2yuv(image)
     #print(image.shape)
     #image = rgb2ycrcb(image)
-    return image
+    return image, img

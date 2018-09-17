@@ -111,7 +111,7 @@ class XboxCameraRecorder:
                     'frame_',
                     str(self.image_index), 
                     '_gas_',
-                    gas,
+                    str(gas),
                     '_dir_', 
                     str(direction), 
                     '.jpg'
