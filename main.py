@@ -236,7 +236,7 @@ if __name__ == '__main__':
         IP = "no IP found"
     PORT = 5000
 
-    IP = ni.ifaddresses('wlan1')[ni.AF_INET][0]['addr']
+    #IP = ni.ifaddresses('wlan1')[ni.AF_INET][0]['addr']
 
     print('#' * 50)
     print('# IRONCAR SERVER')

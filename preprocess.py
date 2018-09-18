@@ -46,22 +46,31 @@ def autobright(image, th):
         hsv[:,:,2] = hsv[:,:,2] * factor
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
+def autobright_win(image, th, winsize):
+    for i in range(image.shape(0)-winsize):
+        for j in range(image.shape[1]-winsize):
+            image[i:i+winsize, j:j+winsize] = autobright(image[i:i+winsize, j:j+winsize], th)
+    return image
+
+
 def preprocess(image):
     """
     Combine all preprocess functions into one
     """
     #print(image.shape)
+    image = autobright_win(image, 16, 250)
+    
+    img = image.copy()
+
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
-    
-    
-    image = autobright(image, 158)
+
     #print(image.shape)
     #image = resize(image)
     #image = bright_contr_auto(image)
     #image = brightness(image, 3)
     #image = greyscale(image)
     #image = contrast(image, 0.65)
-    img = image.copy()
+
     image = rgb2yuv(image)
     #print(image.shape)
     #image = rgb2ycrcb(image)

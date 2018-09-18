@@ -180,7 +180,6 @@ class Ironcar():
         img: unused. But has to stay because other modes need it.
         prediction: dir val
         """
-
         if self.started:
 
             if abs(prediction) < 0.1 and prediction != 0:
@@ -397,18 +396,18 @@ class Ironcar():
                 print('Prediction error : ', e)
             pred = 0
 
-        
-        from io import BytesIO
-        from base64 import b64encode
-        image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
+        if self.streaming_state : 
+            from io import BytesIO
+            from base64 import b64encode
+            image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
         #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
 
-        im = PIL_convert(pre)
-        im.save(image_prepro)
-        buffered = BytesIO()
-        im.save(buffered, format="JPEG")
-        img_str = b64encode(buffered.getvalue())
-        socketio.emit('stream_prepro', {'image': True, 'buffer': img_str.decode(
+            im = PIL_convert(pre)
+            im.save(image_prepro)
+            buffered = BytesIO()
+            im.save(buffered, format="JPEG")
+            img_str = b64encode(buffered.getvalue())
+            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
 
 
