@@ -47,9 +47,10 @@ def autobright(image, th):
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 def autobright_win(image, th, winsize):
-    for i in range(image.shape(0)-winsize):
+    img = image.copy()
+    for i in range(image.shape[0]-winsize):
         for j in range(image.shape[1]-winsize):
-            image[i:i+winsize, j:j+winsize] = autobright(image[i:i+winsize, j:j+winsize], th)
+            img[i:i+winsize, j:j+winsize] = autobright(image[i:i+winsize, j:j+winsize], th)
     return image
 
 
@@ -57,8 +58,7 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    #print(image.shape)
-    image = autobright_win(image, 16, 250)
+    image = autobright_win(image, 250, 16)
     
     img = image.copy()
 
