@@ -58,7 +58,7 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    image = autobright_win(image, 250, 16)
+    image = autobright(image, 250)
     
     img = image.copy()
 

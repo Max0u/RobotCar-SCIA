@@ -128,8 +128,8 @@ class Ironcar():
         pictures = sorted([f for f in os.listdir(self.stream_path)])
 
         if len(pictures):
-            p = pictures[-1]
-            p2 = pictures[0]
+            p2 = pictures[-1]
+            p = pictures[0]
             #p3 = pictures[1]
             picture_path = os.path.join(self.stream_path, p)
             picture_path2 = os.path.join(self.stream_path, p2)
