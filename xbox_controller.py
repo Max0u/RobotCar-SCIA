@@ -88,7 +88,7 @@ class XboxCameraRecorder:
             img_arr = f.array
             im = PIL_convert(img_arr)
 
-            gas = self.joy.rightTrigger() * self.max_speed_rate
+            gas = self.joy.rightTrigger() * self.max_speed_rate * -self.joy.leftTrigger()
             if gas < 0:
                 new_value = self.commands['stop']
             elif gas < 0.05:
