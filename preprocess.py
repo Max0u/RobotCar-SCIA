@@ -53,7 +53,6 @@ def autobright_win(image, th, winsize):
             img[i:i+winsize, j:j+winsize] = autobright(image[i:i+winsize, j:j+winsize], th)
     return image
 
-
 def preprocess(image):
     """
     Combine all preprocess functions into one
