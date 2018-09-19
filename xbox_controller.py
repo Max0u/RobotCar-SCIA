@@ -12,10 +12,9 @@ get_default_graph = None  # For lazy imports
 
 
 class XboxCameraRecorder:
-    fps = 80
     capture_path = 'records'
     verbose = False
-    max_speed_rate = 0.4
+    max_speed_rate = 1
 
     def __init__(self):
         self.joy = xbox.Joystick()
