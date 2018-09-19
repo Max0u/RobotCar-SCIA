@@ -1,0 +1,23 @@
+Sur les images de records_good/ contenant 3996 images prises
+dans l'under avec une copie du circuit de la compétition de
+Juin dans le bon sens, la différence entre image floue et
+image originale dans les prédictions sont en moyenne de
+0.013226201
+
+Après conversion en degrée, cela donne une déviation moyenne
+de 0.74 degrée causée par le flou.
+
+Sur les images de records_rev/ contenant 2k+ images dont
+une partie corrompue et ne pouvant être ouvert sur OpenCV,
+1905 images ont été gardées. La différence obtenue en
+moyenne est de 0.09017845
+
+Après conversion en degrée, cela donne une déviation moyenne
+de 5.17 degrée.
+
+
+Les images corrompues restent à étudier.
+
+Les tests ont été effectués avec le model: model-test.hdf5
+
+Car les models au format .h5 ne sont pas encore loadable.
