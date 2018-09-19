@@ -10,6 +10,8 @@ from preprocess import brightness, greyscale, contrast
 import preprocess
 import md
 
+from picamera import PiCamera 
+
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
 get_default_graph = None  # For lazy imports
@@ -36,6 +38,8 @@ class Ironcar():
 
         self.n_img = 0
         self.save_number = 0
+        
+        self.camera = PiCamera()
 
         self.verbose = True
         self.mode_function = self.default_call
@@ -422,6 +426,14 @@ class Ironcar():
         """Switches the streaming state."""
 
         self.streaming_state = not self.streaming_state
+        camera = self.camera
+        if self.streaming_state :
+	    camera.start_preview()
+	    camera.start_recording('videos/video.h264')
+        else :
+	    camera.stop_recording()
+	    camera.stop_preview()
+            
         if self.verbose:
             print('Streaming state set to {}'.format(self.streaming_state))
 

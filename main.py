@@ -182,6 +182,11 @@ def handle_streaming():
     socketio.emit('stream_switch', {'activated': ironcar.streaming_state},
                   namespace='/car')
 
+@socketio.on('switch_autob')
+def switch_autob() :
+    ironcar.prepro_args.switch_autob()
+
+
 
 @socketio.on('command_update')
 def handle_config(data):
