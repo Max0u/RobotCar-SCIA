@@ -40,11 +40,24 @@ def resize(image):
     return cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT), cv2.INTER_AREA)
 
 def autobright(image, th):
-        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-        maxi = np.amax(hsv[:,:,2])
-        factor = th / maxi
-        hsv[:,:,2] = hsv[:,:,2] * factor
-        return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+    hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+    maxi = np.amax(hsv[:,:,2])
+    factor = th / maxi
+    hsv[:,:,2] = hsv[:,:,2] * factor
+    return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
+def blur(img):
+    size = 15
+
+    # generating the kernel
+    kernel_motion_blur = np.zeros((size, size))
+    kernel_motion_blur[int((size-1)/2), :] = np.ones(size)
+    kernel_motion_blur = kernel_motion_blur / size
+
+    # applying the kernel to the input image
+    output = cv2.filter2D(img, -1, kernel_motion_blur)
+    return img, output
+
 
 def autobright_win(image, th, winsize):
     img = image.copy()
@@ -57,12 +70,11 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    image = autobright(image, 250)
-    
     img = image.copy()
 
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
 
+    image = autobright(image, 250)
     #print(image.shape)
     #image = resize(image)
     #image = bright_contr_auto(image)
