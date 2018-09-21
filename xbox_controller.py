@@ -12,7 +12,6 @@ get_default_graph = None  # For lazy imports
 
 
 class XboxCameraRecorder:
-    fps = 80
     capture_path = 'records'
     verbose = False
     max_speed_rate = 0.4
@@ -89,7 +88,8 @@ class XboxCameraRecorder:
             img_arr = f.array
             im = PIL_convert(img_arr)
 
-            gas = self.joy.rightTrigger() * self.max_speed_rate
+            reverse = -self.joy.leftTrigger()
+            gas = self.joy.rightTrigger() * self.max_speed_rate * (reverse if reverse != 0 else 1)
             if gas < 0:
                 new_value = self.commands['stop']
             elif gas < 0.05:
@@ -111,7 +111,7 @@ class XboxCameraRecorder:
                     'frame_',
                     str(self.image_index), 
                     '_gas_',
-                    gas,
+                    str(gas),
                     '_dir_', 
                     str(direction), 
                     '.jpg'
