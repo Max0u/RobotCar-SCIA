@@ -10,9 +10,6 @@ from preprocess import brightness, greyscale, contrast
 import preprocess
 import md
 
-import preprocess
-import md
-
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
 get_default_graph = None  # For lazy imports
