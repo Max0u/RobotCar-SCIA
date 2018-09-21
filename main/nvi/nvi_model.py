@@ -85,6 +85,10 @@ def s2b(s):
     s = s.lower()
     return s == 'true' or s == 'yes' or s == 'y' or s == '1'
 
+def freeze(model):
+    for layer in model.layers[:-5]:
+        layer.trainable = False
+    return model
 
 def main():
     """
@@ -116,7 +120,10 @@ def main():
     data = load_data(args)
     model = build_model(args)
     if args.model_path != 'none':
+        args.learning_rate = args.learning_rate / 10
         model.load_weights(args.model_path)
+        model = freeze(model)
+
     #save_model_to_json(model)
     train_model(model, args, *data)
 
