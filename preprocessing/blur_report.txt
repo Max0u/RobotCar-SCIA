@@ -2,15 +2,37 @@ Sur les images de records_good/ contenant 3996 images prises
 dans l'under avec une copie du circuit de la compétition de
 Juin dans le bon sens, la différence entre image floue et
 image originale dans les prédictions sont en moyenne de
-0.013226201
+0.100276
+
+Données de pandas.decribe():
+
+count  3996.000000
+mean      0.100276
+std       0.096081
+min       0.000050
+25%       0.032050
+50%       0.071199
+75%       0.137244
+max       0.736117
 
 Après conversion en degrée, cela donne une déviation moyenne
-de 0.74 degrée causée par le flou.
+de 5.75 degrée causée par le flou.
 
 Sur les images de records_rev/ contenant 2k+ images dont
 une partie corrompue et ne pouvant être ouvert sur OpenCV,
 1905 images ont été gardées. La différence obtenue en
 moyenne est de 0.09017845
+
+Données de pandas.decribe():
+
+count  1905.000000
+mean      0.090178
+std       0.095699
+min       0.000040
+25%       0.029512
+50%       0.060764
+75%       0.113895
+max       0.783213
 
 Après conversion en degrée, cela donne une déviation moyenne
 de 5.17 degrée.
