@@ -74,7 +74,7 @@ def preprocess(image):
 
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
 
-    image = autobright(image, 250)
+    #image = autobright(image, 250)
     #print(image.shape)
     #image = resize(image)
     #image = bright_contr_auto(image)
