@@ -46,13 +46,14 @@ def autobright(image, th):
         hsv[:,:,2] = hsv[:,:,2] * factor
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
+
+
 def preprocess(image):
     """
     Combine all preprocess functions into one
     """
     #print(image.shape)
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
-    
     
     image = autobright(image, 158)
     #print(image.shape)
