@@ -5,10 +5,12 @@ from keras.models import Sequential, Model
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D,\
-    MaxPooling2D, Dropout, Dense, Flatten, Input
+    MaxPooling2D, Dropout, Dense, Flatten, Input, ConvLSTM2D 
 
 from keras.layers import LSTM
 from keras.layers.wrappers import TimeDistributed as TD
+
+from keras import backend as K
 
 from lstm_d_nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
@@ -17,6 +19,8 @@ import os
 
 np.random.seed(0)
 
+def root_mean_squared_error(y_true, y_pred):
+        return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 def load_data(args):
     """
@@ -39,19 +43,20 @@ def build_model(args):
     entry_size = (4,)+INPUT_SHAPE
     model = Sequential()
     model.add(Lambda(lambda x: x/127.5-1.0, input_shape=entry_size))
-    model.add(TD(Conv2D(24, (5, 5), activation="elu", strides=(2, 2))))
-    model.add(TD(Conv2D(36, (5, 5), activation="elu", strides=(2, 2))))
-    model.add(TD(Conv2D(48, (5, 5), activation="elu", strides=(2, 2))))
-    model.add(TD(Conv2D(64, (3, 3), activation='elu')))
-    model.add(TD(Conv2D(64, (3, 3), activation='elu')))
-    model.add(TD(Dropout(args.keep_prob)))
-    model.add(TD(Flatten()))
-    model.add(TD(Dense(100, activation='elu')))
-    model.add(LSTM(140, return_sequences=True, stateful=True))
-    model.add(LSTM(140, stateful=True))
+    model.add(ConvLSTM2D(24, (5, 5), activation="elu", strides=(2, 2),
+        return_sequences=True)))
+    model.add(ConvLSTM2D(36, (5, 5), activation="elu", strides=(2, 2),
+        return_sequences=True)))
+    model.add(ConvLSTM2D(48, (5, 5), activation="elu", strides=(2, 2),
+        return_sequences=True)))
+    model.add(ConvLSTM2D(64, (3, 3), activation='elu', return_sequences=True)))
+    model.add(ConvLSTM2D(64, (3, 3), activation='elu')))
+    model.add(Dropout(args.keep_prob))
+    model.add(Flatten())
+    model.add(Dense(100, activation='elu'))
     model.add(Dense(50, activation='elu'))
     model.add(Dense(10, activation='elu'))
-    model.add(Dense(2))
+    model.add(Dense(1))
 
     model.summary()
 
@@ -75,11 +80,11 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
                         optimizer=Adam(lr=args.learning_rate))
 
     model.fit_generator(batch_generator(args.data_dir, X_train, y_train, args.batch_size, True),
-                        steps_per_epoch=args.samples_per_epoch*2//args.batch_size,
+                        steps_per_epoch=args.samples_per_epoch//args.batch_size,
                         epochs=args.nb_epoch,
                         max_queue_size=1,
                         validation_data=batch_generator(args.data_dir, X_valid, y_valid, args.batch_size, False),
-                        validation_steps=len(X_valid)*2//args.batch_size,
+                        validation_steps=len(X_valid)//args.batch_size,
                         shuffle=False,
                         callbacks=[checkpoint],
                         verbose=1)
