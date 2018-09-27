@@ -3,9 +3,10 @@ import cv2
 import preprocess
 import time
 import numpy as np
+import md
 
-
-mod = load_model("model-0,0YUV.h5")
+mod = md.build_model()
+mod.load_weights("model-0,0YUV.h5")
 it = 1000
 file_path = "test.jpg"
 start_time = time.time()
