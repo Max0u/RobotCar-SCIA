@@ -379,8 +379,6 @@ class Ironcar():
         """
         try:
 
-            img = img[60:-20, :, :]
-            #img = img[80:, :, :]
             img, pre = preprocess.preprocess(img)
 
             img = np.array([img])

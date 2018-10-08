@@ -124,6 +124,9 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
+    img = img[60:-20, :, :]
+    #img = img[80:, :, :]
+
     img = image.copy()
 
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
