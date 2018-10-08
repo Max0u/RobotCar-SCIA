@@ -37,6 +37,8 @@ class Ironcar():
         self.n_img = 0
         self.save_number = 0
 
+        self.speed_acc = 0
+
         self.verbose = True
         self.mode_function = self.default_call
 
@@ -182,22 +184,24 @@ class Ironcar():
         """
         if self.started:
 
-            if abs(prediction) < 0.1 and prediction != 0:
-                speed_mode_coef = 1.5
+            if abs(prediction) < 0.1:
+                speed_mode_coef = 2
+                self.speed_acc += 1
+                self.speed_acc = min(self.speed_acc, 3)
                 #prediction = 0
             else:
-                speed_mode_coef = 1.
-            
-           # if abs(prediction) > 0.8:
-           #     speed_mode_coef = 0.5
+                if self.speed_acc > 0 :
+                    speed_mode_coef = 0
+                    self.speed_acc -= 1
+                else :
+                    speed_mode_coef = 1
 
-            #if abs(prediction) < 0.2:
-            #    prediction = 0
+            
 
             if self.speed_mode == 'confidence':
-                speed_mode_coef = 1.5 - min(prediction**2, 1.)
+                speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto':
-                speed_mode_coef = speed_mode_coef - prediction**2
+                speed_mode_coef = speed_mode_coef - min(prediction**2, .5)
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
@@ -216,6 +220,7 @@ class Ironcar():
                 gas_value = int(local_gas * (self.commands['rev_drive_max'] -
                     self.commands['rev_drive']) + self.commands['rev_drive']))
                 """
+
             dir_value = int(
                 local_dir * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
         else:
