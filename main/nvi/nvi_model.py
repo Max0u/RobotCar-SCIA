@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from cv2 import imread 
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.optimizers import Adam
@@ -8,9 +9,12 @@ from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 from nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
 import os
-
+from keras import backend as K
 
 np.random.seed(0)
+
+def root_mean_squared_error(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 
 def load_data(args):
@@ -18,7 +22,9 @@ def load_data(args):
     Load training data and split it into training and validation set
     """
 
-    X = [f for f in os.listdir(args.data_dir) if os.path.isfile(os.path.join(args.data_dir, f))]
+    X = [f for f in os.listdir(args.data_dir) if
+            os.path.isfile(os.path.join(args.data_dir, f)) and
+            (imread(os.path.join(args.data_dir, f)) is not None) ]
     y = [(float(f.split("_")[3]), float(f.split("_")[5].split(".j")[0])) for f in X]
 
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=args.test_size, random_state=0)
@@ -48,7 +54,7 @@ def build_model(args):
     return model
 
 
-def train_model(model, args, X_train, X_valid, y_train, y_valid):
+def train_model(model, args, X_train, X_valid, y_train, y_valid, ft=False):
     """
     Train the model
     """
@@ -62,8 +68,13 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid):
                                  save_best_only=args.save_best_only,
                                  mode='auto',
                                  period=2)
+    if ft :
+        mon = root_mean_squared_error
+    else :
+        mon = 'mean_squared_error'
 
-    model.compile(loss='mean_squared_error', optimizer=Adam(lr=args.learning_rate))
+
+    model.compile(loss=mon, optimizer=Adam(lr=args.learning_rate))
 
     model.fit_generator(batch_generator(args.data_dir, X_train, y_train, args.batch_size, True),
                         steps_per_epoch=args.samples_per_epoch//args.batch_size,
@@ -82,17 +93,23 @@ def s2b(s):
     s = s.lower()
     return s == 'true' or s == 'yes' or s == 'y' or s == '1'
 
+def freeze(model):
+    for layer in model.layers[:-5]:
+        layer.trainable = False
+    return model
 
 def main():
     """
     Load train/validation data set and train the model
     """
     parser = argparse.ArgumentParser(description='Behavioral Cloning Training Program')
+    parser.add_argument('-r', help='load model path',        dest='model_path',
+            type=str,   default='none')
     parser.add_argument('-d', help='data directory',        dest='data_dir',          type=str,   default='data')
     parser.add_argument('-t', help='test size fraction',    dest='test_size',         type=float, default=0.2)
     parser.add_argument('-k', help='drop out probability',  dest='keep_prob',         type=float, default=0.5)
     parser.add_argument('-n', help='number of epochs',      dest='nb_epoch',
-            type=int,   default=50)
+            type=int,   default=20)
     parser.add_argument('-s', help='samples per epoch',
             dest='samples_per_epoch', type=int,   default=100000)
     parser.add_argument('-b', help='batch size',            dest='batch_size',
@@ -110,8 +127,14 @@ def main():
 
     data = load_data(args)
     model = build_model(args)
-    #save_model_to_json(model)
-    train_model(model, args, *data)
+    if args.model_path != 'none':
+        args.learning_rate = args.learning_rate / 10
+        model.load_weights(args.model_path)
+        model = freeze(model)
+        train_model(model, args, *data, True)
+
+    else :
+        train_model(model, args, *data)
 
 
 if __name__ == '__main__':

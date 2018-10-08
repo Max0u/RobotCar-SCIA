@@ -1,0 +1,45 @@
+Sur les images de records_good/ contenant 3996 images prises
+dans l'under avec une copie du circuit de la compétition de
+Juin dans le bon sens, la différence entre image floue et
+image originale dans les prédictions sont en moyenne de
+0.08912623
+
+Données de pandas.decribe():
+
+count  3996.000000
+mean      0.089126
+std       0.088831
+min       0.000005
+25%       0.028647
+50%       0.062671
+75%       0.118842
+max       0.724281
+
+Après conversion en degrée, cela donne une déviation moyenne
+de 5.10 degrée causée par le flou.
+
+Sur les images de records_rev/ contenant 2k+ images dont
+une partie corrompue et ne pouvant être ouvert sur OpenCV,
+1905 images ont été gardées. La différence obtenue en
+moyenne est de 0.07694417
+
+Données de pandas.decribe():
+
+count  1905.000000
+mean      0.076944
+std       0.072568
+min       0.000083
+25%       0.024426
+50%       0.055231
+75%       0.107217
+max       0.484529
+
+Après conversion en degrée, cela donne une déviation moyenne
+de 4.41 degrée.
+
+
+Les images corrompues restent à étudier.
+
+Les tests ont été effectués avec le model: model-test.hdf5
+
+Car les models au format .h5 ne sont pas encore loadable.
