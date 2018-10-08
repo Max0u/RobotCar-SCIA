@@ -18,7 +18,7 @@ shadow = DarkShadow()
 #  -> nb rotations
 #  -> nb crop
 #  -> nb resize
-simulator.add(Background(n_backgrounds=1, n_rot=5, n_crop=5, n_res=5, path='../ground_pics', input_size=(250, 200)))
+simulator.add(Background(n_backgrounds=50, n_rot=5, n_crop=5, n_res=5, path='../ground_pics', input_size=(250, 200)))
 
 # draw lines
 #  -> thickness
