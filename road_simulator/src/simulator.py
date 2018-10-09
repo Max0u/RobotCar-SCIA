@@ -3,7 +3,7 @@ import os
 from random import randint
 from tqdm import tqdm
 
-from layers import Background, DrawLines, Symmetric, Layer
+from layers import Background, DrawLines, Symmetric, Layer, DrawLinesStraight
 
 
 class Simulator():
@@ -62,7 +62,7 @@ class Simulator():
         im = img.copy()
         for layer in self.layers:
             if not isinstance(layer, Background):
-                if isinstance(layer, DrawLines):
+                if isinstance(layer, DrawLines) or isinstance(layer, DrawLinesStraight):
                     im, angle, gas = layer.call(im)
                 elif isinstance(layer, Symmetric):
                     im, sym = layer.call(im)

@@ -28,6 +28,7 @@ from PIL import Image, ImageDraw
 from math import sqrt, atan2, pi
 from random import randint, shuffle, choice, gauss, random
 
+from colors import White
 from utils import find_coeffs
 from basic_objects import Point, RoadLine, Circle
 
@@ -47,6 +48,61 @@ class Layer():
 
     def summary(self):
         return self.name
+
+
+class DrawLinesStraight(Layer):
+    '''This layer draws the border of the road (constituted of 2 lines.)'''
+
+    def __init__(self,
+                 name='DrawLinesStraight',
+                 middle_line = None,
+                 color_range=None,
+                 input_size=(250, 200)):
+        """
+        Arguments:
+            name: A string,
+                the name of the layer so that it's easy to recognize it.
+            input_size: 2-tuple of int,
+                the size of the input image (width, height)
+        """
+
+        super(DrawLinesStraight, self).__init__()
+
+        if middle_line is not None:
+            self.middle_line_plain = middle_line[0]
+            self.middle_line_empty = middle_line[1]
+            self.middle_line_type = middle_line[2]
+            self.middle_line_color_range = middle_line[3]
+        else:
+            # Make it invisible by default
+            self.middle_line_plain = None
+            self.middle_line_empty = None
+            self.middle_line_type = None
+            self.middle_line_color_range = color_range
+
+        self.max_width = 300
+        self.name = name
+        self.color = White()
+
+    def call(self, im):
+
+        img = im.copy()
+        draw = ImageDraw.Draw(img)
+
+        offset = randint(0, 50)
+
+        draw.line((25 + offset, 0, 25 + offset, 200), width=9) 
+        draw.line((225 - offset, 0, 225 - offset, 200), width=9) 
+
+        nb_lines = 500 // (self.middle_line_plain + self.middle_line_empty)
+        point = randint(0, self.middle_line_plain)
+        for line in range(nb_lines):
+            draw.line((125, point, 125, point + self.middle_line_plain), width=7)
+            point += self.middle_line_plain
+            point += self.middle_line_empty
+
+        return img, 0, 0.5
+
 
 
 class DrawLines(Layer):
