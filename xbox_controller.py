@@ -85,7 +85,8 @@ class XboxCameraRecorder:
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
 
         for f in stream:
-            img_arr = f.array
+            #img_arr = f.array[80:, :, :]
+            img_arr = f.array[60:-20, :, :]
             im = PIL_convert(img_arr)
 
             reverse = -self.joy.leftTrigger()
@@ -117,6 +118,7 @@ class XboxCameraRecorder:
                     '.jpg'
                 ])
             image_name = os.path.join(self.capture_path, image_name)
+            
             im.save(image_name)
             self.image_index += 1
             cam_output.truncate(0)
