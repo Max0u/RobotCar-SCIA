@@ -2,18 +2,18 @@ Sur les images de records_good/ contenant 3996 images prises
 dans l'under avec une copie du circuit de la compétition de
 Juin dans le bon sens, la différence entre image floue et
 image originale dans les prédictions sont en moyenne de
-0.08912623
+0.08167187
 
-Données de pandas.decribe():
+Données de pandas.describe():
 
 count  3996.000000
-mean      0.089126
-std       0.088831
-min       0.000005
-25%       0.028647
-50%       0.062671
-75%       0.118842
-max       0.724281
+mean      0.081672
+std       0.083773
+min       0.000026
+25%       0.024164
+50%       0.055811
+75%       0.112792
+max       1.114141
 
 Après conversion en degrée, cela donne une déviation moyenne
 de 5.10 degrée causée par le flou.
@@ -21,18 +21,18 @@ de 5.10 degrée causée par le flou.
 Sur les images de records_rev/ contenant 2k+ images dont
 une partie corrompue et ne pouvant être ouvert sur OpenCV,
 1905 images ont été gardées. La différence obtenue en
-moyenne est de 0.07694417
+moyenne est de 0.06804826
 
-Données de pandas.decribe():
+Données de pandas.describe():
 
 count  1905.000000
-mean      0.076944
-std       0.072568
-min       0.000083
-25%       0.024426
-50%       0.055231
-75%       0.107217
-max       0.484529
+mean      0.068048
+std       0.067032
+min       0.000018
+25%       0.020269
+50%       0.047552
+75%       0.092214
+max       0.431858
 
 Après conversion en degrée, cela donne une déviation moyenne
 de 4.41 degrée.
@@ -40,6 +40,30 @@ de 4.41 degrée.
 
 Les images corrompues restent à étudier.
 
-Les tests ont été effectués avec le model: model-test.hdf5
+Les tests ont été effectués avec le model: model-0,5YUV.h5
 
 Car les models au format .h5 ne sont pas encore loadable.
+
+Résultat pour model-0,0YUV.h5 pour records_good/
+En moyenne 0.054172017
+
+count  3996.000000
+mean      0.054172
+std       0.051669
+min       0.000025
+25%       0.017598
+50%       0.038931
+75%       0.074157
+max       0.409171
+
+Résultat pour records_rev/
+En moyenne 0.05391283
+
+count  1905.000000
+mean      0.053913
+std       0.051774
+min       0.000014
+25%       0.017924
+50%       0.039298
+75%       0.072603
+max       0.415557
