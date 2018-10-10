@@ -56,7 +56,8 @@ class DrawLinesStraight(Layer):
     def __init__(self,
                  name='DrawLinesStraight',
                  middle_line = None,
-                 color_range=None,
+                 color=None,
+                 thickness_range=[5, 6, 7, 8, 9],
                  input_size=(250, 200)):
         """
         Arguments:
@@ -72,32 +73,38 @@ class DrawLinesStraight(Layer):
             self.middle_line_plain = middle_line[0]
             self.middle_line_empty = middle_line[1]
             self.middle_line_type = middle_line[2]
-            self.middle_line_color_range = middle_line[3]
+            self.middle_line_color = middle_line[3]
         else:
             # Make it invisible by default
             self.middle_line_plain = None
             self.middle_line_empty = None
             self.middle_line_type = None
-            self.middle_line_color_range = color_range
+            self.middle_line_color = color
 
         self.max_width = 300
         self.name = name
-        self.color = White()
+        self.color = color
+        self.thickness_range = thickness_range
 
     def call(self, im):
 
         img = im.copy()
         draw = ImageDraw.Draw(img)
+        thickness = choice(self.thickness_range)
 
         offset = randint(0, 50)
 
-        draw.line((25 + offset, 0, 25 + offset, 200), width=9) 
-        draw.line((225 - offset, 0, 225 - offset, 200), width=9) 
+        lines_color = choice(self.color.colors)
+        draw.line((25 + offset, 0, 25 + offset, 200), width=thickness, fill=lines_color) 
+        draw.line((225 - offset, 0, 225 - offset, 200), width=thickness, fill=lines_color) 
 
         nb_lines = 500 // (self.middle_line_plain + self.middle_line_empty)
         point = randint(0, self.middle_line_plain)
+        middle_color = choice(self.middle_line_color.colors)
         for line in range(nb_lines):
-            draw.line((125, point, 125, point + self.middle_line_plain), width=7)
+            draw.line((125, point, 125, point + self.middle_line_plain),
+                      width=thickness, 
+                      fill=middle_color)
             point += self.middle_line_plain
             point += self.middle_line_empty
 
