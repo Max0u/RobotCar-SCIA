@@ -8,7 +8,7 @@ INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 class prepro_args():
     def __init__(self):
-        self.autob = True
+        self.autob = False
         self.yuv = True
     def switch_yuv():
         self.yuv = not self.yuv
@@ -64,13 +64,13 @@ def autobright_win(image, th, winsize):
     return image
 
 
-def preprocess(image, args):
+def preprocess(image):
     """
     Combine all preprocess functions into one
     """
 
-    if args.autob :
-        image = autobright(image, 250)
+    #if args.autob :
+    #    image = autobright(image, 250)
     
     img = image.copy()
 
@@ -82,8 +82,8 @@ def preprocess(image, args):
     #image = brightness(image, 3)
     #image = greyscale(image)
     #image = contrast(image, 0.65)
-    if args.yuv :
-        image = rgb2yuv(image)
+    #if args.yuv :
+    image = rgb2yuv(image)
     #print(image.shape)
     #image = rgb2ycrcb(image)
     return image, img
