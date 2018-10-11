@@ -32,7 +32,7 @@ class Ironcar():
         self.graph = None
         self.curr_dir = 0
         self.curr_gas = 0
-        self.max_speed_rate = 0.4
+        self.max_speed_rate = 0.5
         self.model_loaded = False
         self.streaming_state = False
 
@@ -184,6 +184,7 @@ class Ironcar():
         img: unused. But has to stay because other modes need it.
         prediction: dir val
         """
+
         if self.started:
 
             if abs(prediction) < 0.1 and prediction != 0:
@@ -228,6 +229,8 @@ class Ironcar():
 
         self.gas(gas_value)
         self.dir(dir_value)
+        if self.streaming_state :
+            self.training(img, prediction)
 
     def dirauto(self, img, prediction):
         """Sets the pwm values for dir according to the prediction from the
@@ -428,11 +431,11 @@ class Ironcar():
         self.streaming_state = not self.streaming_state
         camera = self.camera
         if self.streaming_state :
-	    camera.start_preview()
-	    camera.start_recording('videos/video.h264')
+            camera.start_preview()
+            camera.start_recording('videos/video.h264')
         else :
-	    camera.stop_recording()
-	    camera.stop_preview()
+            camera.stop_recording()
+            camera.stop_preview()
             
         if self.verbose:
             print('Streaming state set to {}'.format(self.streaming_state))

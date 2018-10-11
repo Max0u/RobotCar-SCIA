@@ -62,7 +62,7 @@ def autobrightness(img, dump=False):
 
 class prepro_args():
     def __init__(self):
-        self.autob = True
+        self.autob = False
         self.yuv = True
     def switch_yuv():
         self.yuv = not self.yuv
@@ -132,8 +132,6 @@ def autobright_win(image, th, winsize):
     return image
 
 
-
-
 def preprocess(image):
     """
     Combine all preprocess functions into one
@@ -141,12 +139,9 @@ def preprocess(image):
     image = image[60:-20, :, :]
     #image = image[80:, :, :]
 
-
-
     #if args.autob :
     #    image = autobright(image, 250)
     
-
     img = image.copy()
 
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
