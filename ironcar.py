@@ -41,7 +41,7 @@ class Ironcar():
         self.load_config() 
         self.camera = PiCamera(framerate=self.fps)
 
-        self.verbose = True
+        self.verbose = False
         self.mode_function = self.default_call
 
         # PWM setup
