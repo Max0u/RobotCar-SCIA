@@ -429,6 +429,7 @@ class Ironcar():
         """Switches the streaming state."""
 
         self.streaming_state = not self.streaming_state
+        """
         camera = self.camera
         if self.streaming_state :
             camera.start_preview()
@@ -436,7 +437,7 @@ class Ironcar():
         else :
             camera.stop_recording()
             camera.stop_preview()
-            
+        """    
         if self.verbose:
             print('Streaming state set to {}'.format(self.streaming_state))
 
