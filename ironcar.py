@@ -38,8 +38,8 @@ class Ironcar():
 
         self.n_img = 0
         self.save_number = 0
-        
-        self.camera = PiCamera()
+        self.load_config() 
+        self.camera = PiCamera(framerate=self.fps)
 
         self.verbose = True
         self.mode_function = self.default_call
@@ -56,7 +56,7 @@ class Ironcar():
             print('The adafruit error: ', e)
             self.pwm = None
 
-        self.load_config()
+
 
         from threading import Thread
 
@@ -78,7 +78,8 @@ class Ironcar():
             print('picamera import error : ', e)
 
         try:
-            cam = PiCamera(framerate=self.fps)
+            cam = self.camera
+            
         except Exception as e:
             print('Exception ', e)
             raise CameraException()
@@ -249,8 +250,8 @@ class Ironcar():
         """Saves the image of the picamera with the right labels of dir
         and gas.
         """
-        if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.2):
-            return
+        #if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.2):
+        #    return
 
         image_name = '_'.join(['frame', str(self.n_img), 'gas',
                                str(self.curr_gas), 'dir', str(self.curr_dir)])
@@ -429,7 +430,7 @@ class Ironcar():
         """Switches the streaming state."""
 
         self.streaming_state = not self.streaming_state
-        """
+        
         camera = self.camera
         if self.streaming_state :
             camera.start_preview()
@@ -437,7 +438,7 @@ class Ironcar():
         else :
             camera.stop_recording()
             camera.stop_preview()
-        """    
+            
         if self.verbose:
             print('Streaming state set to {}'.format(self.streaming_state))
 
