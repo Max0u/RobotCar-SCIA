@@ -7,6 +7,7 @@ IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
+
 def var_mean(b):
     var = 0
     cont = 0
@@ -57,6 +58,7 @@ def autobrightness(img, dump=False):
         for j in range(nb_bc):
             res[i*box_row:(i+1)*box_row,j*box_col:(j+1)*box_col,:] = boxs[i]
     return res
+
 
 
 
@@ -136,8 +138,11 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
+<<<<<<< HEAD
     image = image[60:-20, :, :]
     #image = image[80:, :, :]
+=======
+>>>>>>> ba8e1e8e48f0d58a5dc7a1d8197269cd86e6b773
 
     #if args.autob :
     #    image = autobright(image, 250)
