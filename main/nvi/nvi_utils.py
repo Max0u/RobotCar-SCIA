@@ -163,7 +163,8 @@ def augument(data_dir, center, steering_angle, range_x=50, range_y=10):
     return image, steering_angle
 
 
-def batch_generator(data_dir, image_paths, steering_angles, batch_size, is_training):
+def batch_generator(data_dir, image_paths, steering_angles, batch_size,
+        is_training, crop):
     images = np.empty([batch_size, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS])
     steers = np.empty(batch_size)
     while True:
@@ -177,6 +178,8 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size, is_train
             else:
                 image = load_image(data_dir, center)
             # add the image and steering angle to the batch
+            if crop :
+                image = image[60:-20, :, :]
             images[i] = preprocess(image)
             steers[i] = steering_angle
             i += 1
