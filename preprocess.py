@@ -138,11 +138,9 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-<<<<<<< HEAD
+
     image = image[60:-20, :, :]
     #image = image[80:, :, :]
-=======
->>>>>>> ba8e1e8e48f0d58a5dc7a1d8197269cd86e6b773
 
     #if args.autob :
     #    image = autobright(image, 250)
