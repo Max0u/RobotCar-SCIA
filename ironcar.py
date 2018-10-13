@@ -181,7 +181,7 @@ class Ironcar():
 
         pass
 
-    def kalman(preds):
+    def kalman(self, preds):
         # fonction kalman
         # intial parameters
         n_iter = len(preds)
