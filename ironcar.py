@@ -207,7 +207,7 @@ class Ironcar():
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
-            print('speed_mode_coef: {}'.format(speed_mode_coef))
+            #print('speed_mode_coef: {}'.format(speed_mode_coef))
 
             local_dir = prediction
 
