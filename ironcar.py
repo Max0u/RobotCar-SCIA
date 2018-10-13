@@ -298,8 +298,7 @@ class Ironcar():
         img_arr = np.array(img[60:-20, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
 
-        if (self.curr_gas + self.curr_dir > 0.2):
-            img_arr.save(image_name)
+        img_arr.save(image_name)
 
         self.n_img += 1
 
@@ -423,8 +422,6 @@ class Ironcar():
         """
         try:
 
-            img = img[60:-20, :, :]
-            #img = img[80:, :, :]
             img, pre = preprocess.preprocess(img)
 
             img = np.array([img])
