@@ -10,6 +10,8 @@ from preprocess import brightness, greyscale, contrast
 import preprocess
 import md
 
+from picamera import PiCamera 
+
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
 get_default_graph = None  # For lazy imports
@@ -30,12 +32,14 @@ class Ironcar():
         self.graph = None
         self.curr_dir = 0
         self.curr_gas = 0
-        self.max_speed_rate = 0.4
+        self.max_speed_rate = 0.5
         self.model_loaded = False
         self.streaming_state = False
 
         self.n_img = 0
         self.save_number = 0
+        self.load_config() 
+        self.camera = PiCamera(framerate=self.fps)
 
         self.speed_acc = 0
 
@@ -54,7 +58,7 @@ class Ironcar():
             print('The adafruit error: ', e)
             self.pwm = None
 
-        self.load_config()
+
 
         from threading import Thread
 
@@ -76,7 +80,8 @@ class Ironcar():
             print('picamera import error : ', e)
 
         try:
-            cam = PiCamera(framerate=self.fps)
+            cam = self.camera
+            
         except Exception as e:
             print('Exception ', e)
             raise CameraException()
@@ -182,6 +187,7 @@ class Ironcar():
         img: unused. But has to stay because other modes need it.
         prediction: dir val
         """
+
         if self.started:
 
             if abs(prediction) < 0.1:
@@ -229,6 +235,8 @@ class Ironcar():
 
         self.gas(gas_value)
         self.dir(dir_value)
+        if self.streaming_state :
+            self.training(img, prediction)
 
     def dirauto(self, img, prediction):
         """Sets the pwm values for dir according to the prediction from the
@@ -247,8 +255,8 @@ class Ironcar():
         """Saves the image of the picamera with the right labels of dir
         and gas.
         """
-        if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.2):
-            return
+        #if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.2):
+        #    return
 
         image_name = '_'.join(['frame', str(self.n_img), 'gas',
                                str(self.curr_gas), 'dir', str(self.curr_dir)])
@@ -427,6 +435,15 @@ class Ironcar():
         """Switches the streaming state."""
 
         self.streaming_state = not self.streaming_state
+        
+        camera = self.camera
+        if self.streaming_state :
+            camera.start_preview()
+            camera.start_recording('videos/video.h264')
+        else :
+            camera.stop_recording()
+            camera.stop_preview()
+            
         if self.verbose:
             print('Streaming state set to {}'.format(self.streaming_state))
 
