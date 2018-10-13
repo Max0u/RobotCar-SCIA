@@ -10,11 +10,8 @@ from preprocess import brightness, greyscale, contrast
 import preprocess
 import md
 
-<<<<<<< HEAD
 from collections import deque
-=======
 from picamera import PiCamera 
->>>>>>> master
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -190,34 +187,34 @@ class Ironcar():
         n_iter = len(preds)
         sz = (n_iter,) # size of array
         x = -0.37727 # truth value (typo in example at top of p. 13 calls this z)
-    	z = preds # observations (normal about x, sigma=0.1)
+        z = preds # observations (normal about x, sigma=0.1)
 
-    	Q = 1e-5 # process variance
+        Q = 1e-5 # process variance
 
-    	# allocate space for arrays
-    	xhat=np.zeros(sz)      # a posteri estimate of x
-    	P=np.zeros(sz)         # a posteri error estimate
-	xhatminus=np.zeros(sz) # a priori estimate of x
-    	Pminus=np.zeros(sz)    # a priori error estimate
-    	K=np.zeros(sz)         # gain or blending factor
+        # allocate space for arrays
+        xhat=np.zeros(sz)      # a posteri estimate of x
+        P=np.zeros(sz)         # a posteri error estimate
+        xhatminus=np.zeros(sz) # a priori estimate of x
+        Pminus=np.zeros(sz)    # a priori error estimate
+        K=np.zeros(sz)         # gain or blending factor
 
-    	R = 0.01**2 # estimate of measurement variance, change to see effect
+        R = 0.01**2 # estimate of measurement variance, change to see effect
 
-    	# intial guesses
-    	xhat[0] = 0.0
-    	P[0] = 1.0
+        # intial guesses
+        xhat[0] = 0.0
+        P[0] = 1.0
 
-    	for k in range(1,n_iter):
-        	# time update
-        	xhatminus[k] = xhat[k-1]
-        	Pminus[k] = P[k-1]+Q
+        for k in range(1,n_iter):
+                # time update
+                xhatminus[k] = xhat[k-1]
+                Pminus[k] = P[k-1]+Q
 
-        	# measurement update
-        	K[k] = Pminus[k]/( Pminus[k]+R )
-        	xhat[k] = xhatminus[k]+K[k]*(z[k]-xhatminus[k])
-        	P[k] = (1-K[k])*Pminus[k]
+                # measurement update
+                K[k] = Pminus[k]/( Pminus[k]+R )
+                xhat[k] = xhatminus[k]+K[k]*(z[k]-xhatminus[k])
+                P[k] = (1-K[k])*Pminus[k]
     
-    	return xhat[-1]
+        return xhat[-1]
 
 
     def autopilot(self, img, prediction):
@@ -228,12 +225,10 @@ class Ironcar():
         prediction: dir val
         """
 
-<<<<<<< HEAD
-        self.queue.append(prediction)
-        prediction = kalman(self.queue)
 
-=======
->>>>>>> master
+        self.queue.append(prediction)
+        prediction = self.kalman(self.queue)
+
         if self.started:
 
             if abs(prediction) < 0.1 and prediction != 0:
