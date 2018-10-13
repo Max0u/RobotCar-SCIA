@@ -196,7 +196,7 @@ class Ironcar():
                 self.speed_acc = min(self.speed_acc, 3)
                 #prediction = 0
             else:
-                if self.speed_acc > 0 :
+                if self.speed_acc > 1 :
                     speed_mode_coef = 0
                     self.speed_acc -= 1
                 else :
