@@ -6,6 +6,8 @@ import scipy
 IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
+
+
 def var_mean(b):
     var = 0
     cont = 0
@@ -58,7 +60,20 @@ def autobrightness(img, dump=False):
     return res
 
 
-def brightness(factor):
+
+
+class prepro_args():
+    def __init__(self):
+        self.autob = False
+        self.yuv = True
+    def switch_yuv():
+        self.yuv = not self.yuv
+    def switch_autob():
+        self.autob = not self.autob
+
+
+def brightness(image, factor):
+
     """
     Adjust brightness of an image
     """
@@ -119,14 +134,17 @@ def autobright_win(image, th, winsize):
     return image
 
 
-
 def preprocess(image):
     """
     Combine all preprocess functions into one
     """
+
     image = image[60:-20, :, :]
     #image = image[80:, :, :]
 
+    #if args.autob :
+    #    image = autobright(image, 250)
+    
     img = image.copy()
 
     image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
@@ -137,7 +155,7 @@ def preprocess(image):
     #image = brightness(image, 3)
     #image = greyscale(image)
     #image = contrast(image, 0.65)
-
+    #if args.yuv :
     image = rgb2yuv(image)
     #print(image.shape)
     #image = rgb2ycrcb(image)
