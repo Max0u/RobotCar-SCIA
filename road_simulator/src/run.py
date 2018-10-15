@@ -83,9 +83,9 @@ def generate(n_examples, straight=False):
 if __name__ == '__main__':
 
     """
-    /!\ Note that the non straight generator will generate 2 times the number of
+    /!\ Note that generator will generate 2 times the number of
         images asked for because of the symmetric layer so if you write 200 it
-        will generate 400. IT IS NOT THE CASE FOR THE STRAIGHT GENERATOR.
+        will generate 400.
     """
 
     generate(100, straight=False)
