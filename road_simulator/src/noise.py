@@ -218,6 +218,11 @@ class Enhance(Noise):
 
         im_n = img.copy()
 
+        low_x, low_y = randint(0, 230), randint(0, 180)
+        high_x = randint(min(low_x + 100, 249), 250)
+        high_y = randint(min(low_y + 100, 199), 200)
+        sub_img = im_n.crop((low_x, low_y, high_x, high_y))
+
         r = random()
         contrast_low, contrast_high = 0, self.contrast
         brightness_low, brightness_high = contrast_high, contrast_high + self.brightness
@@ -229,9 +234,10 @@ class Enhance(Noise):
             enhancer = ImageEnhance.Contrast(im_n)
             im_n = enhancer.enhance(factor_contrast)
         elif brightness_low <= r < brightness_high:
-            factor_brightness = randint(5, 15)/10
-            enhancer = ImageEnhance.Brightness(im_n)
-            im_n = enhancer.enhance(factor_brightness)
+            factor_brightness = randint(0, 25) / 10
+            enhancer = ImageEnhance.Brightness(sub_img)
+            sub_img = enhancer.enhance(factor_brightness)
+            im_n.paste(sub_img, (low_x, low_y, high_x, high_y))
         elif sharpness_low <= r < sharpness_high:
             factor_sharpen = randint(0, 20)/10
             enhancer = ImageEnhance.Sharpness(im_n)

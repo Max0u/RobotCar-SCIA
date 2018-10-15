@@ -18,7 +18,7 @@ def generate(n_examples, straight=False):
     #  -> nb rotations
     #  -> nb crop
     #  -> nb resize
-    simulator.add(Background(n_backgrounds=1,
+    simulator.add(Background(n_backgrounds=50,
                              n_rot=5,
                              n_crop=5,
                              n_res=5,
@@ -68,14 +68,12 @@ def generate(n_examples, straight=False):
         simulator.add(Crop())
 
     """ NOISES """
-    # add shadow
-    simulator.add(Shadows(colors=[shadow, white]))
 
     # blur + gauss_blur + smooth + smooth_more + rank_filter <= 1
     simulator.add(Filter(blur=0.1, smooth=0.1, smooth_more=0.1, rank_filter=0.1))
 
     # brightness + contrast + sharpness <= 1
-    simulator.add(Enhance(brightness=0.1, contrast=0.1, sharpness=0.1))
+    simulator.add(Enhance(brightness=0.8, contrast=0.1, sharpness=0.1))
 
 
 
@@ -90,6 +88,6 @@ if __name__ == '__main__':
         will generate 400. IT IS NOT THE CASE FOR THE STRAIGHT GENERATOR.
     """
 
-    generate(10, straight=False)
-    #generate(5000, straight=True)
+    generate(100, straight=False)
+    generate(5000, straight=True)
 
