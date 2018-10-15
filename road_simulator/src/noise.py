@@ -66,7 +66,8 @@ class Shadows(Noise):
         x2 = randint(0, img.width)
         y1 = randint(0, img.height)
         y2 = 10000000
-        c = choice(self.colors.colors)
+        color_range = choice(self.colors)
+        c = choice(color_range.colors)
 
         while abs(y2 - y1) > 75:
             if randint(0, 1):
