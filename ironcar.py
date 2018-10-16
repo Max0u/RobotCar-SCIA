@@ -239,17 +239,11 @@ class Ironcar():
 
         if self.started:
 
-            if abs(prediction) < 0.1 and prediction != 0:
+            if abs(prediction) < 0.1 :
                 speed_mode_coef = 1.5
                 #prediction = 0
             else:
                 speed_mode_coef = 1.
-            
-           # if abs(prediction) > 0.8:
-           #     speed_mode_coef = 0.5
-
-            #if abs(prediction) < 0.2:
-            #    prediction = 0
 
             if self.speed_mode == 'confidence':
                 speed_mode_coef = 1.5 - min(prediction**2, 1.)
@@ -468,9 +462,6 @@ class Ironcar():
             if self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
-
-
-
 
         """
         im = PIL_convert(img[0])
