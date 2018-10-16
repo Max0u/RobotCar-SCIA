@@ -13,9 +13,10 @@ import md
 from picamera import PiCamera 
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (250, 150)
+CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
+top, bot = 60, -20
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -259,7 +260,7 @@ class Ironcar():
         image_name = os.path.join(self.save_folder, image_name)
 
         #img_arr = np.array(img[80:, :, :], copy=True)
-        img_arr = np.array(img[60:-20, :, :], copy=True)
+        img_arr = np.array(img[top:bot, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
 
         img_arr.save(image_name)
@@ -385,8 +386,21 @@ class Ironcar():
         Returns the direction predicted by the model (float)
         """
         try:
+            if self.streaming_state : 
+                from io import BytesIO
+                from base64 import b64encode
+                image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
+                #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
 
-            img, pre = preprocess.preprocess(img)
+                im = PIL_convert(img[top:bot, :, :])
+                im.save(image_prepro)
+                buffered = BytesIO()
+                im.save(buffered, format="JPEG")
+                img_str = b64encode(buffered.getvalue())
+                socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
+            
+            img = preprocess.preprocess(img)
 
             img = np.array([img])
 
@@ -400,19 +414,7 @@ class Ironcar():
                 print('Prediction error : ', e)
             pred = 0
 
-        if self.streaming_state : 
-            from io import BytesIO
-            from base64 import b64encode
-            image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
-        #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
 
-            im = PIL_convert(pre)
-            im.save(image_prepro)
-            buffered = BytesIO()
-            im.save(buffered, format="JPEG")
-            img_str = b64encode(buffered.getvalue())
-            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
 
 
         """

@@ -141,22 +141,10 @@ def preprocess(image):
 
     image = image[60:-20, :, :]
     #image = image[80:, :, :]
-
-    #if args.autob :
-    #    image = autobright(image, 250)
     
-    img = image.copy()
-
-    image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
+    #image = scipy.misc.imresize(image, (IMAGE_HEIGHT, IMAGE_WIDTH))
     #image = autobright(image, 250)
-    #print(image.shape)
-    #image = resize(image)
-    #image = bright_contr_auto(image)
-    #image = brightness(image, 3)
-    #image = greyscale(image)
-    #image = contrast(image, 0.65)
-    #if args.yuv :
+
     image = rgb2yuv(image)
-    #print(image.shape)
-    #image = rgb2ycrcb(image)
-    return image, img
+
+    return image
