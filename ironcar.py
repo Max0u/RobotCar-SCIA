@@ -11,7 +11,9 @@ import preprocess
 import md
 
 from collections import deque
-from picamera import PiCamera 
+from picamera import PiCamera
+
+import time
 
 CONFIG = 'config.json'
 CAM_RESOLUTION = (250, 150)
@@ -46,6 +48,8 @@ class Ironcar():
 
         self.verbose = True
         self.mode_function = self.default_call
+
+        self.last_pred = time.time()
 
         # PWM setup
         try:
@@ -278,6 +282,11 @@ class Ironcar():
         self.dir(dir_value)
         if self.streaming_state :
             self.training(img, prediction)
+        
+        now = time.time()
+        socketio.emit('fps_update', {'fps': (1/(now-self.last_pred))}, namespace='/car')
+        self.last_pred = now
+
 
     def dirauto(self, img, prediction):
         """Sets the pwm values for dir according to the prediction from the
