@@ -225,9 +225,12 @@ class Ironcar():
         prediction: dir val
         """
 
-
-        self.queue.append(prediction)
-        prediction = self.kalman(self.queue)
+        if abs(prediction) < 0.3 : 
+            self.queue.append(prediction)
+        else :
+            self.queue.clear()
+        if len(self.queue) > 2:
+            prediction = self.kalman(self.queue)
 
         if self.started:
 
