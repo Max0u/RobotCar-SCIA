@@ -59,6 +59,8 @@ class Simulator():
 
         sym = False
 
+        gas = 0.5
+        angle = 0
         im = img.copy()
         for layer in self.layers:
             if not isinstance(layer, Background):

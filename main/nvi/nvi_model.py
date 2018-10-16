@@ -76,14 +76,16 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid, ft=False):
 
     model.compile(loss=mon, optimizer=Adam(lr=args.learning_rate))
 
-    model.fit_generator(batch_generator(args.data_dir, X_train, y_train, args.batch_size, True),
-                        steps_per_epoch=args.samples_per_epoch//args.batch_size,
-                        epochs=args.nb_epoch,
-                        max_queue_size=1,
-                        validation_data=batch_generator(args.data_dir, X_valid, y_valid, args.batch_size, False),
-                        validation_steps=len(X_valid)//args.batch_size,
-                        callbacks=[checkpoint],
-                        verbose=1)
+    model.fit_generator(batch_generator(args.data_dir, X_train, y_train,
+        args.batch_size, True, args.crop),
+        steps_per_epoch=args.samples_per_epoch//args.batch_size,
+        epochs=args.nb_epoch,
+        max_queue_size=1,
+        validation_data=batch_generator(args.data_dir, X_valid,
+            y_valid, args.batch_size, False, args.crop),
+        validation_steps=len(X_valid)//args.batch_size,
+        callbacks=[checkpoint],
+        verbose=1)
 
 
 def s2b(s):
@@ -105,17 +107,25 @@ def main():
     parser = argparse.ArgumentParser(description='Behavioral Cloning Training Program')
     parser.add_argument('-r', help='load model path',        dest='model_path',
             type=str,   default='none')
-    parser.add_argument('-d', help='data directory',        dest='data_dir',          type=str,   default='data')
-    parser.add_argument('-t', help='test size fraction',    dest='test_size',         type=float, default=0.2)
-    parser.add_argument('-k', help='drop out probability',  dest='keep_prob',         type=float, default=0.5)
+    parser.add_argument('-d', help='data directory',        dest='data_dir',
+            type=str,   default='data')
+    parser.add_argument('-t', help='test size fraction',    dest='test_size',
+            type=float, default=0.2)
+    parser.add_argument('-k', help='drop out probability',  dest='keep_prob',
+            type=float, default=0.5)
     parser.add_argument('-n', help='number of epochs',      dest='nb_epoch',
             type=int,   default=20)
     parser.add_argument('-s', help='samples per epoch',
             dest='samples_per_epoch', type=int,   default=100000)
     parser.add_argument('-b', help='batch size',            dest='batch_size',
             type=int,   default=50)
-    parser.add_argument('-o', help='save best models only', dest='save_best_only',    type=s2b,   default='true')
-    parser.add_argument('-l', help='learning rate',         dest='learning_rate',     type=float, default=1.0e-4)
+    parser.add_argument('-o', help='save best models only', dest='save_best_only',
+            type=s2b,   default='true')
+    parser.add_argument('-l', help='learning rate',         dest='learning_rate',
+            type=float, default=1.0e-4)
+    parser.add_argument('-c', help='Crop training images', dest='crop',
+            type=s2b,   default='false')
+
     args = parser.parse_args()
 
     print('-' * 30)
