@@ -108,7 +108,7 @@ class DrawLinesStraight(Layer):
             point += self.middle_line_plain
             point += self.middle_line_empty
 
-        return img, 0, 0.5
+        return img, 0.0, 0.5
 
 
 
