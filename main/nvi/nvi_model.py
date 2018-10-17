@@ -3,7 +3,7 @@ import numpy as np
 from cv2 import imread 
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
-from keras.optimizers import Adam
+from keras.optimizers import Adam, Nadam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 from nvi_utils import INPUT_SHAPE, batch_generator
@@ -118,7 +118,7 @@ def main():
     parser.add_argument('-s', help='samples per epoch',
             dest='samples_per_epoch', type=int,   default=100000)
     parser.add_argument('-b', help='batch size',            dest='batch_size',
-            type=int,   default=50)
+            type=int,   default=40)
     parser.add_argument('-o', help='save best models only', dest='save_best_only',
             type=s2b,   default='true')
     parser.add_argument('-l', help='learning rate',         dest='learning_rate',
