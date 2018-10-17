@@ -279,6 +279,7 @@ class Ironcar():
             self.training(img, prediction)
         
         now = time.time()
+        print("FPS :" + str(1/(now-self.last_pred)))
         socketio.emit('fps_update', {'fps': (1/(now-self.last_pred))}, namespace='/car')
         self.last_pred = now
 
