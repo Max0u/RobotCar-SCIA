@@ -1,6 +1,10 @@
 import cv2, os
 import numpy as np
 import matplotlib.image as mpimg
+import imageio
+import sys
+import time
+import matplotlib.pyplot as plt
 
 IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
@@ -111,10 +115,51 @@ def random_translate(image, steering_angle, range_x, range_y):
     return image, steering_angle
 
 
+from bresenham import bresenham
+
+def fulfill_rec(img, t):
+    img[t] = 0
+    row, col, pix = img.shape
+    for i in [(0,1), (1,0), (0,-1), (-1,0)]:
+        if  t[0]+i[0] < row and t[0]+i[0] > -1 and t[1]+i[1] > -1  and t[1]+i[1] < col and img[t[0]+i[0],t[1]+i[1]][0] == 1:
+            img = fulfill_rec(img, (t[0]+i[0],t[1]+i[1]))
+    return img
+
+def fulfill(img):
+    return fulfill_rec(img, (0,0))
+
+def shape_generator(shape):
+    row, col, pix = shape
+    nb_sommet = np.random.randint(4,7)
+    sommet = []
+    for i in range(nb_sommet):
+        sommet.append((np.random.randint(1,row-1),np.random.randint(1,col-1)))
+    sommet.append(sommet[0])
+    res=np.ones(shape)
+    for s in range(nb_sommet):
+        for p in bresenham(sommet[s][0],sommet[s][1],sommet[s+1][0], sommet[s+1][1]):
+            res[p] = 0
+    res = fulfill(res)
+    return res
+
+def random_shadow(img):
+    row, col, pix = img.shape
+    x1,y1 = col*np.random.rand(),0
+    x2,y2 = col*np.random.rand(),row
+    xm,ym = np.mgrid[0:row, 0:col]
+    mask = np.zeros_like(img[:,:,1])
+    mask[(ym -y1) * (x2 - x1) - (y2 - y1) * (xm - x1) > 0] = 1
+    plt.figure()
+    plt.imshow(mask)
+    cond = mask == np.random.randint(2)
+    s_ratio = np.random.uniform(low=0.2, high =0.5)
+    hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+    hls[:,:,1][cond] = np.minimum(hls[:,:,1][cond]*s_ratio, 255)
+    return cv2.cvtColor(hls,cv2.COLOR_HLS2RGB)
+
+"""
+# Former function
 def random_shadow(image):
-    """
-    Generates and adds random shadow
-    """
     # (x1, y1) and (x2, y2) forms a line
     # xm, ym gives all the locations of the image
     x1, y1 = IMAGE_WIDTH * np.random.rand(), 0
@@ -137,18 +182,25 @@ def random_shadow(image):
     hls = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
     hls[:, :, 1][cond] = np.minimum(hls[:, :, 1][cond] * s_ratio, 255)
     return cv2.cvtColor(hls, cv2.COLOR_HLS2RGB)
+"""
 
+def random_brightness(f):
+    res = shape_generator(f.shape)
+    shadow_coef = np.random.randint(10,250)
+    res255 = np.abs(res-1)
+    res2 = res*shadow_coef
+    final = f*res255+res2
+    return final.astype(np.uint8)
 
+"""
+# Former function
 def random_brightness(image):
-    """
-    Randomly adjust brightness of the image.
-    """
     # HSV (Hue, Saturation, Value) is also called HSB ('B' for Brightness).
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
     ratio = 1.0 + (np.random.rand() - 0.5) * 1.8
     hsv[:,:,2] = np.minimum(hsv[:,:,2] * ratio, 255)
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
-
+"""
 
 def augument(data_dir, center, steering_angle, range_x=50, range_y=10):
     """
