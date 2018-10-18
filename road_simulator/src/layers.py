@@ -50,68 +50,6 @@ class Layer():
         return self.name
 
 
-class DrawLinesStraight(Layer):
-    '''This layer draws the border of the road (constituted of 2 lines.)'''
-
-    def __init__(self,
-                 name='DrawLinesStraight',
-                 middle_line = None,
-                 color=None,
-                 thickness_range=[5, 6, 7, 8, 9],
-                 input_size=(250, 200)):
-        """
-        Arguments:
-            name: A string,
-                the name of the layer so that it's easy to recognize it.
-            input_size: 2-tuple of int,
-                the size of the input image (width, height)
-        """
-
-        super(DrawLinesStraight, self).__init__()
-
-        if middle_line is not None:
-            self.middle_line_plain = middle_line[0]
-            self.middle_line_empty = middle_line[1]
-            self.middle_line_type = middle_line[2]
-            self.middle_line_color = middle_line[3]
-        else:
-            # Make it invisible by default
-            self.middle_line_plain = None
-            self.middle_line_empty = None
-            self.middle_line_type = None
-            self.middle_line_color = color
-
-        self.max_width = 300
-        self.name = name
-        self.color = color
-        self.thickness_range = thickness_range
-
-    def call(self, im):
-
-        img = im.copy()
-        draw = ImageDraw.Draw(img)
-        thickness = choice(self.thickness_range)
-
-        offset = randint(0, 50)
-
-        lines_color = choice(self.color.colors)
-        draw.line((25 + offset, 0, 25 + offset, 200), width=thickness, fill=lines_color) 
-        draw.line((225 - offset, 0, 225 - offset, 200), width=thickness, fill=lines_color) 
-
-        nb_lines = 500 // (self.middle_line_plain + self.middle_line_empty)
-        point = randint(0, self.middle_line_plain)
-        middle_color = choice(self.middle_line_color.colors)
-        for line in range(nb_lines):
-            draw.line((125, point, 125, point + self.middle_line_plain),
-                      width=thickness, 
-                      fill=middle_color)
-            point += self.middle_line_plain
-            point += self.middle_line_empty
-
-        return img, 0.0, 0.5
-
-
-
 class DrawLines(Layer):
     '''This layer draws the border of the road (constituted of 2 lines.)'''
 
@@ -122,6 +60,7 @@ class DrawLines(Layer):
                     color_range=None,
                     middle_line=None,
                     target_ratio=0.5,
+                    straight_line_rate=0.05,
                     name='DrawLines',
                     input_size=(250, 200)):
         """
@@ -179,6 +118,7 @@ class DrawLines(Layer):
         self.input_size = input_size
         self.width = self.input_size[0]
         self.height = self.input_size[1]
+        self.straight_line_rate = straight_line_rate
 
         self.target_ratio = target_ratio
 
@@ -423,6 +363,29 @@ class DrawLines(Layer):
 
             return center
 
+        
+        def draw_straight_line(img):
+            draw = ImageDraw.Draw(img)
+            thickness = choice(self.thickness_range)
+
+            offset = randint(0, 50)
+
+            lines_color = choice(self.color_range.colors)
+            draw.line((25 + offset, 0, 25 + offset, 200), width=thickness, fill=lines_color) 
+            draw.line((225 - offset, 0, 225 - offset, 200), width=thickness, fill=lines_color) 
+
+            nb_lines = 500 // (self.middle_line_plain + self.middle_line_empty)
+            point = randint(0, self.middle_line_plain)
+            middle_color = choice(self.middle_line_color_range.colors)
+            for line in range(nb_lines):
+                draw.line((125, point, 125, point + self.middle_line_plain),
+                          width=thickness, 
+                          fill=middle_color)
+                point += self.middle_line_plain
+                point += self.middle_line_empty
+
+            return img, 0.0, 0.5
+
         def draw_one_line(draw, line, right_turn=True, plain=1, empty=0):
             """Draws a line on the image.
             The method used to draw a line depends o the radius of the line,
@@ -487,30 +450,33 @@ class DrawLines(Layer):
 
         img = im.copy()
 
-        # Current position of the car (the car is generally in the middle of
-        # the lower bound of the image)
-        pose = Point(self.width/2, self.height)
+        if self.straight_line_rate > random():
+            img, angle, gas = draw_straight_line(img)
+        else:
+            # Current position of the car (the car is generally in the middle of
+            # the lower bound of the image)
+            pose = Point(self.width/2, self.height)
 
-        # Middle line
-        midline = generate_middle_line(self.xy0_range,
-                                       self.xy1_range,
-                                       self.radius_range,
-                                       self.thickness_range,
-                                       self.middle_line_color_range)
+            # Middle line
+            midline = generate_middle_line(self.xy0_range,
+                                           self.xy1_range,
+                                           self.radius_range,
+                                           self.thickness_range,
+                                           self.middle_line_color_range)
 
-        # TODO: change this so that the distance between the 2 lines can be chosen
-        # by the user
-        # 200: harcoded value
-        # 100: harcoded value
-        width = randint(max(200, 2 * midline.x0 - self.width), self.max_width)
+            # TODO: change this so that the distance between the 2 lines can be chosen
+            # by the user
+            # 200: harcoded value
+            # 100: harcoded value
+            width = randint(max(200, 2 * midline.x0 - self.width), self.max_width)
 
-        # Draw all the visible lines
-        img = draw_lines(img, midline, width=width, right_turn=True,
-                                    color_range=self.color_range)
+            # Draw all the visible lines
+            img = draw_lines(img, midline, width=width, right_turn=True,
+                                        color_range=self.color_range)
 
-        # Get the angle and gas depending on the position of
-        # the car with respect to the middle line.
-        angle, gas = dir_gas(midline, pose)
+            # Get the angle and gas depending on the position of
+            # the car with respect to the middle line.
+            angle, gas = dir_gas(midline, pose)
 
         return img, angle, gas
 
