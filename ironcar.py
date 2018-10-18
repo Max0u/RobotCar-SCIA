@@ -47,10 +47,11 @@ class Ironcar():
 
         self.queue = deque(maxlen=100)
 
-        self.verbose = True
+        self.verbose = False
         self.mode_function = self.default_call
 
         self.last_pred = time.time()
+        self.count = 0
 
         # PWM setup
         try:
@@ -100,10 +101,10 @@ class Ironcar():
         i = 0
 
         for f in stream:
-            i += 1
             img_arr = f.array
-            im = PIL_convert(img_arr)
-            im.save(image_name)
+            if self.streaming_state :
+                im = PIL_convert(img_arr)
+                im.save(image_name)
 
             # Predict the direction only when needed
             if self.mode in ['dirauto', 'auto'] and self.started:
@@ -113,7 +114,7 @@ class Ironcar():
             self.mode_function(img_arr, prediction)
 
             
-            if self.streaming_state and i % 2 == 0 :
+            if self.streaming_state :
                 if prediction < 0.2 and prediction > -0.2:
                     index_class = 2
                 if prediction > -0.6 and prediction < -0.2:
@@ -275,13 +276,17 @@ class Ironcar():
 
         self.gas(gas_value)
         self.dir(dir_value)
+        
         if self.streaming_state :
             self.training(img, prediction)
-        
-        now = time.time()
-        print("FPS :" + str(1/(now-self.last_pred)))
-        socketio.emit('fps_update', {'fps': (1/(now-self.last_pred))}, namespace='/car')
-        self.last_pred = now
+
+        if self.count == 10:
+            now = time.time()
+            print("FPS :" + str(self.count/(now-self.last_pred)))
+            socketio.emit('fps_update', {'fps': (self.count/(now-self.last_pred))}, namespace='/car')
+            self.last_pred = now
+            self.count = 0
+        self.count += 1
 
 
     def dirauto(self, img, prediction):
