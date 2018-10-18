@@ -6,12 +6,14 @@ IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
-def load_image(data_dir, image_file):
+def load_image(data_dir, image_file, crop):
     """
     Load RGB images from a file
     """
     image = mpimg.imread(os.path.join(data_dir, image_file.strip()))
-    return resize(image)
+    if crop :
+        image = image[60:-20,:,:]
+    return image
 
 
 def resize(image):
@@ -150,12 +152,14 @@ def random_brightness(image):
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 
-def augument(data_dir, center, steering_angle, range_x=50, range_y=10):
+def augument(data_dir, center, steering_angle, range_x=50, range_y=10,
+        crop=False):
     """
     Generate an augumented image and adjust steering angle.
     (The steering angle is associated with the center image)
     """
-    image, steering_angle = load_image(data_dir, center), steering_angle
+    image, steering_angle = load_image(data_dir, center, crop), steering_angle
+    image = resize(image)
     image, steering_angle = random_flip(image, steering_angle)
     image, steering_angle = random_translate(image, steering_angle, range_x, range_y)
     image = random_shadow(image)
@@ -174,12 +178,12 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size,
             steering_angle = steering_angles[index][1]
             # argumentation
             if is_training and np.random.rand() < 0.6:
-                image, steering_angle = augument(data_dir, center, steering_angle)
+                image, steering_angle = augument(data_dir, center,
+                        steering_angle, crop)
             else:
-                image = load_image(data_dir, center)
+                image = load_image(data_dir, center, crop)
+                image = resize(image)
             # add the image and steering angle to the batch
-            if crop :
-                image = image[60:-20, :, :]
             images[i] = preprocess(image)
             steers[i] = steering_angle
             i += 1
