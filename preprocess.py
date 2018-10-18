@@ -21,47 +21,6 @@ def var_mean(b):
 def fn(x):
         return (100/(1+np.exp(-20*x)))
 
-def autobrightness(img, dump=False):
-    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-    varG, meanG = var_mean(hsv)
-    row, col, pix= img.shape
-    nb_br, nb_bc, nb_bp = (3,5,1)
-    box_row, box_col, box_pix = (row//nb_br,col//nb_bc,pix//nb_bp)
-    boxs, boxs_hsv = [], []
-    means, variances = [], []
-    for i in range(nb_br):
-        for j in range(nb_bc):
-            boxs.append(img[i*box_row:(i+1)*box_row,j*box_col:(j+1)*box_col,:])
-            boxs_hsv.append(hsv[i*box_row:(i+1)*box_row,j*box_col:(j+1)*box_col,:])
-    for b in boxs_hsv:
-        var, m = var_mean(b)
-        means.append(m)
-        variances.append(var)
-    varM = np.mean(variances)
-    for i in range(15):
-        if dump:
-            plt.subplot(3,5,i+1)
-        if variances[i] >= varM:
-            if dump:
-                print("{}:{}".format(i+1,variances[i]))
-            boxs_hsv[i][:,:,2] = np.floor(fn((boxs_hsv[i][:,:,2]/100)-0.5)).astype(np.uint8)
-        else:
-            boxs_hsv[i][:,:,2] = boxs_hsv[i][:,:,2]*0 + 10
-            #faire en sorte de diminuer l'intensite de zone homogene
-        boxs[i] = cv2.cvtColor(boxs_hsv[i],cv2.COLOR_HSV2RGB)
-        variances[i], means[i] = var_mean(boxs_hsv[i])
-        if dump:
-            plt.imshow(boxs[i])
-            plt.title("M={:.2}".format(means[i]))
-    res = img.copy()
-    for i in range(nb_br):
-        for j in range(nb_bc):
-            res[i*box_row:(i+1)*box_row,j*box_col:(j+1)*box_col,:] = boxs[i]
-    return res
-
-
-
-
 class prepro_args():
     def __init__(self):
         self.autob = False
@@ -126,14 +85,6 @@ def blur(img):
     return img, output
 
 
-def autobright_win(image, th, winsize):
-    img = image.copy()
-    for i in range(image.shape[0]-winsize):
-        for j in range(image.shape[1]-winsize):
-            img[i:i+winsize, j:j+winsize] = autobright(image[i:i+winsize, j:j+winsize], th)
-    return image
-
-
 def preprocess(image):
     """
     Combine all preprocess functions into one
@@ -146,5 +97,8 @@ def preprocess(image):
     #image = autobright(image, 250)
 
     image = rgb2yuv(image)
+
+    print("type :" + str(image.nbytes.dtype))
+    print("size :" + str(image.nbytes/1e6))
 
     return image

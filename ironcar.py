@@ -98,7 +98,6 @@ class Ironcar():
         cam.resolution = CAM_RESOLUTION
         cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
-        i = 0
 
         for f in stream:
             img_arr = f.array
@@ -446,6 +445,15 @@ class Ironcar():
                 from base64 import b64encode
                 image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
                 #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
+                """
+                im = PIL_convert(img[0])
+                im.save(image_YUV)
+                buffered = BytesIO()
+                im.save(buffered, format="JPEG")
+                img_str = b64encode(buffered.getvalue())
+                socketio.emit('stream_YUV', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
+                """
 
                 im = PIL_convert(img[top:bot, :, :])
                 im.save(image_prepro)
@@ -463,21 +471,14 @@ class Ironcar():
                 pred = float(self.model.predict(img, batch_size=1))
                 if self.verbose:
                     print('pred : ', pred)
+        
         except Exception as e:
             # Don't print if the model is not relevant given the mode
             if self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
 
-        """
-        im = PIL_convert(img[0])
-        im.save(image_YUV)
-        buffered = BytesIO()
-        im.save(buffered, format="JPEG")
-        img_str = b64encode(buffered.getvalue())
-        socketio.emit('stream_YUV', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-        """
+
         return pred
 
     def switch_streaming(self):
