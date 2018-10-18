@@ -96,7 +96,7 @@ def s2b(s):
     return s == 'true' or s == 'yes' or s == 'y' or s == '1'
 
 def freeze(model):
-    for layer in model.layers[:-6]:
+    for layer in model.layers[:-5]:
         layer.trainable = False
     return model
 
