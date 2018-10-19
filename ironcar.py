@@ -66,11 +66,11 @@ class Ironcar():
             self.pwm = None
 
 
+        self.camera_loop()
+        #from threading import Thread
 
-        from threading import Thread
-
-        self.camera_thread = Thread(target=self.camera_loop, args=())
-        self.camera_thread.start()
+        #self.camera_thread = Thread(target=self.camera_loop, args=())
+        #self.camera_thread.start()
 
     def camera_loop(self):
         """Makes the camera take pictures and save them.
@@ -474,7 +474,7 @@ class Ironcar():
         
         except Exception as e:
             # Don't print if the model is not relevant given the mode
-            if self.verbose and self.mode in ['dirauto', 'auto']:
+            if self.mode in ['dirauto', 'auto']: #self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
 
