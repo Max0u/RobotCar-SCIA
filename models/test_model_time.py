@@ -12,7 +12,8 @@ def root_mean_squared_error(y_true, y_pred):
 
 
 #mod = md.build_model()
-mod = load_model("model-test-lstm.hdf5", custom_objects={'root_mean_squared_error': root_mean_squared_error})
+#mod = load_model("model-test-lstm.hdf5", custom_objects={'root_mean_squared_error': root_mean_squared_error})
+mod = load_model("model-008.h5")
 it = 1000
 file_path = "test.jpg"
 start_time = time.time()
@@ -20,7 +21,7 @@ start_time = time.time()
 for i in range(it):
     img = cv2.imread(file_path)
     img, _ = preprocess.preprocess(img)
-    img = np.array([[img]])
+    img = np.array([img])
     mod.predict(img)
 
 print("--- %s fps ---" % str(it/(time.time() - start_time)))
