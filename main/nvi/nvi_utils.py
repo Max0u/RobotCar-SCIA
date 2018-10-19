@@ -70,9 +70,9 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    image = resize(image)
+    #image = resize(image)
     #image = bright_contr_auto(image)
-    #image = rgb2yuv(image)
+    image = rgb2yuv(image)
     #image = rgb2ycrcb(image)
     return image
 
