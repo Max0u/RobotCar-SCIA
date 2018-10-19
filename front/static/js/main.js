@@ -184,6 +184,12 @@ socket.on('max_speed_update_callback', function(data){
     $("#maxSpeed").text("Max speed limit: " + Math.round(data.speed*100) + "%");
 });
 
+// -------- FPS -----------
+
+socket.on('fps_update', function(data){
+    $("#fps").text("FPS prediction : " + Math.round(data.fps));
+});
+
 // -------- COMMANDS -----------
 
 $("[data-command-reversed]").click(function(event) {
