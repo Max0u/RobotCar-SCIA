@@ -32,3 +32,25 @@ def build_model():
 
     return model
 
+
+
+
+def build_model2():
+    """
+    Modified NVIDIA model
+    """
+    model = Sequential()
+    model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE))
+    model.add(Conv2D(2, (3, 3), activation="elu", strides=(2, 2)))
+    model.add(Conv2D(4, (3, 3), activation="elu", strides=(2, 2)))
+    model.add(Conv2D(8, (3, 3), activation="elu", strides=(2, 2)))
+    model.add(Conv2D(12, (2, 2), activation='elu'))
+    model.add(Dropout(0.1))
+    model.add(Flatten())
+    model.add(Dense(20, activation='elu'))
+    model.add(Dense(5, activation='elu'))
+    model.add(Dense(1))
+    model.summary()
+
+    return model
+
