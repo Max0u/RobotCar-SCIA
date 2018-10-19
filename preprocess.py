@@ -97,8 +97,4 @@ def preprocess(image):
     #image = autobright(image, 250)
 
     image = rgb2yuv(image)
-
-    print("type :" + str(image.nbytes.dtype))
-    print("size :" + str(image.nbytes/1e6))
-
     return image
