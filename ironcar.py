@@ -281,7 +281,8 @@ class Ironcar():
 
         if self.count == 10:
             now = time.time()
-            print("FPS :" + str(self.count/(now-self.last_pred)))
+            if self.verbose :
+                print("FPS :" + str(self.count/(now-self.last_pred)))
             socketio.emit('fps_update', {'fps': (self.count/(now-self.last_pred))}, namespace='/car')
             self.last_pred = now
             self.count = 0
