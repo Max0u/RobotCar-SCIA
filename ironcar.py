@@ -241,27 +241,19 @@ class Ironcar():
 
         if self.started:
 
-<<<<<<< HEAD
-            if abs(prediction) < 0.1:
-                speed_mode_coef = 2
+            if len(self.queue) > 2 : #abs(prediction) < 0.1 :
+                speed_mode_coef =  2 + 0.2 * self.speed_acc 
                 self.speed_acc += 1
                 self.speed_acc = min(self.speed_acc, 5)
                 prediction **= 2
             else:
-                if self.speed_acc > 4 :
-                    speed_mode_coef = 0.5
+                if self.speed_acc > 3 :
+                    
+                    speed_mode_coef = 0.7
                     self.speed_acc -= 1
                 else :
                     speed_mode_coef = 1
 
-            
-=======
-            if abs(prediction) < 0.1 :
-                speed_mode_coef = 1.5
-                #prediction = 0
-            else:
-                speed_mode_coef = 1.
->>>>>>> master
 
             if self.speed_mode == 'confidence':
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
