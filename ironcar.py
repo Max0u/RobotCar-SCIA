@@ -10,12 +10,16 @@ from preprocess import brightness, greyscale, contrast
 import preprocess
 import md
 
-from picamera import PiCamera 
+from collections import deque
+from picamera import PiCamera
+
+import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (250, 150)
+CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
+top, bot = 60, -20
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -43,8 +47,13 @@ class Ironcar():
 
         self.speed_acc = 0
 
-        self.verbose = True
+        self.queue = deque(maxlen=100)
+
+        self.verbose = False
         self.mode_function = self.default_call
+
+        self.last_pred = time.time()
+        self.count = 0
 
         # PWM setup
         try:
@@ -59,7 +68,7 @@ class Ironcar():
             self.pwm = None
 
 
-
+        #self.camera_loop()
         from threading import Thread
 
         self.camera_thread = Thread(target=self.camera_loop, args=())
@@ -91,13 +100,12 @@ class Ironcar():
         cam.resolution = CAM_RESOLUTION
         cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
-        i = 0
 
         for f in stream:
-            i += 1
             img_arr = f.array
-            im = PIL_convert(img_arr)
-            im.save(image_name)
+            if self.streaming_state :
+                im = PIL_convert(img_arr)
+                im.save(image_name)
 
             # Predict the direction only when needed
             if self.mode in ['dirauto', 'auto'] and self.started:
@@ -107,7 +115,7 @@ class Ironcar():
             self.mode_function(img_arr, prediction)
 
             
-            if self.streaming_state and i % 2 == 0 :
+            if self.streaming_state :
                 if prediction < 0.2 and prediction > -0.2:
                     index_class = 2
                 if prediction > -0.6 and prediction < -0.2:
@@ -180,6 +188,42 @@ class Ironcar():
 
         pass
 
+    def kalman(self, preds):
+        # fonction kalman
+        # intial parameters
+        n_iter = len(preds)
+        sz = (n_iter,) # size of array
+        x = -0.37727 # truth value (typo in example at top of p. 13 calls this z)
+        z = preds # observations (normal about x, sigma=0.1)
+
+        Q = 1e-5 # process variance
+
+        # allocate space for arrays
+        xhat=np.zeros(sz)      # a posteri estimate of x
+        P=np.zeros(sz)         # a posteri error estimate
+        xhatminus=np.zeros(sz) # a priori estimate of x
+        Pminus=np.zeros(sz)    # a priori error estimate
+        K=np.zeros(sz)         # gain or blending factor
+
+        R = 0.01**2 # estimate of measurement variance, change to see effect
+
+        # intial guesses
+        xhat[0] = 0.0
+        P[0] = 1.0
+
+        for k in range(1,n_iter):
+                # time update
+                xhatminus[k] = xhat[k-1]
+                Pminus[k] = P[k-1]+Q
+
+                # measurement update
+                K[k] = Pminus[k]/( Pminus[k]+R )
+                xhat[k] = xhatminus[k]+K[k]*(z[k]-xhatminus[k])
+                P[k] = (1-K[k])*Pminus[k]
+    
+        return xhat[-1]
+
+
     def autopilot(self, img, prediction):
         """Sends the pwm gas and dir values according to the prediction of the
         Neural Network (NN).
@@ -188,8 +232,16 @@ class Ironcar():
         prediction: dir val
         """
 
+        if abs(prediction) < 0.3 : 
+            self.queue.append(prediction)
+        else :
+            self.queue.clear()
+        if len(self.queue) > 2:
+            prediction = self.kalman(self.queue)
+
         if self.started:
 
+<<<<<<< HEAD
             if abs(prediction) < 0.1:
                 speed_mode_coef = 2
                 self.speed_acc += 1
@@ -203,6 +255,13 @@ class Ironcar():
                     speed_mode_coef = 1
 
             
+=======
+            if abs(prediction) < 0.1 :
+                speed_mode_coef = 1.5
+                #prediction = 0
+            else:
+                speed_mode_coef = 1.
+>>>>>>> master
 
             if self.speed_mode == 'confidence':
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
@@ -211,7 +270,7 @@ class Ironcar():
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
-            print('speed_mode_coef: {}'.format(speed_mode_coef))
+            #print('speed_mode_coef: {}'.format(speed_mode_coef))
 
             local_dir = prediction
 
@@ -235,8 +294,19 @@ class Ironcar():
 
         self.gas(gas_value)
         self.dir(dir_value)
+        
         if self.streaming_state :
             self.training(img, prediction)
+
+        if self.count == 10:
+            now = time.time()
+            if self.verbose :
+                print("FPS :" + str(self.count/(now-self.last_pred)))
+            socketio.emit('fps_update', {'fps': (self.count/(now-self.last_pred))}, namespace='/car')
+            self.last_pred = now
+            self.count = 0
+        self.count += 1
+
 
     def dirauto(self, img, prediction):
         """Sets the pwm values for dir according to the prediction from the
@@ -264,7 +334,7 @@ class Ironcar():
         image_name = os.path.join(self.save_folder, image_name)
 
         #img_arr = np.array(img[80:, :, :], copy=True)
-        img_arr = np.array(img[60:-20, :, :], copy=True)
+        img_arr = np.array(img[top:bot, :, :], copy=True)
         img_arr = PIL_convert(img_arr)
 
         img_arr.save(image_name)
@@ -390,8 +460,30 @@ class Ironcar():
         Returns the direction predicted by the model (float)
         """
         try:
+            if self.streaming_state : 
+                from io import BytesIO
+                from base64 import b64encode
+                image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
+                #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
+                """
+                im = PIL_convert(img[0])
+                im.save(image_YUV)
+                buffered = BytesIO()
+                im.save(buffered, format="JPEG")
+                img_str = b64encode(buffered.getvalue())
+                socketio.emit('stream_YUV', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
+                """
 
-            img, pre = preprocess.preprocess(img)
+                im = PIL_convert(img[top:bot, :, :])
+                im.save(image_prepro)
+                buffered = BytesIO()
+                im.save(buffered, format="JPEG")
+                img_str = b64encode(buffered.getvalue())
+                socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
+                    'ascii') }, namespace='/car')
+            
+            img = preprocess.preprocess(img)
 
             img = np.array([img])
 
@@ -399,36 +491,14 @@ class Ironcar():
                 pred = float(self.model.predict(img, batch_size=1))
                 if self.verbose:
                     print('pred : ', pred)
+        
         except Exception as e:
             # Don't print if the model is not relevant given the mode
-            if self.verbose and self.mode in ['dirauto', 'auto']:
+            if self.mode in ['dirauto', 'auto']: #self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
             pred = 0
 
-        if self.streaming_state : 
-            from io import BytesIO
-            from base64 import b64encode
-            image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
-        #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
 
-            im = PIL_convert(pre)
-            im.save(image_prepro)
-            buffered = BytesIO()
-            im.save(buffered, format="JPEG")
-            img_str = b64encode(buffered.getvalue())
-            socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-
-
-        """
-        im = PIL_convert(img[0])
-        im.save(image_YUV)
-        buffered = BytesIO()
-        im.save(buffered, format="JPEG")
-        img_str = b64encode(buffered.getvalue())
-        socketio.emit('stream_YUV', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-        """
         return pred
 
     def switch_streaming(self):
