@@ -47,7 +47,7 @@ class Ironcar():
 
         self.speed_acc = 0
 
-        self.queue = deque(maxlen=100)
+        self.queue = deque(maxlen=50)
 
         self.verbose = False
         self.mode_function = self.default_call
@@ -223,6 +223,21 @@ class Ironcar():
     
         return xhat[-1]
 
+    def speed_strat(self, prediction, speed_mode_coef):
+        if abs(prediction) < 0.2 :
+            speed_mode_coef =  2 + 0.2 * self.speed_acc 
+            self.speed_acc += 1
+            self.speed_acc = min(self.speed_acc, 5)
+            prediction *= abs(prediction)
+        else:
+            if self.speed_acc > 3 :        
+                speed_mode_coef = 0.3
+                self.speed_acc -= 1
+            else :
+                speed_mode_coef = 1
+        return prediction, speed_mode_coef
+
+
 
     def autopilot(self, img, prediction):
         """Sends the pwm gas and dir values according to the prediction of the
@@ -232,7 +247,7 @@ class Ironcar():
         prediction: dir val
         """
 
-        if abs(prediction) < 0.3 : 
+        if abs(prediction) < 0.5 : 
             self.queue.append(prediction)
         else :
             self.queue.clear()
@@ -240,6 +255,7 @@ class Ironcar():
             prediction = self.kalman(self.queue)
 
         if self.started:
+            prediction, speed_mode_coef = self.speed_strat(prediction, speed_mode_coef)
 
             if len(self.queue) > 2 : #abs(prediction) < 0.1 :
                 speed_mode_coef =  2 + 0.2 * self.speed_acc 
@@ -255,10 +271,13 @@ class Ironcar():
                     speed_mode_coef = 1
 
 
-            if self.speed_mode == 'confidence':
+            if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
-            elif self.speed_mode == 'auto':
-                speed_mode_coef = speed_mode_coef - min(prediction**2, .5)
+            elif self.speed_mode == 'auto' :
+                if abs(prediction) < 0.1 :
+                    speed_mode_coef = 2
+                else:
+                    speed_mode_coef = 1
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
@@ -278,8 +297,7 @@ class Ironcar():
                     self.commands['rev_drive']) + self.commands['rev_drive']))
                 """
 
-            dir_value = int(
-                local_dir * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
+            dir_value = int(local_dir * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
         else:
             gas_value = self.commands['neutral']
             dir_value = self.commands['straight']
