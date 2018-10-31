@@ -45,6 +45,8 @@ class Ironcar():
         self.load_config() 
         self.camera = PiCamera(framerate=self.fps)
 
+        self.speed_acc = 0
+
         self.queue = deque(maxlen=100)
 
         self.verbose = False
@@ -239,16 +241,24 @@ class Ironcar():
 
         if self.started:
 
-            if abs(prediction) < 0.1 :
-                speed_mode_coef = 1.5
-                #prediction = 0
+            if len(self.queue) > 2 : #abs(prediction) < 0.1 :
+                speed_mode_coef =  2 + 0.2 * self.speed_acc 
+                self.speed_acc += 1
+                self.speed_acc = min(self.speed_acc, 5)
+                prediction *= abs(prediction)
             else:
-                speed_mode_coef = 1.
+                if self.speed_acc > 3 :
+                    
+                    speed_mode_coef = 0.7
+                    self.speed_acc -= 1
+                else :
+                    speed_mode_coef = 1
+
 
             if self.speed_mode == 'confidence':
-                speed_mode_coef = 1.5 - min(prediction**2, 1.)
+                speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto':
-                speed_mode_coef = speed_mode_coef - prediction**2
+                speed_mode_coef = speed_mode_coef - min(prediction**2, .5)
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
@@ -267,6 +277,7 @@ class Ironcar():
                 gas_value = int(local_gas * (self.commands['rev_drive_max'] -
                     self.commands['rev_drive']) + self.commands['rev_drive']))
                 """
+
             dir_value = int(
                 local_dir * (self.commands['right'] - self.commands['left'])/2. + self.commands['straight'])
         else:
@@ -535,7 +546,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            self.model = md.build_model();
+            self.model = md.build_model2();
             self.model.load_weights(model_name)
 
             #self.model = load_model(model_name)
