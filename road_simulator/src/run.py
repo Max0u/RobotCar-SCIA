@@ -9,7 +9,8 @@ white = White()
 yellow = Yellow()
 shadow = DarkShadow()
 
-def generate(n_examples, n_backgrounds=50, path='output'):
+def generate(n_examples, n_backgrounds=50,
+        path='output'):
 
     simulator = Simulator()
 
@@ -22,7 +23,7 @@ def generate(n_examples, n_backgrounds=50, path='output'):
                              n_rot=5,
                              n_crop=5,
                              n_res=5,
-                             path='../ground_pics',
+                             path='../../resources/ground_pics',
                              input_size=(250, 200)))
 
     """ LAYERS """
@@ -36,7 +37,7 @@ def generate(n_examples, n_backgrounds=50, path='output'):
                             middle_line=(20, 50, "dashed", yellow),
                             thickness_range=[5, 6, 7, 8, 9],
                             target_ratio=0,
-                            straight_line_rate=0.05))
+                            straight_line_rate=0))
 
     # add perspective
     simulator.add(Perspective())
@@ -68,5 +69,5 @@ if __name__ == '__main__':
         will generate 400.
     """
 
-    generate(10000, n_backgrounds=50, path='output')
+    generate(200000, n_backgrounds=50, path='../../resources/train_dataset0.0_straight0%')
 
