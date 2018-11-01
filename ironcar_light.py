@@ -49,7 +49,7 @@ class Ironcar():
 
         self.queue = deque(maxlen=50)
 
-        self.verbose = False
+        self.verbose = True
         self.mode_function = self.default_call
 
         self.last_pred = time.time()
@@ -95,70 +95,21 @@ class Ironcar():
             print('Exception ', e)
             raise CameraException()
 
-        image_name = os.path.join(self.stream_path, 'capture.jpg')
 
         cam.resolution = CAM_RESOLUTION
         cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
 
         for f in stream:
+            cam_output.trucate(0)
             img_arr = f.array
-            if self.streaming_state :
-                im = PIL_convert(img_arr)
-                im.save(image_name)
 
             # Predict the direction only when needed
-            if self.mode in ['dirauto', 'auto'] and self.started:
+            if self.started:
                 prediction = float(self.predict_from_img(img_arr))
-            else:
-                prediction = 0
             self.mode_function(img_arr, prediction)
 
             
-            if self.streaming_state :
-                if prediction < 0.2 and prediction > -0.2:
-                    index_class = 2
-                if prediction > -0.6 and prediction < -0.2:
-                    index_class = 1
-                if prediction > -1 and prediction < -0.6:
-                    index_class = 0
-                if prediction < 0.6 and prediction > 0.2:
-                    index_class = 3
-                if prediction < 1 and prediction > 0.6:
-                    index_class = 4 
-                
-                buffered = BytesIO()
-                im.save(buffered, format="JPEG")
-                img_str = b64encode(buffered.getvalue())
-                socketio.emit('picture_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii'), 'index': index_class, 'pred': float(prediction) }, namespace='/car')
-
-            cam_output.truncate(0)
-
-    def picture(self):
-        """Sends the last picture saved by the streaming
-        through a socket.
-        """
-
-        pictures = sorted([f for f in os.listdir(self.stream_path)])
-
-        if len(pictures):
-            p2 = pictures[-1]
-            p = pictures[0]
-            #p3 = pictures[1]
-            picture_path = os.path.join(self.stream_path, p)
-            picture_path2 = os.path.join(self.stream_path, p2)
-            #picture_path3 = os.path.join(self.stream_path, p3)
-            while os.stat(picture_path).st_size == 0:
-                pass
-            return picture_path, picture_path2#, picture_path3
-
-        else:
-            socketio.emit('msg2user', {'type': 'warning',
-                                       'msg': 'There is no picture to send'}, namespace='/car')
-            if self.verbose:
-                print('There is no picture to send')
-            return None
 
     def gas(self, value):
         """Sends the pwm signal on the gas channel"""
@@ -303,40 +254,6 @@ class Ironcar():
             self.count = 0
         self.count += 1
 
-
-    def dirauto(self, img, prediction):
-        """Sets the pwm values for dir according to the prediction from the
-        Neural Network (NN).
-        """
-
-        local_dir = prediction
-
-        if self.started:
-            dir_value = int(local_dir * (self.commands['right'] - self.commands['left']) / 2. + self.commands['straight'])
-        else:
-            dir_value = self.commands['straight']
-        self.dir(dir_value)
-
-    def training(self, img, prediction):
-        """Saves the image of the picamera with the right labels of dir
-        and gas.
-        """
-        #if ((abs(self.curr_gas) + abs(self.curr_dir)) < 0.2):
-        #    return
-
-        image_name = '_'.join(['frame', str(self.n_img), 'gas',
-                               str(self.curr_gas), 'dir', str(self.curr_dir)])
-        image_name += '.jpg'
-        image_name = os.path.join(self.save_folder, image_name)
-
-        #img_arr = np.array(img[80:, :, :], copy=True)
-        img_arr = np.array(img[top:bot, :, :], copy=True)
-        img_arr = PIL_convert(img_arr)
-
-        img_arr.save(image_name)
-
-        self.n_img += 1
-
     def switch_mode(self, new_mode):
         """Switches the mode between:
                 - training
@@ -347,33 +264,18 @@ class Ironcar():
 
         # always switch the starter to stopped when switching mode
         self.started = False
-        socketio.emit('starter_switch', {'activated': self.started}, namespace='/car')
 
         # Stop the gas before switching mode and reset wheel angle (safe)
         self.gas(self.commands['neutral'])
         self.dir(self.commands['straight'])
 
-        if new_mode == "dirauto":
-            self.mode = 'dirauto'
-            if self.model_loaded:
-                self.mode_function = self.dirauto
-            else:
-                socketio.emit('msg2user', {'type': 'warning',
-                                           'msg': 'Model not loaded'}, namespace='/car')
-                if self.verbose:
-                    print("model not loaded")
-        elif new_mode == "auto":
+        if new_mode == "auto":
             self.mode = 'auto'
             if self.model_loaded:
                 self.mode_function = self.autopilot
             else:
                 if self.verbose:
-                    socketio.emit('msg2user', {'type': 'warning',
-                                               'msg': 'Model not loaded'}, namespace='/car')
                     print("model not loaded")
-        elif new_mode == "training":
-            self.mode = 'training'
-            self.mode_function = self.training
         else:
             self.mode = 'resting'
             self.mode_function = self.default_call
@@ -403,11 +305,6 @@ class Ironcar():
         if not self.started:
             return
 
-        if self.mode not in ['training']:  # Ignore dir commands if not in training mode
-            if self.verbose:
-                print('Ignoring dir command')
-            return
-
         self.curr_dir = self.commands['invert_dir'] * float(data)
         if self.curr_dir == 0:
             new_value = self.commands['straight']
@@ -423,12 +320,6 @@ class Ironcar():
         """
 
         if not self.started:
-            return
-
-        # Ignore gas commands if not in training/dirauto mode
-        if self.mode not in ['training', 'dirauto']:
-            if self.verbose:
-                print('Ignoring gas command')
             return
 
         self.curr_gas = float(data) * self.max_speed_rate
@@ -455,34 +346,9 @@ class Ironcar():
 
         Returns the direction predicted by the model (float)
         """
-        try:
-            if self.streaming_state : 
-                from io import BytesIO
-                from base64 import b64encode
-                image_prepro = os.path.join(self.stream_path, 'prepro.jpg')
-                #image_YUV = os.path.join(self.stream_path, 'YUV.jpg')
-                """
-                im = PIL_convert(img[0])
-                im.save(image_YUV)
-                buffered = BytesIO()
-                im.save(buffered, format="JPEG")
-                img_str = b64encode(buffered.getvalue())
-                socketio.emit('stream_YUV', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-                """
-
-                im = PIL_convert(img[top:bot, :, :])
-                im.save(image_prepro)
-                buffered = BytesIO()
-                im.save(buffered, format="JPEG")
-                img_str = b64encode(buffered.getvalue())
-                socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
-                    'ascii') }, namespace='/car')
-            
+        try: 
             img = preprocess.preprocess(img)
-
             img = np.array([img])
-
             with self.graph.as_default():
                 pred = float(self.model.predict(img, batch_size=1))
                 if self.verbose:
@@ -494,14 +360,17 @@ class Ironcar():
                 print('Prediction error : ', e)
             pred = 0
 
-
         return pred
+
+    def switch_speed_mode(self, speed_mode):
+        """Changes the speed mode of the car"""
+        self.speed_mode = speed_mode
 
     def switch_streaming(self):
         """Switches the streaming state."""
 
         self.streaming_state = not self.streaming_state
-        
+    
         camera = self.camera
         if self.streaming_state :
             camera.start_preview()
@@ -513,22 +382,11 @@ class Ironcar():
         if self.verbose:
             print('Streaming state set to {}'.format(self.streaming_state))
 
-    def switch_speed_mode(self, speed_mode):
-        """Changes the speed mode of the car"""
-
-        self.speed_mode = speed_mode
-        msg = 'Speed mode set to {}'.format(speed_mode)
-        socketio.emit('msg2user', {'type': 'success','msg': msg}, namespace='/car')
 
     def select_model(self, model_name):
         """Changes the model of autopilot selected and loads it."""
 
-        data = {'type': 'info', 'msg': 'Loading model {}...'.format(model_name)}
-        socketio.emit('msg2user', data, namespace='/car')
-
         if model_name == self.current_model:
-            data = {'type': 'info', 'msg': 'Model {} already loaded.'.format(self.current_model)}
-            socketio.emit('model_loaded', data, namespace='/car')
             return
 
         try:
@@ -539,10 +397,6 @@ class Ironcar():
                     from tensorflow import get_default_graph
                     from keras.models import load_model
                 except Exception as e:
-                    msg = 'Error while importing ML librairies. Got error {}'.format(e)
-                    data = {'type': 'danger', 'msg': msg}
-                    socketio.emit('msg2user', data, namespace='/car')
-
                     if self.verbose:
                         print('ML error : ', e)
                     return
@@ -561,16 +415,10 @@ class Ironcar():
             self.model_loaded = True
             self.switch_mode(self.mode)
 
-            data = {'type': 'success', 'msg': 'The model {} has been successfully loaded'.format(self.current_model)}
-            socketio.emit('model_loaded', data, namespace='/car')
-
             if self.verbose:
                 print('The model {} has been successfully loaded'.format(self.current_model))
 
         except Exception as e:
-            data = {'type': 'danger', 'msg': 'Error while loading model {}. Got error {}'.format(model_name, e)}
-            socketio.emit('msg2user', data, namespace='/car')
-
             if self.verbose:
                 print('An Exception occured : ', e)
 

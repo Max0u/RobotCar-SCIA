@@ -224,6 +224,7 @@ class Ironcar():
         return xhat[-1]
 
     def speed_strat(self, prediction, speed_mode_coef):
+
         if abs(prediction) < 0.2 :
             speed_mode_coef =  2 + 0.2 * self.speed_acc 
             self.speed_acc += 1
@@ -255,21 +256,7 @@ class Ironcar():
             prediction = self.kalman(self.queue)
 
         if self.started:
-            prediction, speed_mode_coef = self.speed_strat(prediction, speed_mode_coef)
-
-            if len(self.queue) > 2 : #abs(prediction) < 0.1 :
-                speed_mode_coef =  2 + 0.2 * self.speed_acc 
-                self.speed_acc += 1
-                self.speed_acc = min(self.speed_acc, 5)
-                prediction *= abs(prediction)
-            else:
-                if self.speed_acc > 3 :
-                    
-                    speed_mode_coef = 0.7
-                    self.speed_acc -= 1
-                else :
-                    speed_mode_coef = 1
-
+            prediction, speed_mode_coef = self.speed_strat(prediction, speed_mode_coef) 
 
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
