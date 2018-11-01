@@ -101,9 +101,9 @@ class Ironcar():
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
 
         for f in stream:
-            cam_output.trucate(0)
+            cam_output.truncate(0)
             img_arr = f.array
-
+            prediction = 0
             # Predict the direction only when needed
             if self.started:
                 prediction = float(self.predict_from_img(img_arr))
@@ -116,23 +116,24 @@ class Ironcar():
 
         if self.pwm is not None:
             self.pwm.set_pwm(self.commands['gas_pin'], 0, value)
-            if self.verbose:
-                print('GAS : ', value)
+            #if self.verbose:
+            #    print('GAS : ', value)
         else:
             if self.verbose:
-                print('GAS : ', value)
+                print('PWM module not loaded')
+                #print('GAS : ', value)
 
     def dir(self, value):
         """Sends the pwm signal on the dir channel"""
 
         if self.pwm is not None:
             self.pwm.set_pwm(self.commands['dir_pin'], 0, value)
-            if self.verbose:
-                print('DIR : ', value)
+            #if self.verbose:
+            #    print('DIR : ', value)
         else:
             if self.verbose:
-                #print('PWM module not loaded')
-                print('DIR : ', value)
+                print('PWM module not loaded')
+                #print('DIR : ', value)
 
     def default_call(self, img, prediction):
         """Default function call. Does nothing."""
@@ -174,7 +175,7 @@ class Ironcar():
     
         return xhat[-1]
 
-    def speed_strat(self, prediction, speed_mode_coef):
+    def speed_strat(self, prediction):
         if abs(prediction) < 0.2 :
             speed_mode_coef =  2 + 0.2 * self.speed_acc 
             self.speed_acc += 1
@@ -206,7 +207,7 @@ class Ironcar():
             prediction = self.kalman(self.queue)
 
         if self.started:
-            prediction, speed_mode_coef = self.speed_strat(prediction, speed_mode_coef)
+            prediction, speed_mode_coef = self.speed_strat(prediction)
 
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
@@ -248,7 +249,7 @@ class Ironcar():
         if self.count == 10:
             now = time.time()
             if self.verbose :
-                print("FPS :" + str(self.count/(now-self.last_pred)))
+                print("FPS : " + str(self.count/(now-self.last_pred)))
             socketio.emit('fps_update', {'fps': (self.count/(now-self.last_pred))}, namespace='/car')
             self.last_pred = now
             self.count = 0
