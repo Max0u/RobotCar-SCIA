@@ -49,7 +49,7 @@ class Ironcar():
 
         self.queue = deque(maxlen=50)
 
-        self.verbose = True
+        self.verbose = False
         self.mode_function = self.default_call
 
         self.last_pred = time.time()
@@ -97,12 +97,20 @@ class Ironcar():
 
 
         cam.resolution = CAM_RESOLUTION
-        cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
-        stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
+        #cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
+        #stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
+        cam.exposure_mode = 'off'
+        cam.shutter_speed = 6000000 
 
-        for f in stream:
-            cam_output.truncate(0)
-            img_arr = f.array
+
+        #for f in stream:
+        while True:
+            output = np.empty((160, 208, 3), dtype=np.uint8)
+            cam.capture(output, 'rgb', use_video_port=True)
+            if self.verbose and self.count == 1:
+                print(cam.exposure_speed)
+            img_arr = output[10:156, 4:204, :]
+            #cam_output.truncate(0)
             prediction = 0
             # Predict the direction only when needed
             if self.started:
@@ -248,7 +256,7 @@ class Ironcar():
 
         if self.count == 10:
             now = time.time()
-            if self.verbose :
+            if not self.verbose :
                 print("FPS : " + str(self.count/(now-self.last_pred)))
             socketio.emit('fps_update', {'fps': (self.count/(now-self.last_pred))}, namespace='/car')
             self.last_pred = now
