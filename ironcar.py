@@ -47,11 +47,7 @@ class Ironcar():
 
         self.speed_acc = 0
 
-<<<<<<< HEAD
-        self.queue = deque(maxlen=100)
-=======
         self.queue = deque(maxlen=50)
->>>>>>> origin/speed
 
         self.verbose = False
         self.mode_function = self.default_call
@@ -227,7 +223,7 @@ class Ironcar():
     
         return xhat[-1]
 
-    def speed_strat(self, prediction, speed_mode_coef):
+    def speed_strat(self, prediction):
 
         if abs(prediction) < 0.2 :
             speed_mode_coef =  2 + 0.2 * self.speed_acc 
@@ -260,7 +256,7 @@ class Ironcar():
             prediction = self.kalman(self.queue)
 
         if self.started:
-            prediction, speed_mode_coef = self.speed_strat(prediction, speed_mode_coef) 
+            prediction, speed_mode_coef = self.speed_strat(prediction) 
             
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
@@ -556,7 +552,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            self.model = md.build_model2();
+            self.model = md.build_model();
             self.model.load_weights(model_name)
 
             #self.model = load_model(model_name)
