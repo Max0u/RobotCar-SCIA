@@ -5,7 +5,6 @@ import numpy as np
 from app import socketio
 from PIL.Image import fromarray as PIL_convert
 from utils import ConfigException, CameraException
-from preprocess import brightness, greyscale, contrast
 
 import preprocess
 import md
@@ -99,17 +98,24 @@ class Ironcar():
         cam.resolution = CAM_RESOLUTION
         #cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
         #stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
-        cam.exposure_mode = 'off'
-        cam.shutter_speed = 6000000 
 
 
         #for f in stream:
         while True:
             output = np.empty((160, 208, 3), dtype=np.uint8)
             cam.capture(output, 'rgb', use_video_port=True)
+
             if self.verbose and self.count == 1:
                 print(cam.exposure_speed)
-            img_arr = output[10:156, 4:204, :]
+            img_arr = output[:146, :200, :]
+            
+            #if self.count == 8:
+            #    import sys
+            #    img = PIL_convert(img_arr, 'RGB')
+            #    img.save('my.png')
+            #    img.show()
+            #    sys.exit(0)
+
             #cam_output.truncate(0)
             prediction = 0
             # Predict the direction only when needed

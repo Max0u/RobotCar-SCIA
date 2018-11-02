@@ -3,7 +3,20 @@ from ironcar_light import *
 import signal
 import sys
 
-model = "models/model-0,0YUV.h5"
+import argparse
+
+parser = argparse.ArgumentParser(description='Self-Driving Car Prediction Program')
+parser.add_argument('-p', help='load model path', dest='model_path', type=str, default="models/model-0,0YUV.h5")
+
+args = parser.parse_args()
+
+print('-' * 30)
+print('Parameters')
+print('-' * 30)
+for key, value in vars(args).items():
+    print('{:<20} := {}'.format(key, value))
+print('-' * 30)
+
 
 iron = Ironcar()
 
@@ -11,7 +24,7 @@ iron.load_config()
 
 iron.max_speed_update(0.5)
 
-iron.select_model(model)
+iron.select_model(args.model_path)
 
 iron.switch_mode("auto")
 
