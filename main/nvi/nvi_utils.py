@@ -179,7 +179,7 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size,
             # argumentation
             if is_training and np.random.rand() < 0.6:
                 image, steering_angle = augument(data_dir, center,
-                        steering_angle, crop)
+                        steering_angle, crop=crop)
             else:
                 image = load_image(data_dir, center, crop)
                 image = resize(image)
