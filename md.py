@@ -35,7 +35,7 @@ def build_model():
 
 
 
-def build_model2():
+def build_model_opti():
     """
     Modified NVIDIA model
     """
@@ -53,4 +53,72 @@ def build_model2():
     model.summary()
 
     return model
+
+
+def build_model_squeeze():
+    """ 
+    Squeeze net model
+    """
+    img_input = Input(shape=INPUT_SHAPE)
+
+    x = Conv2D(64, (3, 3), strides=(2, 2), padding='valid')(img_input)
+    x = Activation('elu')(x)
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+    x = fire(x, squeeze=16, expand=16)
+    x = fire(x, squeeze=16, expand=16)
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+    x = fire(x, squeeze=32, expand=32)
+    x = fire(x, squeeze=32, expand=32)
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+    x = fire(x, squeeze=48, expand=48)
+    x = fire(x, squeeze=48, expand=48)
+    x = fire(x, squeeze=64, expand=64)
+    x = fire(x, squeeze=64, expand=64)
+    x = Dropout(0.5)(x)
+
+    x = Conv2D(5, (1, 1), padding='valid')(x)
+    x = Activation('elu')(x)
+    x = Flatten()(x)
+
+    x = Dense(1)(x)
+    out = Activation('linear')(x)
+
+    model= Model(img_input, out)
+
+    model.summary()
+    return model
+
+def build_model_squeeze_opti():
+    """ 
+    Squeeze net opti model
+    """
+    img_input = Input(shape=INPUT_SHAPE)
+
+    x = Conv2D(64, (3, 3), strides=(2, 2), padding='valid')(img_input)
+    x = Activation('elu')(x)
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+    x = fire(x, squeeze=8, expand=32)
+    x = fire(x, squeeze=8, expand=32)
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+    x = fire(x, squeeze=16, expand=64)
+    x = fire(x, squeeze=16, expand=64)
+    x = Dropout(0.5)(x)
+
+    x = Conv2D(5, (1, 1), padding='valid')(x)
+    x = Activation('elu')(x)
+    x = Flatten()(x)
+
+    x = Dense(1)(x)
+    out = Activation('linear')(x)
+
+    model= Model(img_input, out)
+
+    model.summary()
+    return model
+
 
