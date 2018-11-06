@@ -13,7 +13,7 @@ def root_mean_squared_error(y_true, y_pred):
 
 #mod = md.build_model()
 #mod = load_model("model-test-lstm.hdf5", custom_objects={'root_mean_squared_error': root_mean_squared_error})
-mod = load_model("model-008.h5")
+mod = load_model("model-0,0YUV.h5")
 #mod.load_weights("model-0,0YUV.h5")
 
 it = 1000
