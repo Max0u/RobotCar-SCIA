@@ -22,7 +22,7 @@ iron = Ironcar()
 
 iron.load_config()
 
-iron.max_speed_update(0.5)
+iron.max_speed_update(0.3)
 
 iron.select_model(args.model_path)
 

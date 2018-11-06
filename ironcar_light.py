@@ -191,7 +191,7 @@ class Ironcar():
 
     def speed_strat(self, prediction):
         if abs(prediction) < 0.2 :
-            speed_mode_coef =  2 + 0.2 * self.speed_acc 
+            speed_mode_coef =  1.5 + 0.2 * self.speed_acc 
             self.speed_acc += 1
             self.speed_acc = min(self.speed_acc, 5)
             prediction *= abs(prediction)
@@ -213,12 +213,12 @@ class Ironcar():
         prediction: dir val
         """
 
-        if abs(prediction) < 0.5 : 
+        if abs(prediction) < 0.4 : 
             self.queue.append(prediction)
         else :
             self.queue.clear()
-        if len(self.queue) > 2:
-            prediction = self.kalman(self.queue)
+        #if len(self.queue) > 2:
+        #    prediction = self.kalman(self.queue)
 
         if self.started:
             prediction, speed_mode_coef = self.speed_strat(prediction)
@@ -419,7 +419,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            self.model = md.build_model();
+            self.model = md.build_model()#_squeeze();
             self.model.load_weights(model_name)
 
             #self.model = load_model(model_name)
