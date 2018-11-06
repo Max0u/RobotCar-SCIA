@@ -34,14 +34,14 @@ def load_data(args):
 
 
 def fire(x, squeeze=16, expand=64):
-    x = Conv2D(squeeze, (1,1), padding='valid')(x)
-    x = Activation('elu')(x)
+    x = Conv2D(squeeze, (1,1), activation='elu', padding='valid')(x)
+    #x = Activation('elu')(x)
     
-    left = Conv2D(expand, (1,1), padding='valid')(x)
-    left = Activation('elu')(left)
+    left = Conv2D(expand, (1,1), activation='elu', padding='valid')(x)
+    #left = Activation('elu')(left)
     
-    right = Conv2D(expand, (3,3), padding='same')(x)
-    right = Activation('elu')(right)
+    right = Conv2D(expand, (3,3), activation='elu', padding='same')(x)
+    #right = Activation('elu')(right)
     
     x = concatenate([left, right], axis=3)
     return x
@@ -52,30 +52,30 @@ def build_model(args):
     """
     img_input = Input(shape=INPUT_SHAPE)
 
-    x = Conv2D(64, (3, 3), strides=(2, 2), padding='valid')(img_input)
-    x = Activation('elu')(x)
+    x = Conv2D(64, (3, 3), activation='elu', strides=(2, 2), padding='valid')(img_input)
+    #x = Activation('elu')(x)
     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
-    x = fire(x, squeeze=8, expand=32)
-    x = fire(x, squeeze=8, expand=32)
+    x = fire(x, squeeze=16, expand=16)
+    x = fire(x, squeeze=16, expand=16)
     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
-    x = fire(x, squeeze=16, expand=64)
-    x = fire(x, squeeze=16, expand=64)
-    #x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+    x = fire(x, squeeze=32, expand=32)
+    x = fire(x, squeeze=32, expand=32)
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
-    #x = fire(x, squeeze=48, expand=48)
-    #x = fire(x, squeeze=48, expand=48)
+    x = fire(x, squeeze=48, expand=48)
+    x = fire(x, squeeze=48, expand=48)
     #x = fire(x, squeeze=64, expand=64)
     #x = fire(x, squeeze=64, expand=64)
     x = Dropout(args.keep_prob)(x)
 
-    x = Conv2D(5, (1, 1), padding='valid')(x)
-    x = Activation('elu')(x)
+    x = Conv2D(5, (1, 1), activation='elu', padding='valid')(x)
+    #x = Activation('elu')(x)
     x = Flatten()(x)
 
-    x = Dense(1)(x)
-    out = Activation('linear')(x)
+    out = Dense(1, activation='linear')(x)
+    #out = Activation('linear')(x)
 
     model= Model(img_input, out)
 
