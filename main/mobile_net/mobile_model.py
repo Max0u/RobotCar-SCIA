@@ -40,7 +40,13 @@ def build_model(args):
     """
     Mobile net model
     """
-    model = MobileNet()
+    model = MobileNet(input_shape=INPUT_SHAPE, alpha=0.2, depth_multiplier=0.2, dropout=args.keep_prob,include_top=False)
+    model.layers.pop()
+    for layer in model.layers:
+        layer.trainable = False
+        
+    model.add(Dense(50))
+    model.add(Dense(1))
     model.summary()
     return model
 
@@ -87,7 +93,7 @@ def s2b(s):
     return s == 'true' or s == 'yes' or s == 'y' or s == '1'
 
 def freeze(model):
-    for layer in model.layers[:-6]:
+    for layer in model.layers[:-2]:
         layer.trainable = False
     return model
 
