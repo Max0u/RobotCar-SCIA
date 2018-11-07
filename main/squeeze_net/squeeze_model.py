@@ -35,13 +35,10 @@ def load_data(args):
 
 def fire(x, squeeze=16, expand=64):
     x = Conv2D(squeeze, (1,1), activation='elu', padding='valid')(x)
-    #x = Activation('elu')(x)
     
     left = Conv2D(expand, (1,1), activation='elu', padding='valid')(x)
-    #left = Activation('elu')(left)
     
     right = Conv2D(expand, (3,3), activation='elu', padding='same')(x)
-    #right = Activation('elu')(right)
     
     x = concatenate([left, right], axis=3)
     return x
@@ -71,11 +68,9 @@ def build_model(args):
     x = Dropout(args.keep_prob)(x)
 
     x = Conv2D(5, (1, 1), activation='elu', padding='valid')(x)
-    #x = Activation('elu')(x)
     x = Flatten()(x)
 
     out = Dense(1, activation='linear')(x)
-    #out = Activation('linear')(x)
 
     model= Model(img_input, out)
 
