@@ -2,10 +2,14 @@ import pandas as pd
 import numpy as np
 from cv2 import imread 
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.optimizers import Adam, Nadam
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten, BatchNormalization
+from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten,\
+Input, Activation, concatenate
+
+from keras.applications.mobilenet import MobileNet
+
 from nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
 import os
@@ -34,28 +38,10 @@ def load_data(args):
 
 def build_model(args):
     """
-    Modified NVIDIA model
+    Mobile net model
     """
-    model = Sequential()
-    model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE))
-    model.add(Conv2D(24, (5, 5), activation="elu", strides=(2, 2)))
-    model.add(BatchNormalization())
-    model.add(Conv2D(36, (5, 5), activation="elu", strides=(2, 2)))
-    model.add(BatchNormalization())
-    model.add(Conv2D(48, (5, 5), activation="elu", strides=(2, 2)))
-    model.add(BatchNormalization())
-    model.add(Conv2D(64, (3, 3), activation='elu'))
-    model.add(BatchNormalization())
-    model.add(Conv2D(64, (3, 3), activation='elu'))
-    model.add(BatchNormalization())
-    model.add(Dropout(args.keep_prob))
-    model.add(Flatten())
-    model.add(Dense(50, activation='elu'))
-    model.add(Dropout(args.keep_prob))
-    model.add(Dense(10, activation='elu'))
-    model.add(Dense(1))
+    model = MobileNet()
     model.summary()
-
     return model
 
 
@@ -63,7 +49,7 @@ def train_model(model, args, X_train, X_valid, y_train, y_valid, ft=False):
     """
     Train the model
     """
-    direct = 'lite_nvi_models' 
+    direct = 'mobile_models' 
     if not os.path.exists(direct):
         os.makedirs(direct)
     checkpoint = ModelCheckpoint(direct + '/model-{epoch:03d}.h5',
@@ -117,7 +103,7 @@ def main():
     parser.add_argument('-t', help='test size fraction',    dest='test_size',
             type=float, default=0.2)
     parser.add_argument('-k', help='drop out probability',  dest='keep_prob',
-            type=float, default=0.2)
+            type=float, default=0.5)
     parser.add_argument('-n', help='number of epochs',      dest='nb_epoch',
             type=int,   default=20)
     parser.add_argument('-s', help='samples per epoch',
