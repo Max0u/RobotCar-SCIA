@@ -4,6 +4,8 @@ from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten, Input, Activation, concatenate
 
+from keras.applications.mobilenet_v2 import MobileNetV2
+
 import argparse
 import os
 
