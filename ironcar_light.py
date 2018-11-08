@@ -212,13 +212,14 @@ class Ironcar():
         img: unused. But has to stay because other modes need it.
         prediction: dir val
         """
-"""
+        """
         if abs(prediction) < 0.4 : 
             self.queue.append(prediction)
         else :
             self.queue.clear()
-"""
-        if self.started:
+        """
+        if self.started :
+
             speed_mode_coef = 1
 
             if self.speed_mode == 'confidence' :
