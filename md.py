@@ -47,28 +47,6 @@ def build_model():
     return model
 
 
-
-
-def build_model_opti():
-    """
-    Modified NVIDIA model
-    """
-    model = Sequential()
-    model.add(Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE))
-    model.add(Conv2D(2, (3, 3), activation="elu", strides=(2, 2)))
-    model.add(Conv2D(4, (3, 3), activation="elu", strides=(2, 2)))
-    model.add(Conv2D(8, (3, 3), activation="elu", strides=(2, 2)))
-    model.add(Conv2D(12, (2, 2), activation='elu'))
-    model.add(Dropout(0.1))
-    model.add(Flatten())
-    model.add(Dense(20, activation='elu'))
-    model.add(Dense(5, activation='elu'))
-    model.add(Dense(1))
-    model.summary()
-
-    return model
-
-
 def build_model_squeeze():
     """ 
     Squeeze net model
@@ -105,34 +83,6 @@ def build_model_squeeze():
     model.summary()
     return model
 
-def build_model_squeeze_opti():
-    """ 
-    Squeeze net opti model
-    """
-    img_input = Input(shape=INPUT_SHAPE)
 
-    x = Conv2D(64, (3, 3), strides=(2, 2), padding='valid')(img_input)
-    x = Activation('elu')(x)
-    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-    x = fire(x, squeeze=8, expand=32)
-    x = fire(x, squeeze=8, expand=32)
-    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-    x = fire(x, squeeze=16, expand=64)
-    x = fire(x, squeeze=16, expand=64)
-    x = Dropout(0.5)(x)
-
-    x = Conv2D(5, (1, 1), padding='valid')(x)
-    x = Activation('elu')(x)
-    x = Flatten()(x)
-
-    x = Dense(1)(x)
-    out = Activation('linear')(x)
-
-    model= Model(img_input, out)
-
-    model.summary()
-    return model
 
 

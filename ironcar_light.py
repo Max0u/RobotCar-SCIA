@@ -212,26 +212,19 @@ class Ironcar():
         img: unused. But has to stay because other modes need it.
         prediction: dir val
         """
-
+"""
         if abs(prediction) < 0.4 : 
             self.queue.append(prediction)
         else :
             self.queue.clear()
-        #if len(self.queue) > 2:
-        #    prediction = self.kalman(self.queue)
-
+"""
         if self.started:
-            #prediction, speed_mode_coef = self.speed_strat(prediction)
-            
             speed_mode_coef = 1
 
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto' :
-                if abs(prediction) < 0.1 :
-                    speed_mode_coef = 2
-                else:
-                    speed_mode_coef = 1
+                prediction, speed_mode_coef = self.speed_strat(prediction)
 
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
@@ -264,9 +257,8 @@ class Ironcar():
 
         if self.count == 10:
             now = time.time()
-            if not self.verbose :
+            if self.verbose :
                 print("FPS : " + str(self.count/(now-self.last_pred)))
-            socketio.emit('fps_update', {'fps': (self.count/(now-self.last_pred))}, namespace='/car')
             self.last_pred = now
             self.count = 0
         self.count += 1
