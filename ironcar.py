@@ -19,7 +19,7 @@ CONFIG = 'config.json'
 CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
-top, bot = 60, -20
+top, bot = 50, -30
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to

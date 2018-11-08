@@ -18,7 +18,7 @@ CONFIG = 'config.json'
 CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
-top, bot = 60, -20
+top, bot = 40, -40
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -197,7 +197,7 @@ class Ironcar():
             prediction *= abs(prediction)
         else:
             if self.speed_acc > 3 :        
-                speed_mode_coef = 0.3
+                speed_mode_coef = 0.1
                 self.speed_acc -= 1
             else :
                 speed_mode_coef = 1
@@ -221,7 +221,9 @@ class Ironcar():
         #    prediction = self.kalman(self.queue)
 
         if self.started:
-            prediction, speed_mode_coef = self.speed_strat(prediction)
+            #prediction, speed_mode_coef = self.speed_strat(prediction)
+            
+            speed_mode_coef = 1
 
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
@@ -294,11 +296,12 @@ class Ironcar():
         else:
             self.mode = 'resting'
             self.mode_function = self.default_call
+            self.gas(self.commands['stop'])
+            self.dir(self.commands['straight'])
 
         # Make sure we stopped and reset wheel angle even if the previous mode
         # sent a last command before switching.
-        self.gas(self.commands['neutral'])
-        self.dir(self.commands['straight'])
+
 
         if self.verbose:
             print('switched to mode : ', new_mode)
@@ -419,7 +422,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            self.model = md.build_model()#_squeeze();
+            self.model = md.build_model_squeeze();
             self.model.load_weights(model_name)
 
             #self.model = load_model(model_name)
