@@ -2,13 +2,15 @@ import pandas as pd
 import numpy as np
 from cv2 import imread 
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential, Model
-from keras.optimizers import Adam, Nadam
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten,\
-Input, Activation, concatenate
 
-from keras.applications.mobilenet import MobileNet
+from keras.models import Model
+from keras.layers import Input, Conv2D, GlobalAveragePooling2D, Dropout, Flatten
+from keras.layers import Activation, BatchNormalization, add, Reshape, Dense
+from keras.optimizers import Adam
+from keras.callbacks import ModelCheckpoint
+
+from keras.applications.mobilenet_v2 import MobileNetV2
+from keras.utils.vis_utils import plot_model
 
 from nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
@@ -38,16 +40,22 @@ def load_data(args):
 
 def build_model(args):
     """
-    Mobile net model
+    MobileNetv2
     """
-    model = MobileNet(input_shape=INPUT_SHAPE, alpha=0.2, depth_multiplier=0.2, dropout=args.keep_prob,include_top=False)
-    model.layers.pop()
-    for layer in model.layers:
-        layer.trainable = False
-        
-    model.add(Dense(50))
-    model.add(Dense(1))
+
+    model = MobileNetV2(input_shape=None, alpha=0.2, depth_multiplier=1, weights=None, include_top=False, pooling='avg')
+    inputs = model.layers[0].input
+    x = model.layers[-1].output
+    x = Reshape((1, 1, 1280))(x)
+    x = Dropout(args.keep_prob, name='Dropout')(x)
+    x = Conv2D(5, (1, 1), padding='valid')(x)
+    x = Flatten()(x)
+    output = Dense(1, activation='linear')(x)
+
+    model = Model(inputs, output)
     model.summary()
+    plot_model(model, to_file='images/MobileNetv2.png', show_shapes=True)
+
     return model
 
 
@@ -142,6 +150,7 @@ def main():
 
     else :
         train_model(model, args, *data)
+
 
 
 if __name__ == '__main__':
