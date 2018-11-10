@@ -50,7 +50,6 @@ def build_model(args):
     img_input = Input(shape=INPUT_SHAPE)
 
     x = Conv2D(64, (3, 3), activation='elu', strides=(2, 2), padding='valid')(img_input)
-    #x = Activation('elu')(x)
     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
     x = fire(x, squeeze=16, expand=16)
