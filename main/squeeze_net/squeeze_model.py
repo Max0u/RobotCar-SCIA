@@ -11,6 +11,7 @@ from nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
 import os
 from keras import backend as K
+from keras.utils.vis_utils import plot_model
 
 np.random.seed(0)
 
@@ -72,7 +73,7 @@ def build_model(args):
     out = Dense(1, activation='linear')(x)
 
     model= Model(img_input, out)
-
+    plot_model(model, to_file='images/SqueezeNet.png', show_shapes=True)
     model.summary()
     return model
 
