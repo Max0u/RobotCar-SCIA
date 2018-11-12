@@ -18,7 +18,7 @@ CONFIG = 'config.json'
 CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
-top, bot = 60, -20
+top, bot = 40, -40
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -96,18 +96,13 @@ class Ironcar():
 
 
         cam.resolution = CAM_RESOLUTION
-        #cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
-        #stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
+        cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
+        stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
 
-
-        #for f in stream:
-        while True:
-            output = np.empty((160, 208, 3), dtype=np.uint8)
-            cam.capture(output, 'rgb', use_video_port=True)
-
+        for f in stream:
             if self.verbose and self.count == 1:
                 print(cam.exposure_speed)
-            img_arr = output[:146, :200, :]
+            img_arr = f.array
             
             #if self.count == 8:
             #    import sys
@@ -116,7 +111,7 @@ class Ironcar():
             #    img.show()
             #    sys.exit(0)
 
-            #cam_output.truncate(0)
+            cam_output.truncate(0)
             prediction = 0
             # Predict the direction only when needed
             if self.started:
@@ -197,7 +192,7 @@ class Ironcar():
             prediction *= abs(prediction)
         else:
             if self.speed_acc > 3 :        
-                speed_mode_coef = 0.3
+                speed_mode_coef = 0.1
                 self.speed_acc -= 1
             else :
                 speed_mode_coef = 1
@@ -212,13 +207,14 @@ class Ironcar():
         img: unused. But has to stay because other modes need it.
         prediction: dir val
         """
-"""
+        """
         if abs(prediction) < 0.4 : 
             self.queue.append(prediction)
         else :
             self.queue.clear()
-"""
-        if self.started:
+        """
+        if self.started :
+
             speed_mode_coef = 1
 
             if self.speed_mode == 'confidence' :
@@ -288,11 +284,12 @@ class Ironcar():
         else:
             self.mode = 'resting'
             self.mode_function = self.default_call
+            self.gas(self.commands['stop'])
+            self.dir(self.commands['straight'])
 
         # Make sure we stopped and reset wheel angle even if the previous mode
         # sent a last command before switching.
-        self.gas(self.commands['neutral'])
-        self.dir(self.commands['straight'])
+
 
         if self.verbose:
             print('switched to mode : ', new_mode)
@@ -413,7 +410,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            self.model = md.build_model()#_squeeze();
+            self.model = md.build_model_squeeze();
             self.model.load_weights(model_name)
 
             #self.model = load_model(model_name)
