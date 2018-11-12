@@ -144,7 +144,7 @@ class DrawLines(Layer):
 
     def call(self, im):
 
-        def dir_gas(curr_line, pose, img):
+        def dir_gas(curr_line, pose, img, road_width):
             """
             Calculates the (dir, gas) values given the position
             of the car compared to the middle line.
@@ -183,6 +183,21 @@ class DrawLines(Layer):
             c = choice(color_range.colors)
 
             draw.rectangle((x0, y0, x1, y1), fill=c, outline=c)
+
+            if curr_line.x0 >= pose.x:
+                angle_left = atan2(x0, -y0) * 6 / pi
+                angle_right = atan2(x1, -y1) * 6 / pi
+            else:
+                angle_left = atan2(x0, -y1) * 6 / pi
+                angle_right = atan2(x1, -y0) * 6 / pi
+
+            if angle_left <= angle <= angle_right:
+                if curr_line.x0 >= x0:
+                    target_vect.x += np.abs(width / 2 - x0) / 2
+                else:
+                    target_vect.x -= np.abs(width / 2 - x0) / 2
+
+                angle = atan2(targer_vect.x, -targer_vect.y) * 6 / pi
 
             gas = 0.5
 
@@ -458,14 +473,6 @@ class DrawLines(Layer):
 
                 draw_circle(draw, circle1)
 
-            
-        def add_obstacle(img, pose, angle, gas):
-
-
-
-            return img, angle, gas
-
-
 
         if im is None:
             raise ValueError('img is None')
@@ -498,9 +505,7 @@ class DrawLines(Layer):
 
             # Get the angle and gas depending on the position of
             # the car with respect to the middle line.
-            angle, gas = dir_gas(midline, pose)
-
-            img, angle, gas = add_obstacle(img, pose, angle, gas)
+            angle, gas, img = dir_gas(midline, pose, img, width)
 
         return img, angle, gas
 
