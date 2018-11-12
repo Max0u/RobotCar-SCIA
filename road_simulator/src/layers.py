@@ -58,6 +58,7 @@ class DrawLines(Layer):
                     radius_range=None,
                     thickness_range=None,
                     color_range=None,
+                    obstacle_color_ranges=None,
                     middle_line=None,
                     target_ratio=0.5,
                     straight_line_rate=0.05,
@@ -122,6 +123,8 @@ class DrawLines(Layer):
 
         self.target_ratio = target_ratio
 
+        self.obstacle_color_ranges = obstacle_color_ranges
+
         # Is there a VISIBLE middle line ? (the middle line always exists)
         # TODO: quite complex to have a 3-tuple for middle_line...
         if middle_line is not None:
@@ -141,7 +144,7 @@ class DrawLines(Layer):
 
     def call(self, im):
 
-        def dir_gas(curr_line, pose):
+        def dir_gas(curr_line, pose, img):
             """
             Calculates the (dir, gas) values given the position
             of the car compared to the middle line.
@@ -171,9 +174,19 @@ class DrawLines(Layer):
             
             angle = atan2(target_vect.x, -target_vect.y) * 6 / pi
 
+            draw = ImageDraw.Draw(img)
+            width, height = 20 + randint(0, 20), 20 + randint(0, 20)
+            x0, y0 = randint(0, 250 - width // 2), randint(0, 200 - height // 2)
+            x1, y1 = x0 + width, y0 + height
+
+            color_range = choice(self.obstacle_color_ranges)
+            c = choice(color_range.colors)
+
+            draw.rectangle((x0, y0, x1, y1), fill=c, outline=c)
+
             gas = 0.5
 
-            return angle, gas
+            return angle, gas, img
 
         def generate_middle_line(xy0_range, xy1_range, radius_range, thickness_range, color_range):
             """Creates the middle line of the road. The middle line position,
@@ -445,6 +458,15 @@ class DrawLines(Layer):
 
                 draw_circle(draw, circle1)
 
+            
+        def add_obstacle(img, pose, angle, gas):
+
+
+
+            return img, angle, gas
+
+
+
         if im is None:
             raise ValueError('img is None')
 
@@ -477,6 +499,8 @@ class DrawLines(Layer):
             # Get the angle and gas depending on the position of
             # the car with respect to the middle line.
             angle, gas = dir_gas(midline, pose)
+
+            img, angle, gas = add_obstacle(img, pose, angle, gas)
 
         return img, angle, gas
 

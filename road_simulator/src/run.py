@@ -1,13 +1,14 @@
 #! /usr/bin/python3
 
 from simulator import Simulator
-from colors import White, DarkShadow, Yellow
+from colors import White, DarkShadow, Yellow, Blue
 from layers import Background, DrawLines, Perspective, Crop, Symmetric
 from noise import Shadows, Filter, NoiseLines, Enhance
 
 white = White()
 yellow = Yellow()
 shadow = DarkShadow()
+blue = Blue()
 
 def generate(n_examples, n_backgrounds=50,
         path='output'):
@@ -23,7 +24,7 @@ def generate(n_examples, n_backgrounds=50,
                              n_rot=5,
                              n_crop=5,
                              n_res=5,
-                             path='../../resources/ground_pics',
+                             path='../ground_pics',
                              input_size=(250, 200)))
 
     """ LAYERS """
@@ -37,6 +38,7 @@ def generate(n_examples, n_backgrounds=50,
                             middle_line=(20, 50, "dashed", yellow),
                             thickness_range=[5, 6, 7, 8, 9],
                             target_ratio=0,
+			    obstacle_color_ranges=[blue],
                             straight_line_rate=0))
 
     # add perspective
@@ -69,5 +71,5 @@ if __name__ == '__main__':
         will generate 400.
     """
 
-    generate(200000, n_backgrounds=50, path='../../resources/train_dataset0.0_straight0%')
+    generate(100, n_backgrounds=1, path='output')
 
