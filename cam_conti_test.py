@@ -27,6 +27,6 @@ for fps in range(start, end):
         if count == loop:
             break
     true_fps.append(loop/(time.time()-save_time))
-
+plt.plot(range(start, end), range(start, end), color='green')
 plt.plot(range(start, end), true_fps)
 plt.savefig('testcamcontinu.png')

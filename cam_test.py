@@ -19,6 +19,6 @@ for fps in range(start, end):
         camera.capture(output, 'rgb', use_video_port=True)
         img_arr = output[:48, :48, :]
     true_fps.append(loop/(time.time()-save_time))
-
+plt.plot(range(start, end), range(start, end), color='green')
 plt.plot(range(start, end), true_fps)
 plt.savefig('testcam.png')
