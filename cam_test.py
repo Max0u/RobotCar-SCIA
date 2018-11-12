@@ -3,19 +3,22 @@ from picamera import PiCamera
 import time
 import matplotlib.pyplot as plt
 
-CAM_RESOLUTION = (200, 146)
+CAM_RESOLUTION = (48, 48)
 loop = 100
 true_fps = []
-
-for fps in range(1,90):
-    camera = PiCamera(framerate=fps)
+camera = PiCamera()
+start = 5
+end = 90
+for fps in range(start, end):
+    print(fps)
+    camera.framerate = fps
     camera.resolution = CAM_RESOLUTION
     save_time = time.time()
     for i in range(loop):
-        output = np.empty((160, 208, 3), dtype=np.uint8)
+        output = np.empty((48, 48, 3), dtype=np.uint8)
         camera.capture(output, 'rgb', use_video_port=True)
-        img_arr = output[:146, :200, :]
+        img_arr = output[:48, :48, :]
     true_fps.append(loop/(time.time()-save_time))
 
-plt.plot(range(1,90), true_fps)
-plt.show()
+plt.plot(range(start, end), true_fps)
+plt.savefig('testcam.png')
