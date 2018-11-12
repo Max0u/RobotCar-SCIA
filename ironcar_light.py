@@ -96,18 +96,13 @@ class Ironcar():
 
 
         cam.resolution = CAM_RESOLUTION
-        #cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
-        #stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
+        cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
+        stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
 
-
-        #for f in stream:
-        while True:
-            output = np.empty((160, 208, 3), dtype=np.uint8)
-            cam.capture(output, 'rgb', use_video_port=True)
-
+        for f in stream:
             if self.verbose and self.count == 1:
                 print(cam.exposure_speed)
-            img_arr = output[:146, :200, :]
+            img_arr = f.array
             
             #if self.count == 8:
             #    import sys
@@ -116,7 +111,7 @@ class Ironcar():
             #    img.show()
             #    sys.exit(0)
 
-            #cam_output.truncate(0)
+            cam_output.truncate(0)
             prediction = 0
             # Predict the direction only when needed
             if self.started:
