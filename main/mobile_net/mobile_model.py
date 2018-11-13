@@ -43,7 +43,7 @@ def build_model(args):
     MobileNetv2
     """
 
-    model = MobileNetV2(input_shape=None, alpha=0.2, depth_multiplier=1, weights=None, include_top=False, pooling='avg')
+    model = MobileNetV2(input_shape=INPUT_SHAPE, alpha=0.2, depth_multiplier=1, weights=None, include_top=False, pooling='avg')
     inputs = model.layers[0].input
     x = model.layers[-1].output
     x = Reshape((1, 1, 1280))(x)
