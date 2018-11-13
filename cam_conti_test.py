@@ -8,7 +8,7 @@ CAM_RESOLUTION = (200, 146)
 loop = 10
 true_fps = []
 camera = PiCamera()
-start = 5
+start = 10
 end = 90
 
 cam_output = PiRGBArray(camera, size=CAM_RESOLUTION)
@@ -27,6 +27,12 @@ for fps in range(start, end):
         if count == loop:
             break
     true_fps.append(loop/(time.time()-save_time))
-plt.plot(range(start, end), range(start, end), color='green')
-plt.plot(range(start, end), true_fps)
+
+
+plt.plot(range(start, end), range(start, end), color='green', label='Theory')
+plt.plot(range(start, end), true_fps, label='Practice')
+plt.xlabel("FPS Set")
+plt.ylabel("FPS Get")
+plt.legend()
+
 plt.savefig('testcamcontinu.png')

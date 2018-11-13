@@ -234,7 +234,7 @@ class Ironcar():
                 gas_value = int(local_gas * (self.commands['drive_max'] - self.commands['drive'])
                         + self.commands['drive'])
             else:
-                gas_value = self.commands['stop']
+                gas_value = self.commands['neutral']
                 """
                 gas_value = int(local_gas * (self.commands['rev_drive_max'] -
                     self.commands['rev_drive']) + self.commands['rev_drive']))
