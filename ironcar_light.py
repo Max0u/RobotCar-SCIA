@@ -364,6 +364,7 @@ class Ironcar():
             # Don't print if the model is not relevant given the mode
             if self.mode in ['dirauto', 'auto']: #self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
+                return
             pred = 0
 
         return pred
