@@ -1,10 +1,9 @@
 #! /usr/bin/python3
 
-from simulator import Simulator
-from colors import White, DarkShadow, Yellow, Blue
 from layers import Background, DrawLines, Perspective, Crop, Symmetric
-from noise import Shadows, Filter, NoiseLines, Enhance
-
+from layers.noises import Shadows, Filter, NoiseLines, Enhance
+from simulator import Simulator
+from utils.colors import White, DarkShadow, Yellow, Blue
 
 import argparse
 
