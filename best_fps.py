@@ -11,11 +11,11 @@ iron.load_config()
 iron.select_model("models/model-sq48-112,48-ep90.h5")
 iron.switch_mode("auto")
 
-CAM_RESOLUTION = (200, 146)
-loop = 10
+CAM_RESOLUTION = (112, 80)
+loop = 100
 true_fps = []
-camera = PiCamera()
-start = 20
+camera = iron.camera
+start = 40
 end = 90
 
 cam_output = PiRGBArray(camera, size=CAM_RESOLUTION)
@@ -45,3 +45,7 @@ plt.ylabel("FPS Get")
 plt.legend()
 
 plt.savefig('best_fps.png')
+m = max(true_fps)
+true_fps = np.array(true_fps)
+
+print("Best setting : " + str(range(start, end)[np.argmax(true_fps)]) + ", FPS : " + str(m))

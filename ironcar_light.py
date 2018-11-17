@@ -70,8 +70,8 @@ class Ironcar():
         #self.camera_loop()
         from threading import Thread
 
-        self.camera_thread = Thread(target=self.camera_loop, args=())
-        self.camera_thread.start()
+        #self.camera_thread = Thread(target=self.camera_loop, args=())
+        #self.camera_thread.start()
 
     def camera_loop(self):
         """Makes the camera take pictures and save them.

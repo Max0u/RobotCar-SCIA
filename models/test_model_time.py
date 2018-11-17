@@ -15,7 +15,7 @@ mod = md.build_model_squeeze()
 #mod = load_model("model-test-lstm.hdf5", custom_objects={'root_mean_squared_error': root_mean_squared_error})
 
 #mod = load_model("model-mobilenet-test.h5")
-mod.load_weights("model-0,0YUV-squeeze48-ep100.h5")
+mod.load_weights("model-sq48-112,48-ep90.h5")
 
 it = 1000
 file_path = "test.jpg"
