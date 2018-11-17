@@ -2,7 +2,7 @@ import cv2, os
 import numpy as np
 import matplotlib.image as mpimg
 
-IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3 #48, 112, 3
+IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
@@ -148,7 +148,7 @@ def random_brightness(image):
     # HSV (Hue, Saturation, Value) is also called HSB ('B' for Brightness).
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
     ratio = 1.0 + (np.random.rand() - 0.5) * 1.8
-    hsv[:,:,2] = np.minimum(hsv[:,:,2], 255/ratio) * ratio
+    hsv[:,:,2] = np.minimum(hsv[:,:,2] * ratio, 255)
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 

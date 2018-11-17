@@ -5,13 +5,16 @@ from colors import White, DarkShadow, Yellow, Blue
 from layers import Background, DrawLines, Perspective, Crop, Symmetric
 from noise import Shadows, Filter, NoiseLines, Enhance
 
+
+import argparse
+
+
 white = White()
 yellow = Yellow()
 shadow = DarkShadow()
 blue = Blue()
 
-def generate(n_examples, n_backgrounds=50,
-        path='output'):
+def generate(n_examples, n_backgrounds=50, path='output'):
 
     simulator = Simulator()
 
@@ -72,5 +75,12 @@ if __name__ == '__main__':
         will generate 400.
     """
 
-    generate(100, n_backgrounds=1, path='output')
+    parser = argparse.ArgumentParser(description='Road generator')
+    parser.add_argument('-n', help='number of images to generate', dest='n_imgs', type=int, default=100)
+    parser.add_argument('-p', help='output path', dest='path', type=str, default='output')
+    parser.add_argument('--test', help='enable test mode', dest='test', action='store_true')
+    parser.set_defaults(test=False)
+
+    args = parser.parse_args()
+    generate(args.n_imgs, n_backgrounds=1 if args.test else 50, path=args.path)
 
