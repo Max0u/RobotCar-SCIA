@@ -477,7 +477,7 @@ class DrawLines(Layer):
             # Get the angle and gas depending on the position of
             # the car with respect to the middle line.
             angle, gas = dir_gas(midline, pose)
-
+            
         return img, angle, gas
 
     def summary(self):
