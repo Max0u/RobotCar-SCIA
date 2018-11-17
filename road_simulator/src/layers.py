@@ -28,7 +28,7 @@ from PIL import Image, ImageDraw
 from math import sqrt, atan2, pi
 from random import randint, shuffle, choice, gauss, random
 
-from colors import White
+from colors import White, Yellow
 from utils import find_coeffs
 from basic_objects import Point, RoadLine, Circle
 
@@ -107,7 +107,6 @@ class DrawLines(Layer):
         if thickness_range is None:
             thickness_range = [6, 7, 8, 9, 10]
         if color_range is None:
-            from ..colors import White, Yellow
             color_range = White() + Yellow()
 
         self.xy0_range = xy0_range
@@ -197,7 +196,7 @@ class DrawLines(Layer):
                 else:
                     target_vect.x -= np.abs(width / 2 - x0) / 2
 
-                angle = atan2(targer_vect.x, -targer_vect.y) * 6 / pi
+                angle = atan2(target_vect.x, -target_vect.y) * 6 / pi
 
             gas = 0.5
 
