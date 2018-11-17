@@ -15,10 +15,10 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (200, 146)
+CAM_RESOLUTION = (112, 80)
 get_default_graph = None  # For lazy imports
 
-top, bot = 40, -40
+top, bot = 21, -11
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -353,7 +353,7 @@ class Ironcar():
         Returns the direction predicted by the model (float)
         """
         try: 
-            img = preprocess.preprocess(img)
+            img = preprocess.preprocess(img[top:bot, :, :])
             img = np.array([img])
             with self.graph.as_default():
                 pred = float(self.model.predict(img, batch_size=1))

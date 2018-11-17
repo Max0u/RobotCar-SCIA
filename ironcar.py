@@ -481,8 +481,7 @@ class Ironcar():
                 socketio.emit('prepro_stream', {'image': True, 'buffer': img_str.decode(
                     'ascii') }, namespace='/car')
             
-            img = preprocess.preprocess(img)
-
+            img = preprocess.preprocess(img[top:bot, :, :])
             img = np.array([img])
 
             with self.graph.as_default():
