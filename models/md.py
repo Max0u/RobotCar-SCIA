@@ -4,12 +4,10 @@ from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten, Input, Activation, concatenate
 
-from keras.applications.mobilenet_v2 import MobileNetV2
-
 import argparse
 import os
 
-IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
+IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 48, 112, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
@@ -86,23 +84,4 @@ def build_model_squeeze():
     return model
 
 
-
-
-def build_model_mobile():
-    """ 
-    MobileNetv2
-    """
-
-    model = MobileNetV2(input_shape=INPUT_SHAPE, alpha=0.2, depth_multiplier=1, weights=None, include_top=False, pooling='avg')
-    inputs = model.layers[0].input
-    x = model.layers[-1].output
-    x = Reshape((1, 1, 1280))(x)
-    x = Dropout(0.5, name='Dropout')(x)
-    x = Conv2D(5, (1, 1), padding='valid')(x)
-    x = Flatten()(x)
-    output = Dense(1, activation='linear')(x)
-
-    model = Model(inputs, output)
-    model.summary()
-    return model
 
