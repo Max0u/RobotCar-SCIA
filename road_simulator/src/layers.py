@@ -61,7 +61,8 @@ class DrawLines(Layer):
                     obstacle_color_ranges=None,
                     middle_line=None,
                     target_ratio=0.5,
-                    straight_line_rate=0.05,
+                    straight_line_rate=0,
+                    obstacle_rate=0,
                     name='DrawLines',
                     input_size=(250, 200)):
         """
@@ -119,6 +120,7 @@ class DrawLines(Layer):
         self.width = self.input_size[0]
         self.height = self.input_size[1]
         self.straight_line_rate = straight_line_rate
+        self.obstacle_rate = obstacle_rate
 
         self.target_ratio = target_ratio
 
@@ -173,9 +175,17 @@ class DrawLines(Layer):
             
             angle = atan2(target_vect.x, -target_vect.y) * 6 / pi
 
+            if random() < self.obstacle_rate:
+                img, angle = add_obstacle(img, angle, target_vect, curr_line, pose)
+            
+            gas = 0.5
+
+            return angle, gas, img
+
+        def add_obstacle(img, angle, target_vect, curr_line, pose):
             draw = ImageDraw.Draw(img)
             width, height = 20 + randint(0, 20), 20 + randint(0, 20)
-            x0, y0 = randint(0, 250 - width // 2), randint(0, 200 - height // 2)
+            x0, y0 = randint(0, 250 - width // 2), randint(0,  20 - height // 2)
             x1, y1 = x0 + width, y0 + height
 
             color_range = choice(self.obstacle_color_ranges)
@@ -198,9 +208,7 @@ class DrawLines(Layer):
 
                 angle = atan2(target_vect.x, -target_vect.y) * 6 / pi
 
-            gas = 0.5
-
-            return angle, gas, img
+            return img, angle
 
         def generate_middle_line(xy0_range, xy1_range, radius_range, thickness_range, color_range):
             """Creates the middle line of the road. The middle line position,

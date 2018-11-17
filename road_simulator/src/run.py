@@ -38,6 +38,7 @@ def generate(n_examples, n_backgrounds=50,
                             middle_line=(20, 50, "dashed", yellow),
                             thickness_range=[5, 6, 7, 8, 9],
                             target_ratio=0,
+                            obstacle_rate=0.5,
 			    obstacle_color_ranges=[blue],
                             straight_line_rate=0))
 
