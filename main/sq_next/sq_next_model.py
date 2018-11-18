@@ -42,7 +42,7 @@ def fire(x, squeeze=32, expand=64):
     
     left = Conv2D(squeeze, (1,3), activation='elu')(left)
 
-    left = Conv2D(expand, (1,1), activation='elu')(left)
+    left = Conv2D(expand, (1,1), strides=(3,3), activation='elu')(left)
     
     x = concatenate([left, x], axis=3)
     return x
