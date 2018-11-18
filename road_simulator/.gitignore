@@ -17,3 +17,5 @@ examples/*/
 ground_pics/
 my_dataset/
 .idea/
+
+output/

@@ -1,16 +1,19 @@
 #! /usr/bin/python3
 
-from simulator import Simulator
-from colors import White, DarkShadow, Yellow
 from layers import Background, DrawLines, Perspective, Crop, Symmetric
-from noise import Shadows, Filter, NoiseLines, Enhance
+from layers.noises import Shadows, Filter, NoiseLines, Enhance
+from simulator import Simulator
+from utils.colors import White, DarkShadow, Yellow, Blue
+
+import argparse
+
 
 white = White()
 yellow = Yellow()
 shadow = DarkShadow()
+blue = Blue()
 
-def generate(n_examples, n_backgrounds=50,
-        path='output'):
+def generate(n_examples, n_backgrounds=50, path='output'):
 
     simulator = Simulator()
 
@@ -23,7 +26,7 @@ def generate(n_examples, n_backgrounds=50,
                              n_rot=5,
                              n_crop=5,
                              n_res=5,
-                             path='../../resources/ground_pics',
+                             path='../ground_pics',
                              input_size=(250, 200)))
 
     """ LAYERS """
@@ -37,6 +40,8 @@ def generate(n_examples, n_backgrounds=50,
                             middle_line=(20, 50, "dashed", yellow),
                             thickness_range=[5, 6, 7, 8, 9],
                             target_ratio=0,
+                            obstacle_rate=0.5,
+			    obstacle_color_ranges=[blue],
                             straight_line_rate=0))
 
     # add perspective
@@ -69,5 +74,12 @@ if __name__ == '__main__':
         will generate 400.
     """
 
-    generate(200000, n_backgrounds=50, path='../../resources/train_dataset0.0_straight0%')
+    parser = argparse.ArgumentParser(description='Road generator')
+    parser.add_argument('-n', help='number of images to generate', dest='n_imgs', type=int, default=100)
+    parser.add_argument('-p', help='output path', dest='path', type=str, default='output')
+    parser.add_argument('--test', help='enable test mode', dest='test', action='store_true')
+    parser.set_defaults(test=False)
+
+    args = parser.parse_args()
+    generate(args.n_imgs, n_backgrounds=1 if args.test else 50, path=args.path)
 
