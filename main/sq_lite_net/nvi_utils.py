@@ -2,7 +2,7 @@ import cv2, os
 import numpy as np
 import matplotlib.image as mpimg
 
-IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3 #48, 112, 3
+IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 48, 80, 1 #48, 112, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
@@ -184,7 +184,7 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size,
                 image = load_image(data_dir, center, crop)
                 image = resize(image)
             # add the image and steering angle to the batch
-            images[i] = preprocess(image)
+            images[i] = (preprocess(image)[:,:,0]).reshape(IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
             steers[i] = steering_angle
             i += 1
 
