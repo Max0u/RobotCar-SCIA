@@ -184,7 +184,8 @@ def batch_generator(data_dir, image_paths, steering_angles, batch_size,
                 image = load_image(data_dir, center, crop)
                 image = resize(image)
             # add the image and steering angle to the batch
-            images[i] = (preprocess(image)[:,:,0]).reshape(IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
+            #images[i] = preprocess(image)
+            images[i] = (image[:,:,0]).reshape(IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
             steers[i] = steering_angle
             i += 1
 

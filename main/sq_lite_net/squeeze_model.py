@@ -50,6 +50,8 @@ def build_model(args):
     """
     img_input = Input(shape=INPUT_SHAPE)
 
+
+    #x = Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE)(img_input)
     x = Conv2D(64, (3, 3), activation='relu', strides=(2, 2), padding='valid')(img_input)
     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
