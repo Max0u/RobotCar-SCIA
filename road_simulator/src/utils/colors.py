@@ -104,10 +104,63 @@ class Yellow(ColorRange):
         self.colors = color.colors
 
 
+class Red(ColorRange):
+    '''
+        Color Red.
+    '''
+
+
+    def __init__(self, name='red'):
+
+        if name is None:
+            raise ValueError('name must be different from None')
+
+        color = ColorRange(red=(200, 255), green=(0, 50), blue=(0, 150))
+
+        self.name = name
+        self.samples = color.samples
+
+        self.red = color.red
+        self.green = color.green
+        self.blue = color.blue
+
+        self.red_range = color.red_range
+        self.green_range = color.green_range
+        self.blue_range = color.blue_range
+
+        self.colors = color.colors
+
+
+class Green(ColorRange):
+    '''
+        Color Green.
+    '''
+
+
+    def __init__(self, name='green'):
+
+        if name is None:
+            raise ValueError('name must be different from None')
+
+        color = ColorRange(red=(0, 150), green=(200, 255), blue=(0, 150))
+
+        self.name = name
+        self.samples = color.samples
+
+        self.red = color.red
+        self.green = color.green
+        self.blue = color.blue
+
+        self.red_range = color.red_range
+        self.green_range = color.green_range
+        self.blue_range = color.blue_range
+
+        self.colors = color.colors
+
+
 class Blue(ColorRange):
     '''
-        Color Blue. This color is created from sample taken on pictures of the
-        ground in the hangar.
+        Color Blue.
     '''
 
 
