@@ -7,7 +7,7 @@ from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten, 
 import argparse
 import os
 
-IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 48, 112, 3
+IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
