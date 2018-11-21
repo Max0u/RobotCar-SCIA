@@ -1,9 +1,9 @@
 #! /usr/bin/python3
 
 from layers import Background, DrawLines, Perspective, Crop, Symmetric
-from layers.noises import Shadows, Filter, NoiseLines, Enhance
+from layers.noises import Shadows, Filter, NoiseLines, Enhance, Shape
 from simulator import Simulator
-from utils.colors import White, DarkShadow, Yellow, Blue
+from utils.colors import White, DarkShadow, Yellow, Blue, Green, Red
 
 import argparse
 
@@ -12,6 +12,8 @@ white = White()
 yellow = Yellow()
 shadow = DarkShadow()
 blue = Blue()
+green = Green()
+red = Red()
 
 def generate(n_examples, n_backgrounds=50, path='output'):
 
@@ -40,9 +42,11 @@ def generate(n_examples, n_backgrounds=50, path='output'):
                             middle_line=(20, 50, "dashed", yellow),
                             thickness_range=[5, 6, 7, 8, 9],
                             target_ratio=0,
-                            obstacle_rate=0.5,
-			    obstacle_color_ranges=[blue],
+                            obstacle_rate=0.4,
+			    obstacle_color_ranges=[blue, green, red],
                             straight_line_rate=0))
+
+    simulator.add(Shape(brightness=0.1))
 
     # add perspective
     simulator.add(Perspective())
