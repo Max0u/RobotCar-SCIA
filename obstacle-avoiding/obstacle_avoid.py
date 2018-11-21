@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from math import acos
 import seaborn as sns
+import os
 
 def get_colors():
     colormap = sns.color_palette()
@@ -17,7 +18,11 @@ class Obstacle:
     def __init__(self):
         self.colors = get_colors()
 
-    def draw_rect(self, img):
+    # input: dir_path (string), img_path (string)
+    # output: img (string), angle (float)
+    def draw_rect(self, dir_path, img_path):
+        # open an instance of img
+        img = cv2.imread(os.path.join(dir_path, img_path))
         # position can be everywhere on the image except the last pixels to have space to put the object
         x = np.random.randint(img.shape[1] * 7 / 10)
         y = np.random.randint(img.shape[0] * 7 / 10)
@@ -26,7 +31,7 @@ class Obstacle:
         # object cannot be bigger than 30% of the image height
         y_size = np.random.randint(img.shape[0] *  3 / 10)
         # color of the object
-        color = self.colors[np.random.randint(len(colors))]
+        color = self.colors[np.random.randint(len(self.colors))]
         # draw colored rectangle
         cv2.rectangle(img, (x, y), (x + x_size, y + y_size), color, cv2.FILLED)
         
@@ -39,5 +44,8 @@ class Obstacle:
         vect = vect / np.linalg.norm(vect, ord=2)
         angle = acos(vect[1])
         angle = angle if vect[0] > 0 else -angle
-        
-        return angle
+        new_img_path = os.path.join(dir_path,
+                img_path.split('.j')[0] + '_obs.jpg')
+        cv2.imwrite(new_img_path, img)
+
+        return new_img_path, angle
