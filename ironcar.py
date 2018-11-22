@@ -248,15 +248,14 @@ class Ironcar():
         prediction: dir val
         """
 
-        if abs(prediction) < 0.5 : 
-            self.queue.append(prediction)
-        else :
-            self.queue.clear()
-        if len(self.queue) > 2:
-            prediction = self.kalman(self.queue)
+        #if abs(prediction) < 0.5 : 
+        #    self.queue.append(prediction)
+        #else :
+        #    self.queue.clear()
+        #if len(self.queue) > 2:
+        #    prediction = self.kalman(self.queue)
 
         if self.started:
-            #prediction, speed_mode_coef = self.speed_strat(prediction) 
             speed_mode_coef = 1
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
