@@ -1,4 +1,4 @@
-from ironcar_light import *
+from ironcar_light import Ironcar
 
 import signal
 import sys
