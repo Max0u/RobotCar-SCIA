@@ -18,7 +18,7 @@ CONFIG = 'config.json'
 CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
-top, bot = 50, 30
+top, bot = 50, -30
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -70,8 +70,8 @@ class Ironcar():
         #self.camera_loop()
         from threading import Thread
 
-        #self.camera_thread = Thread(target=self.camera_loop, args=())
-        #self.camera_thread.start()
+        self.camera_thread = Thread(target=self.camera_loop, args=())
+        self.camera_thread.start()
 
     def camera_loop(self):
         """Makes the camera take pictures and save them.
@@ -284,7 +284,7 @@ class Ironcar():
         else:
             self.mode = 'resting'
             self.mode_function = self.default_call
-            self.gas(self.commands['stop'])
+            self.gas(self.commands['neutral'])
             self.dir(self.commands['straight'])
 
         # Make sure we stopped and reset wheel angle even if the previous mode
@@ -411,7 +411,7 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            self.model = md.build_model_squeeze();
+            self.model = md.build_model()#_squeeze();
             self.model.load_weights(model_name)
 
             #self.model = load_model(model_name)
