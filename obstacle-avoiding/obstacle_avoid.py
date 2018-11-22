@@ -48,4 +48,4 @@ class Obstacle:
                 img_path.split('.j')[0] + '_obs.jpg')
         cv2.imwrite(new_img_path, img)
 
-        return new_img_path, angle
+        return img_path.split('.j')[0] + '_obs.jpg', angle
