@@ -18,7 +18,7 @@ CONFIG = 'config.json'
 CAM_RESOLUTION = (200, 146)
 get_default_graph = None  # For lazy imports
 
-top, bot = 40, -40
+top, bot = 50, 30
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -70,8 +70,8 @@ class Ironcar():
         #self.camera_loop()
         from threading import Thread
 
-        self.camera_thread = Thread(target=self.camera_loop, args=())
-        self.camera_thread.start()
+        #self.camera_thread = Thread(target=self.camera_loop, args=())
+        #self.camera_thread.start()
 
     def camera_loop(self):
         """Makes the camera take pictures and save them.
@@ -234,7 +234,7 @@ class Ironcar():
                 gas_value = int(local_gas * (self.commands['drive_max'] - self.commands['drive'])
                         + self.commands['drive'])
             else:
-                gas_value = self.commands['stop']
+                gas_value = self.commands['neutral']
                 """
                 gas_value = int(local_gas * (self.commands['rev_drive_max'] -
                     self.commands['rev_drive']) + self.commands['rev_drive']))
@@ -353,7 +353,7 @@ class Ironcar():
         Returns the direction predicted by the model (float)
         """
         try: 
-            img = preprocess.preprocess(img)
+            img = preprocess.preprocess(img[top:bot, :, :])
             img = np.array([img])
             with self.graph.as_default():
                 pred = float(self.model.predict(img, batch_size=1))
@@ -364,6 +364,7 @@ class Ironcar():
             # Don't print if the model is not relevant given the mode
             if self.mode in ['dirauto', 'auto']: #self.verbose and self.mode in ['dirauto', 'auto']:
                 print('Prediction error : ', e)
+                return
             pred = 0
 
         return pred

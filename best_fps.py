@@ -4,11 +4,18 @@ import time
 import matplotlib.pyplot as plt
 from picamera.array import PiRGBArray
 
-CAM_RESOLUTION = (200, 146)
-loop = 10
+from ironcar_light import Ironcar
+
+iron = Ironcar()
+iron.load_config()
+iron.select_model("models/model-sq48-112,48-ep90.h5")
+iron.switch_mode("auto")
+
+CAM_RESOLUTION = (112, 80)
+loop = 100
 true_fps = []
-camera = PiCamera()
-start = 10
+camera = iron.camera
+start = 40
 end = 90
 
 cam_output = PiRGBArray(camera, size=CAM_RESOLUTION)
@@ -22,6 +29,8 @@ for fps in range(start, end):
     count = 0
     for f in stream:
         img_arr = f.array
+        prediction = iron.predict_from_img(img_arr)
+        iron.mode_function(img_arr, prediction)
         cam_output.truncate(0)
         count += 1
         if count == loop:
@@ -35,4 +44,8 @@ plt.xlabel("FPS Set")
 plt.ylabel("FPS Get")
 plt.legend()
 
-plt.savefig('testcamcontinu.png')
+plt.savefig('best_fps.png')
+m = max(true_fps)
+true_fps = np.array(true_fps)
+
+print("Best setting : " + str(range(start, end)[np.argmax(true_fps)]) + ", FPS : " + str(m))
