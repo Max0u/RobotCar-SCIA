@@ -137,7 +137,7 @@ def random_shadow(image):
 
     # adjust Saturation in HLS(Hue, Light, Saturation)
     hls = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
-    hls[:, :, 1][cond] = np.minimum(hls[:, :, 1][cond] * s_ratio, 255)
+    hls[:, :, 1][cond] = np.minimum(hls[:, :, 1][cond], 255/s_ratio) * s_ratio
     return cv2.cvtColor(hls, cv2.COLOR_HLS2RGB)
 
 

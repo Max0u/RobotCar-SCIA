@@ -6,7 +6,7 @@ from keras.models import Sequential, Model
 from keras.optimizers import Adam, Nadam
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Lambda, Conv2D, MaxPooling2D, Dropout, Dense, Flatten,\
-Input, Activation, concatenate
+Input, Activation, concatenate, BatchNormalization
 from nvi_utils import INPUT_SHAPE, batch_generator
 import argparse
 import os
@@ -36,12 +36,13 @@ def load_data(args):
 
 def fire(x, squeeze=16, expand=64):
     x = Conv2D(squeeze, (1,1), activation='relu', padding='valid')(x)
-    
+    x = BatchNormalization()(x)
     left = Conv2D(expand, (1,1), activation='relu', padding='valid')(x)
-    
+    left = BatchNormalization()(x)
     right = Conv2D(expand, (3,3), activation='relu', padding='same')(x)
-    
+    right = BatchNormalization()(x)
     x = concatenate([left, right], axis=3)
+    x = BatchNormalization()(x)
     return x
 
 def build_model(args):
@@ -51,8 +52,9 @@ def build_model(args):
     img_input = Input(shape=INPUT_SHAPE)
 
 
-    #x = Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE)(img_input)
-    x = Conv2D(64, (3, 3), activation='relu', strides=(2, 2), padding='valid')(img_input)
+    x = Lambda(lambda x: x/127.5-1.0, input_shape=INPUT_SHAPE)(img_input)
+    x = Conv2D(64, (3, 3), activation='relu', strides=(2, 2), padding='valid')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
     x = fire(x, squeeze=16, expand=16)
@@ -70,6 +72,7 @@ def build_model(args):
     x = Dropout(args.keep_prob)(x)
 
     x = Conv2D(5, (1, 1), activation='relu', padding='valid')(x)
+    x = BatchNormalization()(x)
     x = Flatten()(x)
 
     out = Dense(1, activation='linear')(x)
