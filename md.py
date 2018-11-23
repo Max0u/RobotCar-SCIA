@@ -12,11 +12,11 @@ INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 
 def fire(x, squeeze=16, expand=64):
-    x = Conv2D(squeeze, (1,1), activation='relu', padding='valid')(x)
+    x = Conv2D(squeeze, (1,1), activation='elu', padding='valid')(x)
      
-    left = Conv2D(expand, (1,1), activation='relu', padding='valid')(x)
+    left = Conv2D(expand, (1,1), activation='elu', padding='valid')(x)
      
-    right = Conv2D(expand, (3,3), activation='relu', padding='same')(x)
+    right = Conv2D(expand, (3,3), activation='elu', padding='same')(x)
    
     x = concatenate([left, right], axis=3)
     return x
@@ -50,7 +50,7 @@ def build_model_squeeze():
     """
     img_input = Input(shape=INPUT_SHAPE)
 
-    x = Conv2D(64, (3, 3), activation='relu', strides=(2, 2), padding='valid')(img_input)
+    x = Conv2D(64, (3, 3), activation='elu', strides=(2, 2), padding='valid')(img_input)
     x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
 
     x = fire(x, squeeze=16, expand=16)
@@ -67,7 +67,7 @@ def build_model_squeeze():
     #x = fire(x, squeeze=64, expand=64)
     x = Dropout(0.5)(x)
 
-    x = Conv2D(5, (1, 1), activation='relu', padding='valid')(x)
+    x = Conv2D(5, (1, 1), activation='elu', padding='valid')(x)
     x = Flatten()(x)
 
     out = Dense(1, activation='linear')(x)

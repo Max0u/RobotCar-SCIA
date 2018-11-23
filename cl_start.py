@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(description='Self-Driving Car Prediction Progra
 parser.add_argument('-p', help='load model path', dest='model_path', type=str,\
         default="models/model-0,0YUV-squeeze48-ep100.h5")
 parser.add_argument('-ms', help='max speed value', dest='max_speed', type=float,\
-        default=0.3)
+        default=0.4)
 parser.add_argument('-ss', help='speed strategy', dest='speed_strat', type=str,\
         default="auto")
 parser.add_argument('-v', help='verbose', dest='verb',
