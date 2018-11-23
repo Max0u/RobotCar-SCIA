@@ -23,6 +23,6 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-
+    #image = resize(image)
     image = rgb2yuv(image)
     return image

@@ -237,7 +237,7 @@ class Ironcar():
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
             #print('speed_mode_coef: {}'.format(speed_mode_coef))
-
+            
             local_dir = prediction
 
             local_gas = self.max_speed_rate * speed_mode_coef
@@ -425,10 +425,10 @@ class Ironcar():
             if self.verbose:
                 print('Selected model: ', model_name)
             
-            #self.model = md.build_model_squeeze();
-            #self.model.load_weights(model_name)
+            self.model = md.build_model_squeeze();
+            self.model.load_weights(model_name)
 
-            self.model = load_model(model_name)
+            #self.model = load_model(model_name)
             
             self.graph = get_default_graph()
             self.current_model = model_name

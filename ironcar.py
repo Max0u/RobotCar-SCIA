@@ -15,10 +15,10 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (200, 146)
+CAM_RESOLUTION = (320, 240)
 get_default_graph = None  # For lazy imports
 
-top, bot = 50, -30
+top, bot = 80, -40
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -114,7 +114,7 @@ class Ironcar():
             self.mode_function(img_arr, prediction)
 
             
-            if self.streaming_state :
+            if self.streaming_state and im :
                 if prediction < 0.2 and prediction > -0.2:
                     index_class = 2
                 if prediction > -0.6 and prediction < -0.2:
