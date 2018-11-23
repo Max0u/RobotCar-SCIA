@@ -65,7 +65,7 @@ def build_model_squeeze():
     x = fire(x, squeeze=48, expand=48)
     #x = fire(x, squeeze=64, expand=64)
     #x = fire(x, squeeze=64, expand=64)
-    x = Dropout(0.5)(x)
+    #x = Dropout(0.5)(x)
 
     x = Conv2D(5, (1, 1), activation='elu', padding='valid')(x)
     x = Flatten()(x)
