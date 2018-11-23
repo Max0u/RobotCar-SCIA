@@ -194,6 +194,8 @@ class Ironcar():
             if self.speed_acc >= 3:
                 speed_mode_coef = 1
 
+        return prediction, speed_mode_coef
+
     def speed_strat(self, prediction):
         if abs(prediction) < 0.2 :
             speed_mode_coef =  1.5 + 0.2 * self.speed_acc 
@@ -204,7 +206,7 @@ class Ironcar():
             if self.speed_acc > 3 :        
                 speed_mode_coef = 0.1
                 self.speed_acc -= 1
-            else :
+            else:
                 speed_mode_coef = 1
         return prediction, speed_mode_coef
 
@@ -231,7 +233,7 @@ class Ironcar():
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto' :
                 #prediction, speed_mode_coef = self.speed_strat(prediction)
-                speed_mode_coef = self.speed_strat(prediction)
+                predication, speed_mode_coef = self.speed_strat_2(prediction)
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
             #print('speed_mode_coef: {}'.format(speed_mode_coef))
