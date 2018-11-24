@@ -15,7 +15,8 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (320, 160)#(200, 146)
+CAM_RESOLUTION = (200, 146)
+
 get_default_graph = None  # For lazy imports
 
 top, bot = 50, -30#50, -30
