@@ -19,7 +19,7 @@
         "stop": 300,
         "left": 260
     },
-    "fps": 80,
+    "fps": 72,
     "stream_path": "./stream/",
     "datasets_path": "datasets",
     "models_path": "./models/"

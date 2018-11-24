@@ -8,11 +8,11 @@ from ironcar_light import Ironcar
 
 iron = Ironcar()
 iron.load_config()
-iron.select_model("models/model-sq48-112,48-ep90.h5")
+iron.select_model("models/model-112,48-elu.h5")
 iron.switch_mode("auto")
 
-CAM_RESOLUTION = (112, 80)
-loop = 100
+CAM_RESOLUTION = (320, 160)
+loop = 20
 true_fps = []
 camera = iron.camera
 start = 40

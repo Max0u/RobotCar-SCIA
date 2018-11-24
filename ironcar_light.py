@@ -15,10 +15,10 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (200, 146)
+CAM_RESOLUTION = (320, 160)#(200, 146)
 get_default_graph = None  # For lazy imports
 
-top, bot = 50, -30
+top, bot = 50, -30#50, -30
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -187,10 +187,10 @@ class Ironcar():
     def speed_strat_2(self, prediction):
         if abs(prediction) < 0.3:
             self.speed_acc = 0
-            speed_mode_coef = 10
+            speed_mode_coef = 2
         else:
             self.speed_acc += 1
-            speed_mode_coef = -10
+            speed_mode_coef = -2
             if self.speed_acc >= 3:
                 speed_mode_coef = 1
 
@@ -204,7 +204,7 @@ class Ironcar():
             prediction *= abs(prediction)
         else:
             if self.speed_acc > 3 :        
-                speed_mode_coef = 0.1
+                speed_mode_coef = 0
                 self.speed_acc -= 1
             else:
                 speed_mode_coef = 1
@@ -232,8 +232,8 @@ class Ironcar():
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto' :
-                #prediction, speed_mode_coef = self.speed_strat(prediction)
-                predication, speed_mode_coef = self.speed_strat_2(prediction)
+                prediction, speed_mode_coef = self.speed_strat(prediction)
+                #predication, speed_mode_coef = self.speed_strat_2(prediction)
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
             #print('speed_mode_coef: {}'.format(speed_mode_coef))
