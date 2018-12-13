@@ -98,7 +98,7 @@ class Ironcar():
 
         cam.resolution = CAM_RESOLUTION
         cam.awb_mode = "off"
-        cam.awb_gains = (1.5,3)
+        #cam.awb_gains = (1.5,2)
         cam_output = PiRGBArray(cam, size=CAM_RESOLUTION)
         stream = cam.capture_continuous(cam_output, format="rgb", use_video_port=True)
 
