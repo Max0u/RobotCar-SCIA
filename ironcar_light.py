@@ -211,6 +211,27 @@ class Ironcar():
                 speed_mode_coef = 1
         return prediction, speed_mode_coef
 
+    def fastspeed_strat(self, prediction):
+        limit = 5 
+        brake = 0.3 
+        accel = 2 + 0.2 * self.speed_acc 
+
+        if abs(prediction) < 0.1 and self.speed_acc < limit :
+            speed_mode_coef =  accel
+            self.speed_acc += 1
+            prediction *= abs(prediction)
+            if self.n_img < limit :
+                speed_mode_coef *= 2
+                prediction *= abs(prediction)
+                self.n_img += 1
+        else:
+            speed_mode_coef = 1 
+            if abs(prediction) < 0.2 and self.speed_acc > (limit-2) :
+                prediction *= abs(prediction)
+                speed_mode_coef = brake
+            else :
+                self.speed_acc = 0 
+        return prediction, speed_mode_coef
 
 
     def autopilot(self, img, prediction):
@@ -233,7 +254,7 @@ class Ironcar():
             if self.speed_mode == 'confidence' :
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto' :
-                prediction, speed_mode_coef = self.speed_strat(prediction)
+                prediction, speed_mode_coef = self.fastspeed_strat(prediction)
                 #predication, speed_mode_coef = self.speed_strat_2(prediction)
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
