@@ -30,7 +30,7 @@ def preprocess(image):
     """
     Combine all preprocess functions into one
     """
-    #image = resize(image)
+    image = resize(image)
     #image = brightness(image, 3)
     image = rgb2yuv(image)
     return image

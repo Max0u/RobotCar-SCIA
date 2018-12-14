@@ -15,7 +15,7 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (200, 146)
+CAM_RESOLUTION = (320, 160)
 
 get_default_graph = None  # For lazy imports
 
@@ -240,6 +240,8 @@ class Ironcar():
             #print('speed_mode_coef: {}'.format(speed_mode_coef))
             
             local_dir = prediction
+            if local_dir > 0:
+                local_dir *= 1.5
 
             local_gas = self.max_speed_rate * speed_mode_coef
 
