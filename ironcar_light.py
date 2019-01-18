@@ -19,7 +19,7 @@ CAM_RESOLUTION = (320, 240)
 
 get_default_graph = None  # For lazy imports
 
-top, bot = 80, -40 #50, -30 you can modify crop range
+top, bot = 100, -40 #50, -30 you can modify crop range
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -193,8 +193,8 @@ class Ironcar():
         return prediction, speed_mode_coef
 
     def fastspeed_strat(self, prediction):
-        limit = 5 
-        brake = 0.3 
+        limit = 10 
+        brake = 0.1 
         accel = 2 + 0.2 * self.speed_acc 
 
         if abs(prediction) < 0.1 and self.speed_acc < limit :
@@ -202,7 +202,7 @@ class Ironcar():
             self.speed_acc += 1
             prediction *= abs(prediction)
             if self.n_img < limit :
-                speed_mode_coef *= 2
+                speed_mode_coef *= 1.5
                 prediction *= abs(prediction)
                 self.n_img += 1
         else:
