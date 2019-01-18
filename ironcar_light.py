@@ -15,11 +15,11 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (320, 160)
+CAM_RESOLUTION = (320, 240)
 
 get_default_graph = None  # For lazy imports
 
-top, bot = 50, -30#50, -30
+top, bot = 80, -40 #50, -30 you can modify crop range
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -105,13 +105,6 @@ class Ironcar():
                 print(cam.exposure_speed)
             img_arr = f.array
             
-            #if self.count == 8:
-            #    import sys
-            #    img = PIL_convert(img_arr, 'RGB')
-            #    img.save('my.png')
-            #    img.show()
-            #    sys.exit(0)
-
             cam_output.truncate(0)
             prediction = 0
             # Predict the direction only when needed
@@ -185,18 +178,6 @@ class Ironcar():
     
         return xhat[-1]
 
-    def speed_strat_2(self, prediction):
-        if abs(prediction) < 0.3:
-            self.speed_acc = 0
-            speed_mode_coef = 2
-        else:
-            self.speed_acc += 1
-            speed_mode_coef = -2
-            if self.speed_acc >= 3:
-                speed_mode_coef = 1
-
-        return prediction, speed_mode_coef
-
     def speed_strat(self, prediction):
         if abs(prediction) < 0.2 :
             speed_mode_coef =  1.5 + 0.2 * self.speed_acc 
@@ -217,7 +198,7 @@ class Ironcar():
         accel = 2 + 0.2 * self.speed_acc 
 
         if abs(prediction) < 0.1 and self.speed_acc < limit :
-            speed_mode_coef =  accel
+            speed_mode_coef = accel
             self.speed_acc += 1
             prediction *= abs(prediction)
             if self.n_img < limit :
@@ -255,7 +236,7 @@ class Ironcar():
                 speed_mode_coef = 1.5 - min(prediction**2, .5)
             elif self.speed_mode == 'auto' :
                 prediction, speed_mode_coef = self.fastspeed_strat(prediction)
-                #predication, speed_mode_coef = self.speed_strat_2(prediction)
+                #predication, speed_mode_coef = self.speed_strat(prediction)
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
             #print('speed_mode_coef: {}'.format(speed_mode_coef))
@@ -386,7 +367,7 @@ class Ironcar():
         return self.max_speed_rate
 
     def predict_from_img(self, img):
-        """Given the 250x150 image from the Pi Camera.
+        """Given the image from the Pi Camera.
 
         Returns the direction predicted by the model (float)
         """
