@@ -1,0 +1,153 @@
+input: "data"
+input_dim: 1
+input_dim: 3
+input_dim: 66
+input_dim: 200
+layer {
+  name: "conv2d_1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv2d_1"
+  convolution_param {
+    num_output: 24
+    kernel_size: 5
+    stride: 2
+  }
+}
+layer {
+  name: "conv2d_1s"
+  type: "ReLU"
+  bottom: "conv2d_1"
+  top: "conv2d_1"
+}
+layer {
+  name: "conv2d_2"
+  type: "Convolution"
+  bottom: "conv2d_1"
+  top: "conv2d_2"
+  convolution_param {
+    num_output: 36
+    kernel_size: 5
+    stride: 2
+  }
+}
+layer {
+  name: "conv2d_2s"
+  type: "ReLU"
+  bottom: "conv2d_2"
+  top: "conv2d_2"
+}
+layer {
+  name: "conv2d_3"
+  type: "Convolution"
+  bottom: "conv2d_2"
+  top: "conv2d_3"
+  convolution_param {
+    num_output: 48
+    kernel_size: 5
+    stride: 2
+  }
+}
+layer {
+  name: "conv2d_3s"
+  type: "ReLU"
+  bottom: "conv2d_3"
+  top: "conv2d_3"
+}
+layer {
+  name: "conv2d_4"
+  type: "Convolution"
+  bottom: "conv2d_3"
+  top: "conv2d_4"
+  convolution_param {
+    num_output: 64
+    kernel_size: 3
+    stride: 1
+  }
+}
+layer {
+  name: "conv2d_4s"
+  type: "ReLU"
+  bottom: "conv2d_4"
+  top: "conv2d_4"
+}
+layer {
+  name: "conv2d_5"
+  type: "Convolution"
+  bottom: "conv2d_4"
+  top: "conv2d_5"
+  convolution_param {
+    num_output: 64
+    kernel_size: 3
+    stride: 1
+  }
+}
+layer {
+  name: "conv2d_5s"
+  type: "ReLU"
+  bottom: "conv2d_5"
+  top: "conv2d_5"
+}
+layer {
+  name: "dropout_1"
+  type: "Dropout"
+  bottom: "conv2d_5"
+  top: "dropout_1"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "flatten_1"
+  type: "Flatten"
+  bottom: "dropout_1"
+  top: "flatten_1"
+}
+layer {
+  name: "dense_1"
+  type: "InnerProduct"
+  bottom: "flatten_1"
+  top: "dense_1"
+  inner_product_param {
+    num_output: 100
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "dense_2"
+  type: "InnerProduct"
+  bottom: "dense_1"
+  top: "dense_2"
+  inner_product_param {
+    num_output: 50
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "dense_3"
+  type: "InnerProduct"
+  bottom: "dense_2"
+  top: "dense_3"
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "dense_4"
+  type: "InnerProduct"
+  bottom: "dense_3"
+  top: "dense_4"
+  inner_product_param {
+    num_output: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
