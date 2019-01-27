@@ -6,6 +6,9 @@ import matplotlib.image as mpimg
 IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 66, 200, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
+"""
+    Utility functions for training and inference.
+"""
 
 def load_image(data_dir, image_file):
     """

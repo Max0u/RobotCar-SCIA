@@ -11,6 +11,9 @@ import os
 
 np.random.seed(0)
 
+"""
+    Build, load and train PilotNet.
+"""
 
 def load_data(args):
     """

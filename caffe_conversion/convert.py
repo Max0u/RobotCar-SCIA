@@ -4,6 +4,10 @@ from caffe import layers as L, params as P
 import math
 import numpy as np
 
+"""
+    Convert a keras model to a caffe model. Supports only basic layers.
+"""
+
 def set_padding(config_keras, input_shape, config_caffe):
     if config_keras['padding']=='valid':
         return
