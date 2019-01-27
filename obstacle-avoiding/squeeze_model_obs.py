@@ -18,6 +18,10 @@ from nvi_utils import INPUT_SHAPE, batch_generator
 np.random.seed(0)
 PI = float(3.14)
 
+"""
+    This file contains model architecture, trainings and output of training.
+"""
+
 def root_mean_squared_error(y_true, y_pred):
     return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 

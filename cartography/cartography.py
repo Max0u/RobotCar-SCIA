@@ -74,6 +74,7 @@ class Cartography:
 
         """
         # computing left and right points
+        # commented code was used for debugging
         left = []
         right = []
         normals = [ np.asarray([-v[1], v[0]]) for v in self.displacements ]

@@ -24,7 +24,7 @@ cart.add_position([1, 0], 0)
 cart.add_position([1, 0], 0)
 cart.add_position([0, 0], 0)
 
-#should be ignored as a complete circuit turn has been done
+#should be ignored as a complete circuit lap has been done
 cart.add_position([1, 0], 0)
 cart.add_position([1, 0], 0)
 cart.add_position([1, 0], 0)

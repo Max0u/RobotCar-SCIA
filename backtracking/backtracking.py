@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
+    Class used to records last 'size' inputs for a potential backtracking.
+    Backtracking should be necessary in case of reinforcement learning.
+    This class was never used as RL was not studied.
+"""
 class Backtracking:
 
     size = 10
