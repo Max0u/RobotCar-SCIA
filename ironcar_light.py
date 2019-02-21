@@ -15,11 +15,11 @@ from picamera import PiCamera
 import time
 
 CONFIG = 'config.json'
-CAM_RESOLUTION = (320, 240)
+CAM_RESOLUTION = (200, 146)
 
 get_default_graph = None  # For lazy imports
 
-top, bot = 100, -40 #50, -30 you can modify crop range
+top, bot = 60, -20 #50, -30 you can modify crop range
 
 class Ironcar():
     """Class of the car. Contains all the different fields, functions needed to
@@ -237,13 +237,14 @@ class Ironcar():
             elif self.speed_mode == 'auto' :
                 prediction, speed_mode_coef = self.fastspeed_strat(prediction)
                 #predication, speed_mode_coef = self.speed_strat(prediction)
+            
             # TODO add filter on direction to avoid having spikes in direction
             # TODO add filter on gas to avoid having spikes in speed
             #print('speed_mode_coef: {}'.format(speed_mode_coef))
             
             local_dir = prediction
-            if local_dir > 0:
-                local_dir *= 1.5
+            #if local_dir > 0:
+            #    local_dir *= 1.5
 
             local_gas = self.max_speed_rate * speed_mode_coef
 
