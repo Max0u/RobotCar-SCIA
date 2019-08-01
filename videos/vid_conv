@@ -1,0 +1,2 @@
+rm video.mp4
+MP4Box -fps 60 -add video.h264 video.mp4

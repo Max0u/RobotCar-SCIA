@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>IronCar Dashboard</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/open-iconic-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/nouislider.min.css') }}" rel="stylesheet" >
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" >
+  </head>
+
+  <body id="kinput">
+
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Ironcar Dashboard 🏎️</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="{{ url_for('main') }}">Main</a>
+        <a class="p-2 text-dark" href="{{ url_for('commands') }}">Commands</a>
+        <a class="p-2 text-dark" href="{{ url_for('help') }}">Help</a>
+        <span id="serverStatus" class="badge badge-success">Connected</span>
+      </nav>
+    </div>
+
+    <div class="px-3 py-3 pt-md-2 pb-md-4 mx-auto text-center">
+      <div class="alert alert-warning" role="alert" id="status">
+      </div>
+    </div>
+    {% block body %}{% endblock %}
+
+
+    <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/nouislider.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gamepadtest.js') }}"></script>
+    <style>
+      .buttons, .axes {
+        padding: 1em;
+      }
+      /*meter*/.axis {
+                 min-width: 200px;
+                 margin: 1em;
+               }
+      .button {
+        padding: 1em;
+        border-radius: 20px;
+        border: 1px solid black;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAAxJREFUCNdjYPjPAAACAgEAqiqeJwAAAABJRU5ErkJggg==);
+        background-size: 0% 0%;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+      }
+      .pressed {
+        border: 1px solid red;
+      }
+      .useless {
+        display: none;
+      }
+    </style>
+
+  </body>
+</html>

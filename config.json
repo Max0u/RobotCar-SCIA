@@ -1,0 +1,26 @@
+{
+    "commands": {
+        "rev_neutral": 370,
+        "drive_max": 420,
+        "right": 500,
+        "gas_pin": 2,
+        "dir_pin": 1,
+        "rev_drive": 360,
+        "drive": 400,
+        "go_t": 0.25,
+        "neutral": 385,
+        "left_t": 0.5,
+        "straight": 380,
+        "rev_drive_max": 350,
+        "invert_dir": 1,
+        "stop_t": -0.25,
+        "right_t": -0.5,
+        "rev_stop": 400,
+        "stop": 300,
+        "left": 260
+    },
+    "fps": 72,
+    "stream_path": "./stream/",
+    "datasets_path": "datasets",
+    "models_path": "./models/"
+}

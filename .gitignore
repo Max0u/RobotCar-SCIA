@@ -1,3 +1,4 @@
+datasets
 resources
 car_repo
 __pycache__/
@@ -5,4 +6,5 @@ __pycache__/
 .vscode/
 output/
 *.swp
-datasets/
+stream
+.mypy_cache/
